@@ -1,0 +1,26 @@
+Metadata-Version: 2.1
+Name: roseasy-codykrivacic
+Version: 0.0.1
+Summary: Rosetta simulations and analysis
+Home-page: https://github.com/pypa/sampleproject
+Author: Cody Krivacic
+Author-email: krivacic@berkeley.edu
+License: UNKNOWN
+Description: The purpose of this repository will be to help track designs. Basically
+        I'm thinking PIP, but more generalized and flexible (i.e. let the user
+        decide what to do at each step, just provide the tools). It will handle
+        tracking where files came from (order of operations), submitting and
+        syncing jobs to cluster, etc.
+        
+        I suppose starting pt will be PIP.
+        
+        Ideally, you would be able to specify a protocol in a file somewhere and
+        easily share it with others. You could then run that protocol by going
+        "despl next" or whatever.
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
