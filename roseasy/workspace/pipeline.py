@@ -334,7 +334,7 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         scripting.mkdir(self.focus_dir)
 
         pickle_path = os.path.join(self.focus_dir, 'workspace.pkl')
-        with open(pickle_path, 'w') as file:
+        with open(pickle_path, 'wb') as file:
             pickle.dump(self.__class__, file)
 
     def cd(self, *subpaths):
@@ -551,7 +551,7 @@ class WithFragmentLibs(object):
 
         if paths and sizes:
             flags.append('-loops:frag_sizes')
-            flags.extend(map(str, sizes))
+            flags.extend(list(map(str, sizes)))
             flags.append('-loops:frag_files')
             flags.extend(paths)
 
@@ -890,7 +890,7 @@ def fetch_data(directory, remote_url=None, recursive=True, include_logs=False, d
     # doesn't exist; rsync will create it.)
 
     if os.path.exists(directory) and not os.path.isdir(directory):
-        print "Skipping {}: not a directory.".format(directory)
+        print("Skipping {}: not a directory.".format(directory))
         return
 
     # Compose an rsync command to copy the files in question.  Then either run
@@ -926,7 +926,7 @@ def fetch_data(directory, remote_url=None, recursive=True, include_logs=False, d
     ]
 
     if dry_run:
-        print ' '.join(rsync_command)
+        print(' '.join(rsync_command))
     else:
         subprocess.call(rsync_command)
 
@@ -959,7 +959,7 @@ def push_data(directory, remote_url=None, recursive=True, dry_run=False):
     ]
 
     if dry_run:
-        print ' '.join(rsync_command)
+        print(' '.join(rsync_command))
     else:
         subprocess.call(rsync_command)
 

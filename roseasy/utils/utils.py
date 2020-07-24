@@ -1,5 +1,5 @@
 import numpy as np
-from numeric import *
+from roseasy.utils.numeric import *
 from pyrosetta import *
 
 

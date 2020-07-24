@@ -8,14 +8,14 @@ class Relax(Mover):
         self.edited_movemap =  False
 
     @property
-    def mvr(self):
+    def mover(self):
         if hasattr(self, '_mvr'):
             return self._mvr
         else:
             return FastRelax(self.sfxn, self.rounds)
     
-    @mvr.setter
-    def mvr(self, mover):
+    @mover.setter
+    def mover(self, mover):
         self._mvr = mover
 
     @property
@@ -30,9 +30,9 @@ class Relax(Mover):
         self._relax_rounds = relax_rounds
 
     def update_mover(self):
-        self.mvr = FastRelax(self.sfxn, self.rounds)
-        self.mvr.set_movemap(self.movemap)
+        self.mover = FastRelax(self.sfxn, self.rounds)
+        self.mover.set_movemap(self.movemap)
 
     def apply(self):
         self.update_mover()
-        self.mvr.apply(self.pose)
+        self.mover.apply(self.pose)
