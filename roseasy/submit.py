@@ -4,6 +4,12 @@ Usage:
     submit.py <workspace> <script> [options]
 
 Options:
+    --step, -s
+        Which step are you on? Otherwise, this will increment the step
+        by 1 from the last step folder (sometimes this is undesirable if
+        there is an empty step; to avoid this, make sure your workspace
+        is the folder for the step you want run).
+
     --nstruct NUM, -n NUM  [default: 10]
         The number of jobs to run.
 
@@ -37,7 +43,11 @@ def main():
         cluster.require_qsub()
 
     workspace = pipeline.workspace_from_dir(args['<workspace>'])
-    step = workspace.get_next_step()
+    if args['--step']:
+        step = args['--step']
+    else:
+        step = workspace.get_next_step()
+
     if '<script>' not in args:
         script = os.path.join(workspace.focus_dir, 'run.py')
     else:
