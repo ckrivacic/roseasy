@@ -1,11 +1,12 @@
 from pyrosetta import init
+from pyrosetta import pose_from_file
 from roseasy.workspace import pipeline
 from roseasy import big_jobs
 import os, sys, subprocess
 from roseasy.movers import relax as r
 
-class Workspace(pipeline.RelaxModels):
-    pass
+def get_workspace(root_dir, step):
+    return pipeline.RelaxModels(root_dir, step)
 
 if __name__=='__main__':
     workspace, job_id, task_id, parameters = big_jobs.initiate()

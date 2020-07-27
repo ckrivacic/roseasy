@@ -48,7 +48,7 @@ def main():
     else:
         step = workspace.get_next_step()
 
-    if '<script>' not in args:
+    if not args['<script>']:
         script = os.path.join(workspace.focus_dir, 'run.py')
     else:
         script = args['<script>']
@@ -63,7 +63,7 @@ def main():
     script_name = os.path.basename(script)[:-3]
     imp = importlib.import_module(script_name)
 
-    workspace = imp.Workspace(workspace.root_dir, step)
+    workspace = imp.get_workspace(workspace.root_dir, step)
     workspace.check_paths()
     workspace.check_rosetta()
     workspace.make_dirs()

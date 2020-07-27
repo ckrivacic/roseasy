@@ -41,7 +41,6 @@ def submit(script, workspace, **params):
     qsub_command += workspace.focus_dir,
 
     status = process.check_output(qsub_command).decode('utf-8')
-    print(status)
     status_pattern = re.compile(r'Your job-array (\d+).[0-9:-]+ \(".*"\) has been submitted')
     status_match = status_pattern.match(status)
 

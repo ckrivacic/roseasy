@@ -12,6 +12,7 @@ the design, each of which is related to a cluster job.
 import os, re, glob, json, pickle
 from klab import scripting
 from pprint import pprint
+from roseasy.scripts import *
 
 class Workspace(object):
     """
@@ -350,6 +351,7 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         scripting.mkdir(self.focus_dir)
 
         pickle_path = os.path.join(self.focus_dir, 'workspace.pkl')
+        print(self.__class__)
         with open(pickle_path, 'wb') as file:
             pickle.dump(self.__class__, file)
 
