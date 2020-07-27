@@ -295,11 +295,13 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
         installers = (
                 RosettaDir,
                 RsyncUrl,
+                PythonPath,
         )
     else:
         installers = (
                 RosettaDir,
                 InputPdb,
+                PythonPath,
         )
 
     # Get the necessary settings from the user and use them to fill in the 
