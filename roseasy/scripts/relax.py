@@ -13,7 +13,7 @@ if __name__=='__main__':
             job_id, task_id)
     test_run = parameters.get('test_run', False)
     init()
-    pdbpath = 'test_inputs/4lhx_chainA.pdb'
+    pdbpath = workspace.input_pdb_path
     pose = pose_from_file(workspace.input_pdb_path)
     relax = r.Relax()
     if test_run:
