@@ -101,7 +101,7 @@ class Workspace(object):
         return os.path.join(self.root_dir, 'filters.yaml')
 
     @property
-    def python_patht(self):
+    def python_path(self):
         return self.find_path('python', self.root_dir)
 
     @property
