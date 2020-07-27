@@ -67,7 +67,7 @@ def main():
     # Submit the job
 
     big_jobs.submit(
-            script, workspace,
+            workspace.script_path, workspace,
             nstruct=args['--nstruct'],
             max_runtime=args['--max-runtime'],
             max_memory=args['--max-memory'],
