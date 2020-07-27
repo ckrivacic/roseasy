@@ -101,6 +101,10 @@ class Workspace(object):
         return os.path.join(self.root_dir, 'filters.yaml')
 
     @property
+    def python_patht(self):
+        return self.find_path('python', self.root_dir)
+
+    @property
     def rosetta_dir(self):
         return self.find_path('rosetta', self.root_dir)
 
@@ -328,8 +332,8 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
                 raise PathNotFound(path)
     
     def get_next_step(self):
+        latest = 0
         for root, dirs, files in os.walk(self.root_dir):
-            latest = 0
             for d in dirs:
                 step = d.split('_')[0]
                 if re.match('[0-9]+', step):

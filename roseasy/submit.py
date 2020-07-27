@@ -43,8 +43,6 @@ def main():
     else:
         script = args['<script>']
 
-    print(script)
-
     if not os.path.exists(script):
         raise pipeline.PathNotFound(script)
 

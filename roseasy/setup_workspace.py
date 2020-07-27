@@ -27,6 +27,18 @@ def ensure_path_exists(path):
         raise ValueError("'{0}' does not exist.".format(path))
     return path
 
+class PythonPath:
+    prompt = "Path to rosetta: "
+    description = """\
+Python path: Path to your python binary. 
+    """
+
+    @staticmethod
+    def install(workspace, python_dir):
+        python_path = ensure_path_exists(python_path)
+
+        os.symlink(python_path, workspace.python_path)
+
 
 class RosettaDir:
     prompt = "Path to rosetta: "
