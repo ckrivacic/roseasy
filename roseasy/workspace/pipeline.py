@@ -625,7 +625,7 @@ class RelaxModels(BigJobWorkspace):
     @staticmethod
     def from_directory(directory):
         root = os.path.join(directory, '..')
-        step = int(directory.split('_')[0])
+        step = int(os.path.basename(directory).split('_')[0])
         return RelaxModels(root, step)
 
     @property
