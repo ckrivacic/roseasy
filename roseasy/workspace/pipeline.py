@@ -302,15 +302,16 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
 
     def check_paths(self):
         required_paths = [
-                self.input_pdb_path,
-                self.loops_path,
-                self.resfile_path,
-                self.restraints_path,
-                self.build_script_path,
-                self.design_script_path,
-                self.validate_script_path,
-                self.flags_path,
-        ]
+                self.input_pdb_path]
+        '''
+        self.loops_path,
+        self.resfile_path,
+        self.restraints_path,
+        self.build_script_path,
+        self.design_script_path,
+        self.validate_script_path,
+        self.flags_path,
+        '''
         for path in required_paths:
             if not os.path.exists(path):
                 raise PathNotFound(path)
@@ -319,12 +320,23 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         required_paths = [
                 self.rosetta_database_path,
                 self.rosetta_scripts_path,
-                self.rosetta_vall_path(False),
-                self.rosetta_vall_path(True),
+                #self.rosetta_vall_path(False),
+                #self.rosetta_vall_path(True),
         ]
         for path in required_paths:
             if not os.path.exists(path):
                 raise PathNotFound(path)
+    
+    def get_next_step(self):
+        for root, dirs, files in os.walk(self.root_dir):
+            latest = 0
+            for d in dirs:
+                step = d.split('_')[0]
+                if re.match('[0-9]+', step):
+                    step = int(step)
+                    if step > latest:
+                        latest = step
+        return latest + 1
 
     @property
     def incompatible_with_fragments_script(self):
@@ -600,10 +612,60 @@ class RestrainedModels(BigJobWorkspace, WithFragmentLibs):
         )
 
 
+class RelaxModels(BigJobWorkspace):
+
+    def __init__(self, root, step):
+        BigJobWorkspace.__init__(self, root)
+        self.step = int(step)
+
+    @staticmethod
+    def from_directory(directory):
+        root = os.path.join(directory, '..')
+        step = int(directory.split('_')[0])
+        return RelaxModels(root, step)
+
+    @property
+    def predecessor(self):
+        if self.step == 1:
+            return workspace.input_pdb_path
+        else:
+            return predecessor_from_dir(self, step)
+
+    @property
+    def focus_name(self):
+        return 'relax_models'
+
+    @property
+    def focus_dir(self):
+        assert self.step > 0
+        prefix = self.step
+        subdir = '{0:02}_{1}'.format(prefix, self.focus_name)
+        return os.path.join(self.root_dir, subdir)
+
+    @property
+    def protocol_path(self):
+        return self.find_path('relax.py')
+
+    @property
+    def script_path(self):
+        return os.path.join(self.focus_dir, 'relax.py')
+    def input_path(self, job_info):
+        if self.step > 1:
+            bb_models = job_info['inputs']
+            bb_model = bb_models[job_info['task_id'] % len(bb_models)]
+            return os.path.join(self.input_dir, bb_model)
+        else:
+            return self.input_pdb_path
+
+    def output_suffix(self, job_info):
+        design_id = job_info['task_id'] // len(job_info['inputs'])
+        return '_{0:03}'.format(design_id)
+
+
 class FixbbDesigns(BigJobWorkspace):
 
     def __init__(self, root, round):
-        BigJobWorkspace.__init__(self, root)
+        BigJobWorkspace.__init__(self, root) 
         self.round = int(round)
 
     @staticmethod
@@ -764,10 +826,31 @@ class AdditionalMetricWorkspace (Workspace):
 
 
 def big_job_dir():
-    return os.path.join(os.path.dirname(__file__), 'big_jobs')
+    return os.path.join(os.path.dirname(__file__), '..', 'big_jobs')
 
 def big_job_path(basename):
     return os.path.join(big_job_dir(), basename)
+
+def predecessor_from_dir(workspace, step):
+    """
+    Get the workspace that precedes the current step.
+    """
+    searchstr = '{:02}*'.format(step - 1)
+    results = []
+    for folder in glob.glob(os.path.join(workspace.root_dir,
+        searchstr)):
+        if os.path.isdir(folder):
+            results.append(folder)
+    if len(results) > 1:
+        e = 'WARNING! More than one predecessor workspace found. '\
+                'Check filenames for conflicts.'
+        raise PipelineError(e)
+    elif len(results) == 0:
+        e = 'WARNING! No predecessor workspaces found. '\
+                'Check filenames for conflicts.'
+        raise PipelineError(e)
+    else:
+        return results[0]
 
 def workspace_from_dir(directory, recurse=True):
     """
@@ -803,7 +886,7 @@ def workspace_from_dir(directory, recurse=True):
 
     # Load the 'workspace' file and create a workspace.
 
-    with open(pickle_path) as file:
+    with open(pickle_path, 'rb') as file:
         workspace_class = pickle.load(file)
 
     return workspace_class.from_directory(directory)

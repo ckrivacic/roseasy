@@ -71,11 +71,12 @@ stripped of waters and extraneous ligands."""
     @staticmethod
     def install(workspace, pdb_path):
         pdb_path = ensure_path_exists(pdb_path)
+        destination = os.path.join(workspace.root_dir, 'input.pdb.gz')
         if pdb_path.endswith('.pdb.gz'):
-            shutil.copyfile(pdb_path, workspace.input_pdb_path)
+            shutil.copyfile(pdb_path, destination)
         elif pdb_path.endswith('.pdb'):
             subprocess.call('gzip -c {0} > {1}'.format(
-                    pdb_path, workspace.input_pdb_path), shell=True)
+                    pdb_path, destination), shell=True)
         else:
             raise ValueError("'{0}' is not a PDB file.".format(pdb_path))
 
