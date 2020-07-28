@@ -17,6 +17,8 @@ class Mover(object):
         Set up the movemap. Optionally specify backbone and sidechain
         degrees of freedom, using either a list of residues or a residue
         selector.
+        Should probably get rid of "default" in the function name
+        because this can be used as non-default movemap.
         """
         mm = rosetta.core.kinematics.MoveMap()
         if bb is not None:
@@ -30,6 +32,8 @@ class Mover(object):
                 for i in range(1, len(bb) + 1):
                     if bb[i]:
                         mm.set_bb(i, True)
+        else:
+            mm.set_bb(True)
 
         if chi is not None:
             mm.set_chi(False)
@@ -42,6 +46,8 @@ class Mover(object):
                 for i in range(1, len(chi) + 1):
                     if chi[i]:
                         mm.set_chi(i, True)
+        else:
+            mm.set_chi(True)
 
         return mm
     

@@ -1,5 +1,7 @@
 from pyrosetta import init
 from pyrosetta import pose_from_file
+from pyrosetta.core.scoring import CA_rmsd
+from pyrosetta.core.scoring import all_atom_rmsd
 from roseasy.workspace import pipeline
 from roseasy import big_jobs
 import os, sys, subprocess
@@ -22,4 +24,11 @@ if __name__=='__main__':
     relax.pose = pose
     relax.apply()
 
+    input_pose = pose_from_file(workspace.input_pdb_path)
+    ca_rmsd = CA_rmsd(relax.pose, input_pose)
+    all_atom_rmsd = all_atom_rmsd(relax.pose, input_pose)
+
     pose.dump_pdb(output_prefix + 'input.pdb')
+    with open(output_prefix + 'input.pdb', 'a') as f:
+        f.write('\nCA_RMSD {}'.format(ca_rmsd))
+        f.write('\nAllAtom_RMSD {}'.format(all_atom_rmsd))
