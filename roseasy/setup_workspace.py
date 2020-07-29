@@ -195,6 +195,18 @@ desired geometry.  The default version of this script uses fixbb."""
             default_path = pipeline.big_job_path('design_models.xml')
             shutil.copyfile(default_path, workspace.design_script_path)
 
+class DefaultScripts:
+    prompt = None
+    Description = """\
+Installing default scripts."""
+    
+    @staticmethod
+    def install(workspace):
+        script_dir = os.path.join(os.path.dirname(__file__), 'scripts')
+        for script in glob.glob(script_dir + '/*.py'):
+            script_path = os.path.join(script_dir, script)
+            shutil.copyfile(script_path, workspace.standard_params_dir)
+
 
 class ValidateScript:
     prompt = "Path to validate script [optional]: "

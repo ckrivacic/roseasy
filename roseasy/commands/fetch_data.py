@@ -5,7 +5,7 @@ simulation results from the cluster to a workstation for analysis.  The given
 directory must be contained within a workspace created by 01_setup_workspace.
 
 Usage:
-    fetch_data.py <directory> [options]
+    roseasy fetch_data <directory> [options]
 
 Options:
     --remote URL, -r URL
