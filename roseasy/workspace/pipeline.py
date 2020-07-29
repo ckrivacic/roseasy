@@ -349,6 +349,7 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
 
     def make_dirs(self):
         scripting.mkdir(self.focus_dir)
+        scripting.mkdir(self.standard_params_dir)
         scripting.mkdir(self.preferred_install_dir)
 
         pickle_path = os.path.join(self.focus_dir, 'workspace.pkl')
