@@ -19,7 +19,7 @@ Options:
         it with the new design created by this script.
 """
 
-import os, re, shutil, subprocess
+import os, re, shutil, subprocess, glob
 
 def ensure_path_exists(path):
     path = os.path.abspath(os.path.expanduser(path))
