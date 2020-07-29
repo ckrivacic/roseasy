@@ -163,38 +163,6 @@ talaris2014.  That should be ok unless you have some particular interaction
             shutil.copyfile(scorefxn_path, workspace.scorefxn_path)
 
 
-class BuildScript:
-    prompt = "Path to build script [optional]: "
-    description = """\
-Build script: An XML rosetta script that generates backbones capable of 
-supporting the desired geometry.  The default version of this script uses KIC 
-with fragments in "ensemble-generation mode" (i.e. no initial build step)."""
-
-    @staticmethod
-    def install(workspace, script_path):
-        if script_path:
-            script_path = ensure_path_exists(script_path)
-            shutil.copyfile(script_path, workspace.build_script_path)
-        else:
-            default_path = pipeline.big_job_path('build_models.xml')
-            shutil.copyfile(default_path, workspace.build_script_path)
-
-
-class DesignScript:
-    prompt = "Path to design script [optional]: "
-    description = """\
-Design script: An XML rosetta script that performs design to stabilize the 
-desired geometry.  The default version of this script uses fixbb."""
-
-    @staticmethod
-    def install(workspace, script_path):
-        if script_path:
-            script_path = ensure_path_exists(script_path)
-            shutil.copyfile(script_path, workspace.design_script_path)
-        else:
-            default_path = pipeline.big_job_path('design_models.xml')
-            shutil.copyfile(default_path, workspace.design_script_path)
-
 class DefaultScripts:
     prompt = None
     Description = """\
@@ -206,35 +174,6 @@ Installing default scripts."""
         for script in glob.glob(script_dir + '/*.py'):
             script_path = os.path.join(script_dir, script)
             shutil.copyfile(script_path, workspace.standard_params_dir)
-
-
-class ValidateScript:
-    prompt = "Path to validate script [optional]: "
-    description = """\
-Validate script: An XML rosetta script that samples the designed loop to 
-determine whether the desired geometry is really the global score minimum.  The 
-default version of this script uses KIC with fragments in "ensemble-generation 
-mode" (i.e. no initial build step)."""
-
-    @staticmethod
-    def install(workspace, script_path):
-        if script_path:
-            script_path = ensure_path_exists(script_path)
-            shutil.copyfile(script_path, workspace.validate_script_path)
-        else:
-            default_path = pipeline.big_job_path('validate_designs.xml')
-            shutil.copyfile(default_path, workspace.validate_script_path)
-
-
-class SharedDefs:
-    prompt = None
-    description = None
-
-    @staticmethod
-    def install(workspace):
-        print("Installing shared defs.")
-        shared_defs_path = pipeline.big_job_path('shared_defs.xml')
-        shutil.copyfile(shared_defs_path, workspace.shared_defs_path)
 
 
 class FlagsFile:
@@ -313,6 +252,7 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
                 RosettaDir,
                 InputPdb,
                 PythonPath,
+                DefaultScripts,
         )
 
     # Get the necessary settings from the user and use them to fill in the 
