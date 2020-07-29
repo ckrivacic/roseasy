@@ -97,7 +97,9 @@ class LoopsFile:
     description = """\
 Loops file: A file specifying which backbone regions will be allowed to move.  
 These backbone regions do not have to be contiguous, but each region must span 
-at least 4 residues."""
+at least 4 residues. Leave blank if you don't have a default loops file
+you want to install or if you want to add one later. Loops files can be
+added to subdirectories to apply them to only specific steps."""
 
     @staticmethod
     def install(workspace, loops_path):
