@@ -7,7 +7,7 @@ believe that the improved sampling that fragments offer outweighs this
 potential drawback.
 
 Usage:
-    pull_into_place 02_setup_model_fragments <workspace> [options]
+    roseasy generate_fragments <workspace> [options]
 
 Options:
     -L, --ignore-loop-file
