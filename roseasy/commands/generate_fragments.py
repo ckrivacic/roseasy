@@ -31,11 +31,13 @@ Options:
 """
 
 import subprocess
-from klab import docopt, scripting, cluster
+from klab import scripting, cluster
+import docopt
 from roseasy.workspace import pipeline
 
 def main():
     args = docopt.docopt(__doc__)
+    print(args)
     cluster.require_qsub()
 
     workspace = pipeline.workspace_from_dir(args['<workspace>'])
@@ -47,7 +49,7 @@ def main():
     workspace.make_dirs()
     workspace.clear_fragments()
 
-    if not args['--input_model']:
+    if not '--input_model' in args:
         model = workspace.input_pdb_path
     else:
         model = args['--input_model']
@@ -58,7 +60,7 @@ def main():
             'klab_generate_fragments',
             workspace.input_pdb_path,
             '--outdir', workspace.fragments_dir,
-            '--memfree', args['--mem_free'],
+            '--memfree', args['--mem-free'],
             ]
     if not args['--ignore-loop-file']:
         generate_fragments += [
