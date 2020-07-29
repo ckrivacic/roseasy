@@ -175,10 +175,12 @@ Installing default scripts."""
     
     @staticmethod
     def install(workspace):
-        script_dir = os.path.join(os.path.dirname(__file__), 'scripts')
+        script_dir = os.path.join(os.path.dirname(__file__), '..', 'scripts')
         for script in glob.glob(script_dir + '/*.py'):
             script_path = os.path.join(script_dir, script)
-            shutil.copyfile(script_path, workspace.standard_params_dir)
+            workspace_path = os.path.join(workspace.standard_params_dir,
+                    os.path.basename(script))
+            shutil.copyfile(script_path, workspace_path)
 
 
 class FlagsFile:
@@ -219,7 +221,6 @@ from roseasy.workspace import pipeline
 @scripting.catch_and_print_errors()
 def main():
     arguments = docopt.docopt(__doc__)
-    print(arguments)
     workspace = pipeline.Workspace(arguments['<workspace>'])
 
     # Make a new workspace directory.
