@@ -42,7 +42,7 @@ def main():
     # If not a fragment workspace, make a new one
     if not hasattr(workspace, 'fasta_path'):
         step = workspace.get_next_step()
-        workspace = pipeline.workspace(workspace.root_dir, step)
+        workspace = pipeline.FKICModels(workspace.root_dir, step)
     workspace.check_paths()
     workspace.make_dirs()
     workspace.clear_fragments()
