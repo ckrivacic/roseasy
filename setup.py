@@ -36,6 +36,7 @@ setuptools.setup(
             define_command('submit'),
             define_command('plot_funnels'),
             define_command('generate_fragments'),
+            define_command('setup_workspace'),
             ],
         }
 )
