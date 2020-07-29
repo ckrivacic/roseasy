@@ -38,7 +38,7 @@ def main():
     args = docopt.docopt(__doc__)
     cluster.require_qsub()
 
-    workspace = pipeline.workspace_from_path(args['<workspace>'])
+    workspace = pipeline.workspace_from_dir(args['<workspace>'])
     # If not a fragment workspace, make a new one
     if not hasattr(workspace, 'fasta_path'):
         step = workspace.get_next_step()
