@@ -670,6 +670,66 @@ class RelaxModels(BigJobWorkspace):
         return '_{0:03}'.format(design_id)
 
 
+class FKICModels(BigJobWorkspace, WithFragmentLibs):
+    def __init__(self, root, step):
+        BigJobWorkspace.__init__(self, root)
+        self.step = int(step)
+
+    @staticmethod
+    def from_directory(directory):
+        root = os.path.join(directory, '..')
+        step = int(os.path.basename(directory).split('_')[0])
+        return FKICModels(root, step)
+
+    @property
+    def predecessor(self):
+        if self.step == 1:
+            return workspace.input_pdb_path
+        else:
+            return predecessor_from_dir(self, step)
+
+    @property
+    def focus_name(self):
+        return 'fkic_modls'
+
+    @property
+    def focus_dir(self):
+        assert self.step > 0
+        prefix = self.step
+        subdir = '{0:02}_{1}'.format(prefix, self.focus_name)
+        return os.path.join(self.root_dir, subdir)
+
+    @property
+    def protocol_path(self):
+            return self.find_path('fkic.py')
+
+    @property
+    def script_path(self):
+        return os.path.join(self.focus_dir, 'fkic.py')
+    def input_path(self, job_info):
+        if self.step > 1:
+            models = job_info['inputs']
+            model = models[job_info['task_id'] % len(bb_models)]
+            return os.path.join(self.input_dir, model)
+        else:
+            return self.input_pdb_path
+    @property
+    def output_subdirs(self):
+        return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
+
+    def output_subdir(self, input_name):
+        basename = os.path.basename(input_name[:-len('.pdb.gz')])
+        return os.path.join(self.output_dir, basename)
+
+    def output_prefix(self, job_info):
+        input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
+        return os.path.join(self.output_dir, input_model) + '/'
+
+    def output_suffix(self, job_info):
+        design_id = job_info['task_id'] // len(job_info['inputs'])
+        return '_{0:03}'.format(design_id)
+
+
 class FixbbDesigns(BigJobWorkspace):
 
     def __init__(self, root, round):

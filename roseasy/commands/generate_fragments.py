@@ -32,13 +32,17 @@ Options:
 
 import subprocess
 from klab import docopt, scripting, cluster
-from .. import pipeline
+from roseasy.workspace import pipeline
 
 def main():
     args = docopt.docopt(__doc__)
     cluster.require_qsub()
 
     workspace = pipeline.workspace_from_path(args['<workspace>'])
+    # If not a fragment workspace, make a new one
+    if not hasattr(workspace, 'fasta_path'):
+        step = workspace.get_next_step()
+        workspace = pipeline.workspace(workspace.root_dir, step)
     workspace.check_paths()
     workspace.make_dirs()
     workspace.clear_fragments()
