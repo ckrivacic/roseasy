@@ -49,6 +49,8 @@ class Mover(object):
         else:
             mm.set_chi(True)
 
+        self.edited_movemap = True
+
         return mm
     
     '''
@@ -106,8 +108,11 @@ class Mover(object):
         if hasattr(self, '_mm'):
             return self._mm
         else:
-            self._mm = self.setup_default_movemap()
-            return self._mm
+            # Don't want to accidentally call setup_default_movemap(),
+            # so raise an error.
+            raise
+            #self._mm = self.setup_default_movemap()
+            #return self._mm
 
     @movemap.setter
     def movemap(self, movemap):

@@ -11,10 +11,10 @@ def get_workspace(root_dir, step):
     return pipeline.RelaxModels(root_dir, step)
 
 if __name__=='__main__':
-    workspace, job_id, task_id, parameters = big_jobs.initiate()
+    workspace, job_info = big_jobs.initiate()
     output_prefix = '{0}/{1}_{2:06d}_'.format(workspace.output_dir,
-            job_id, task_id)
-    test_run = parameters.get('test_run', False)
+            job_info['job_id'], job_info['task_id'])
+    test_run = job_info.get('test_run', False)
     init()
     pdbpath = workspace.input_pdb_path
     pose = pose_from_file(workspace.input_pdb_path)
@@ -22,6 +22,7 @@ if __name__=='__main__':
     if test_run:
         relax.rounds = 1
     relax.pose = pose
+    relax.setup_default_movemap()
     relax.apply()
 
     input_pose = pose_from_file(workspace.input_pdb_path)

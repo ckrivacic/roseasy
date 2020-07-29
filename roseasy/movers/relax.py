@@ -31,7 +31,10 @@ class Relax(Mover):
 
     def update_mover(self):
         self.mover = FastRelax(self.sfxn, self.rounds)
-        self.mover.set_movemap(self.movemap)
+        # Only update movemap if edited (includes calling
+        # self.setup_default_movemap())
+        if self.edited_movemap:
+            self.mover.set_movemap(self.movemap)
 
     def apply(self):
         self.update_mover()

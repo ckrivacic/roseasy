@@ -62,17 +62,19 @@ def submit(script, workspace, **params):
     print(status, end=' ')
 
 def initiate():
-    """Return some relevant information about the currently running job."""
+        """Return some relevant information about the currently running job."""
+    print_debug_header()
+
     workspace = pipeline.workspace_from_dir(sys.argv[1])
     workspace.cd_to_root()
 
-    job_id = int(os.environ['JOB_ID'])
-    task_id = int(os.environ['SGE_TASK_ID']) - 1
-    job_params = read_params(workspace.job_info_path(job_id))
+    job_info = read_job_info(workspace.job_info_path(os.environ['JOB_ID']))
+    job_info['job_id'] = int(os.environ['JOB_ID'])
+    job_info['task_id'] = int(os.environ['SGE_TASK_ID']) - 1
 
-    return workspace, job_id, task_id, job_params
+    return workspace, job_info
 
-def read_params(params_path):
+def read_job_info(params_path):
     with open(params_path) as file:
         return json.load(file)
 
