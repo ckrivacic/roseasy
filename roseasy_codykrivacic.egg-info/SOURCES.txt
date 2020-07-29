@@ -1,9 +1,7 @@
 README.md
 setup.py
-roseasy/__init__.py
 roseasy/setup_workspace.py
 roseasy/movers/__init__.py
-roseasy/movers/movers.py
 roseasy/movers/relax.py
 roseasy/utils/__init__.py
 roseasy/utils/numeric.py
@@ -13,4 +11,5 @@ roseasy/workspace/pipeline.py
 roseasy_codykrivacic.egg-info/PKG-INFO
 roseasy_codykrivacic.egg-info/SOURCES.txt
 roseasy_codykrivacic.egg-info/dependency_links.txt
+roseasy_codykrivacic.egg-info/entry_points.txt
 roseasy_codykrivacic.egg-info/top_level.txt
