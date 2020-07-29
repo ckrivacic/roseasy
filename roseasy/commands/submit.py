@@ -57,7 +57,8 @@ def main():
         raise pipeline.PathNotFound(script)
 
 
-    # Workspace type can be defined in the run script.
+    # Workspace type is defined in the run script, so we first need to
+    # import that.
     script_path = os.path.dirname(script)
     sys.path.insert(0, script_path)
     script_name = os.path.basename(script)[:-3]
@@ -67,6 +68,8 @@ def main():
     workspace.check_paths()
     workspace.check_rosetta()
     workspace.make_dirs()
+    # Copying the script to the focus directory helps track exactly what
+    # we did at each step.
     shutil.copyfile(script, workspace.script_path)
 
     if args['--clear'] or args['--test-run']:
