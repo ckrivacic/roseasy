@@ -139,7 +139,7 @@ def main():
         scripting.print_error_and_die("""\
 Unknown command '{0}'.  Did you mean:
 
-    $ pull_into_place {1} {2}
+    $ roseasy {1} {2}
 
 """, command_name, did_you_mean(command_name, entry_points), ' '.join(arguments['<args>']))
 

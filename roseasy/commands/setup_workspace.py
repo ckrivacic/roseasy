@@ -6,7 +6,7 @@ given below.  This information is used to build a workspace for this design
 that will be used by the rest of the scripts in this pipeline.  
 
 Usage:
-    setup_workspace <workspace> [--remote] [--overwrite]
+    roseasy setup_workspace <workspace> [--remote] [--overwrite]
 
 Options:
     --remote, -r
