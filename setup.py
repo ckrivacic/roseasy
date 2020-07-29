@@ -34,7 +34,8 @@ setuptools.setup(
             define_command('fetch_data'),
             define_command('push_data'),
             define_command('submit'),
-            define_command('plot_funnels')
+            define_command('plot_funnels'),
+            define_command('generate_fragments'),
             ],
         }
 )
