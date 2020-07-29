@@ -101,8 +101,11 @@ at least 4 residues."""
 
     @staticmethod
     def install(workspace, loops_path):
-        loops_path = ensure_path_exists(loops_path)
-        shutil.copyfile(loops_path, workspace.loops_path)
+        if loops_path:
+            loops_path = ensure_path_exists(loops_path)
+            shutil.copyfile(loops_path, workspace.loops_path)
+        else:
+            pass
 
 
 class Resfile:
@@ -253,6 +256,7 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
                 InputPdb,
                 PythonPath,
                 DefaultScripts,
+                LoopsFile,
         )
 
     # Get the necessary settings from the user and use them to fill in the 
