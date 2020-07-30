@@ -734,7 +734,10 @@ class FKICModels(BigJobWorkspace, WithFragmentLibs):
         return os.path.join(self.output_dir, input_model) + '/'
 
     def output_suffix(self, job_info):
-        design_id = job_info['task_id'] // len(job_info['inputs'])
+        if step > 1:
+            design_id = job_info['task_id'] // len(job_info['inputs'])
+        else:
+            design_id = job_info['task_id'] // len(job_info['nstruct'])
         return '_{0:03}'.format(design_id)
 
 
