@@ -20,7 +20,7 @@ if __name__=="__main__":
     pose = pose_from_file(pdbpath)
     lm = LoopModeler()
     lm.config = 'fkic'
-    lm.fragment_flags = workspace.fragment_flags
+    lm.fragments_flags = workspace.fragments_flags
     lm.loops_from_file(workspace.loops_path)
     if test_run:
         lm.mover.mark_as_test_run()
