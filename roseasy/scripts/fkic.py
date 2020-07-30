@@ -23,7 +23,8 @@ if __name__=="__main__":
     lm.fragments_flags = workspace.fragments_flags(pdbpath)
     lm.loops_from_file(workspace.loops_path)
     if test_run:
-        lm.mover.mark_as_test_run()
+        lm.mover.centroid_stage().mark_as_test_run()
+        lm.mover.fullatom_stage().mark_as_test_run()
     lm.pose = pose
     lm.apply()
 
