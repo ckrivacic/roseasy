@@ -690,7 +690,7 @@ class FKICModels(BigJobWorkspace, WithFragmentLibs):
 
     @property
     def focus_name(self):
-        return 'fkic_modls'
+        return 'fkic_models'
 
     @property
     def focus_dir(self):
