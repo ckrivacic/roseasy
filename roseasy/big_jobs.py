@@ -101,3 +101,15 @@ def run_command(command):
     sys.stdout.flush()
 
     process.wait()
+
+def print_debug_header():
+    from datetime import datetime
+    from socket import gethostname
+
+    print("Date:", datetime.now())
+    print("Host:", gethostname())
+    print("Python:", sys.executable or 'unknown!')
+    print("Command: JOB_ID={0[JOB_ID]} SGE_TASK_ID={0[SGE_TASK_ID]} {1}".format(
+            os.environ, ' '.join(sys.argv)))
+    print()
+    sys.stdout.flush()

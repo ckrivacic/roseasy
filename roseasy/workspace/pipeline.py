@@ -642,6 +642,10 @@ class RelaxModels(BigJobWorkspace):
     @property
     def focus_name(self):
         return 'relax_models'
+    
+    @property
+    def step(self):
+        return self.step
 
     @property
     def focus_dir(self):
@@ -673,7 +677,7 @@ class RelaxModels(BigJobWorkspace):
 class FKICModels(BigJobWorkspace, WithFragmentLibs):
     def __init__(self, root, step):
         BigJobWorkspace.__init__(self, root)
-        self.step = int(step)
+        self._step = int(step)
 
     @staticmethod
     def from_directory(directory):
@@ -691,6 +695,10 @@ class FKICModels(BigJobWorkspace, WithFragmentLibs):
     @property
     def focus_name(self):
         return 'fkic_models'
+
+    @property
+    def step(self):
+        return self._step
 
     @property
     def focus_dir(self):

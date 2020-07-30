@@ -45,6 +45,8 @@ def main():
     workspace = pipeline.workspace_from_dir(args['<workspace>'])
     if args['--step']:
         step = args['--step']
+    elif hasattr(workspace, 'step'):
+        step = workspace.step
     else:
         step = workspace.get_next_step()
 
