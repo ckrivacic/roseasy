@@ -62,7 +62,7 @@ def submit(script, workspace, **params):
     print(status, end=' ')
 
 def initiate():
-        """Return some relevant information about the currently running job."""
+    """Return some relevant information about the currently running job."""
     print_debug_header()
 
     workspace = pipeline.workspace_from_dir(sys.argv[1])
