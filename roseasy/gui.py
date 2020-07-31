@@ -674,7 +674,8 @@ class ShowMyDesigns (gtk.Window):
         file_menu.append(choose_rep)
 
         file_menu.foreach(lambda item: item.show())
-        file_menu.popup(None, None, None, event.button, event.time)
+        ### Added a 'none'
+        file_menu.popup(None, None, None, None, event.button, event.time)
 
     def on_copy_model_path(self, widget, path):
         import subprocess
