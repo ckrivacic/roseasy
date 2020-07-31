@@ -624,7 +624,7 @@ class RelaxModels(BigJobWorkspace):
 
     def __init__(self, root, step):
         BigJobWorkspace.__init__(self, root)
-        self.step = int(step)
+        self._step = int(step)
 
     @staticmethod
     def from_directory(directory):
@@ -645,7 +645,7 @@ class RelaxModels(BigJobWorkspace):
     
     @property
     def step(self):
-        return self.step
+        return self._step
 
     @property
     def focus_dir(self):
