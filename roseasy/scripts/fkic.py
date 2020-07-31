@@ -23,7 +23,8 @@ if __name__=="__main__":
     lm.fragments_flags = workspace.fragments_flags(pdbpath)
     lm.loops_from_file(workspace.loops_path)
     if test_run:
-        lm.mover.mark_as_test_run()
+        lm.mover.centroid_stage().mark_as_test_run()
+        lm.mover.fullatom_stage().mark_as_test_run()
     lm.pose = pose
     lm.apply()
 
@@ -32,7 +33,9 @@ if __name__=="__main__":
     all_atom_rmsd = all_atom_rmsd(lm.pose, input_pose)
 
     input_name = os.path.basename(workspace.input_path(job_info)).split('.')[0]
-    out = workspace.output_prefix + input_name + workspace.output_suffix
+    out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb'
+    if not os.path.exists(workspace.output_prefix(job_info)):
+        os.mkdir(workspace.output_prefix(job_info))
     pose.dump_pdb(out)
     with open(out, 'a') as f:
         f.write('\nCA_RMSD {}'.format(ca_rmsd))
