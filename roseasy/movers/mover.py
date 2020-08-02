@@ -49,7 +49,7 @@ class Mover(object):
         else:
             mm.set_chi(True)
 
-        self.edited_movemap = True
+        self.movemap = mm
 
         return mm
     

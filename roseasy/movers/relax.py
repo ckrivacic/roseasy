@@ -1,4 +1,5 @@
 from roseasy.movers.mover import Mover
+from pyrosetta import init
 from pyrosetta.rosetta.protocols.relax import FastRelax
 
 
