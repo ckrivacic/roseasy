@@ -248,8 +248,85 @@ def mutate_residues(pose, res_list, aa_list, protein_only=True):
 
 def add_aas(pose, position, sequence, pdbnum=False, chain='A'):
     if pdbnum:
-        position = pose.pdb_info().pdb2pose(position, chain)
+        position = pose.pdb_info().pdb2pose(chain, position)
 
     insert_alas(pose, position, len(sequence))
     mutate_residues(pose, list(range(position + 1, position + 1 +
         len(sequence))), list(sequence), True)
+
+def close_helix_by_minimization(pose, movable_region_start, movable_region_end, helix_start, helix_end):
+    '''Close a gap inside a helix by minimization.
+    Return true if the gap could be closed.
+    '''
+    # Make a clone of poly ALA pose for minimization
+
+    #simple_pose_moves.mutate_pose_to_single_AA(pose, 'ALA')
+    rosetta.core.pose.correctly_add_cutpoint_variants(pose)
+
+    # Set hydrogen bond constraints for the linkers and helix
+
+    linker_residues = list(range(movable_region_start, helix_start + 1)) + list(range(helix_end, movable_region_end + 1))
+    linker_hbonds = find_bb_hbonds_involving_residues(pose, linker_residues)
+
+    pose.constraint_set().clear()
+    helix_hbs = [(i + 4, i) for i in range(helix_start, helix_end - 3)]
+    constraint.add_constraints_to_pose(pose, constraint.get_bb_hbond_constraint(linker_hbonds + helix_hbs))
+
+    # Set score function
+
+    sfxn = rosetta.core.scoring.get_score_function()
+    sfxn.set_weight(rosetta.core.scoring.base_pair_constraint, 1) #H-bond constraint
+
+    # Set movemap
+
+    mm = rosetta.core.kinematics.MoveMap()
+    
+    for i in range(movable_region_start, movable_region_end + 1):
+        mm.set_bb(i, True)
+   
+    # Set the minimization mover
+
+    min_opts = rosetta.core.optimization.MinimizerOptions( "lbfgs_armijo_nonmonotone", 0.01, True )
+    min_mover = rosetta.protocols.minimization_packing.MinMover()
+    min_mover.movemap(mm)
+    min_mover.min_options(min_opts)
+
+    # Close the chain
+
+    for chainbreak_weight in [0.5, 1, 5, 10]:
+        sfxn.set_weight(rosetta.core.scoring.chainbreak, chainbreak_weight)
+        min_mover.score_function(sfxn)
+        min_mover.apply(pose)
+
+    chainbreak_energy = pose.energies().total_energies()[rosetta.core.scoring.chainbreak] 
+    if chainbreak_energy > 0.2:
+        return False
+
+    # Minimize without constraints
+    
+    sfxn.set_weight(rosetta.core.scoring.base_pair_constraint, 0)
+    min_mover.score_function(sfxn)
+    min_mover.apply(pose)
+    
+    return True
+
+def find_bb_hbonds_involving_residues(pose, residues):
+    '''Find backbone hbonds involving a given set of residues.
+    An Hbond is defined as (donor_res, acceptor_res).
+    Ignore the terminal residues.
+    '''
+    hbset = rosetta.core.scoring.hbonds.HBondSet(pose, bb_only=True)
+    hbonds = []
+
+    for i in range(1, hbset.nhbonds() + 1):
+        acc = hbset.hbond(i).acc_res()
+        don = hbset.hbond(i).don_res()
+
+        # Ignore terminal residues
+        if acc in [1, pose.size()] or don in [1, pose.size()]:
+            continue
+
+        if acc in residues or don in residues:
+            hbonds.append((don, acc))
+
+    return hbonds
