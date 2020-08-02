@@ -35,6 +35,7 @@ class Relax(Mover):
         # self.setup_default_movemap())
         if self.edited_movemap:
             self.mover.set_movemap(self.movemap)
+        init(' '.join(self.init_args))
 
     def apply(self):
         self.update_mover()
