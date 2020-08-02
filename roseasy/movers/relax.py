@@ -7,6 +7,7 @@ class Relax(Mover):
     '''Relax your pose'''
     def __init__(self):
         self.edited_movemap =  False
+        super().__init__()
 
     @property
     def mover(self):
