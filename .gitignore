@@ -1,0 +1,5 @@
+*.gz
+*.pyc
+roseasy/tests/test_inputs/fragments/*
+roseasy_codykrivacic.egg-info/*
+*.bak
