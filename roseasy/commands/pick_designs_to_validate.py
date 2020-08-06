@@ -39,6 +39,11 @@ Options:
         Don't actually fill in the input directory of the validation workspace.  
         Instead just report how many designs would be picked.
 
+    --keep-dups, -k
+        Normally this will automatically ignore duplicate sequences. Use
+        this option to keep them, e.g. when picking from relaxed
+        structures.
+
 Metrics:
     The given metrics specify which scores will be used to construct the Pareto 
     front.  You can refer to any of the metrics available in the 'plot_funnels' 
@@ -82,6 +87,8 @@ def main():
         args['--recalc'] = False
     if '--dry-run' not in args:
         args['--dry-run'] = False
+    if '--keep-dups' not in args:
+        args['--keep-dups'] = False
 
     workspace = pipeline.ValidationWorkspace(root, step)
     workspace.check_paths()
@@ -93,4 +100,5 @@ def main():
             clear=args['--clear'],
             use_cache=not args['--recalc'],
             dry_run=args['--dry-run'],
+            keep_dups = args['--keep-dups'],
     )
