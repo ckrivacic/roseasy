@@ -8,7 +8,7 @@ import os, sys, subprocess
 
 
 def get_workspace(root_dir, step):
-    return pipeline.FKICModels(root_dir, step)
+    return pipeline.ValidationWorkspace(root_dir, step)
 
 
 if __name__=="__main__":

@@ -8,7 +8,7 @@ import os, sys, subprocess
 from roseasy.movers import relax as r
 
 def get_workspace(root_dir, step):
-    return pipeline.RelaxModels(root_dir, step)
+    return pipeline.DesignWorkspace(root_dir, step)
 
 if __name__=='__main__':
     workspace, job_info = big_jobs.initiate()

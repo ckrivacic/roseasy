@@ -620,11 +620,12 @@ class RestrainedModels(BigJobWorkspace, WithFragmentLibs):
         )
 
 
-class RelaxModels(BigJobWorkspace):
+class DesignWorkspace(BigJobWorkspace):
 
     def __init__(self, root, step):
-        BigJobWorkspace.__init__(self, root)
+        BigJobWorkspace.__init__(self, root, subdirs=False)
         self._step = int(step)
+        self._subdirs = subdirs
 
     @staticmethod
     def from_directory(directory):
@@ -641,11 +642,15 @@ class RelaxModels(BigJobWorkspace):
 
     @property
     def focus_name(self):
-        return 'relax_models'
+        return 'designs'
     
     @property
     def step(self):
         return self._step
+    
+    @property
+    def subdirs(self):
+        return self._subdirs
 
     @property
     def focus_dir(self):
@@ -669,12 +674,26 @@ class RelaxModels(BigJobWorkspace):
         else:
             return self.input_pdb_path
 
+    @property
+    def output_subdirs(self):
+        return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
+
+    def output_subdir(self, input_name):
+        basename = os.path.basename(input_name[:-len('.pdb.gz')])
+
+    def output_prefix(self, job_info):
+        if self.subdirs:
+            input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
+            return os.path.join(self.output_dir, input_model) + '/'
+        else:
+            return self.output_dir + '/'
+
     def output_suffix(self, job_info):
         design_id = job_info['task_id'] // len(job_info['inputs'])
         return '_{0:03}'.format(design_id)
 
 
-class FKICModels(BigJobWorkspace, WithFragmentLibs):
+class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def __init__(self, root, step):
         BigJobWorkspace.__init__(self, root)
         self._step = int(step)
@@ -694,7 +713,7 @@ class FKICModels(BigJobWorkspace, WithFragmentLibs):
 
     @property
     def focus_name(self):
-        return 'fkic_models'
+        return 'validated_designs'
 
     @property
     def step(self):
@@ -744,64 +763,26 @@ class FKICModels(BigJobWorkspace, WithFragmentLibs):
         return '_{0:03}'.format(design_id)
 
 
-class FixbbDesigns(BigJobWorkspace):
-
-    def __init__(self, root, round):
-        BigJobWorkspace.__init__(self, root) 
-        self.round = int(round)
-
-    @staticmethod
-    def from_directory(directory):
-        root = os.path.join(directory, '..')
-        round = int(directory.split('_')[-1])
-        return FixbbDesigns(root, round)
-
-    @property
-    def predecessor(self):
-        if self.round == 1:
-            return RestrainedModels(self.root_dir)
-        else:
-            return ValidatedDesigns(self.root_dir, self.round - 1)
-
-    @property
-    def focus_name(self):
-        return 'design_models'
-
-    @property
-    def focus_dir(self):
-        assert self.round > 0
-        prefix = 2 * self.round
-        subdir = '{0:02}_{1}_round_{2}'.format(prefix, self.focus_name, self.round)
-        return os.path.join(self.root_dir, subdir)
-
-    @property
-    def protocol_path(self):
-        return self.design_script_path
-    def input_path(self, job_info):
-        bb_models = job_info['inputs']
-        bb_model = bb_models[job_info['task_id'] % len(bb_models)]
-        return os.path.join(self.input_dir, bb_model)
-
-    def output_suffix(self, job_info):
-        design_id = job_info['task_id'] // len(job_info['inputs'])
-        return '_{0:03}'.format(design_id)
-
-
 class ValidatedDesigns(BigJobWorkspace, WithFragmentLibs):
 
-    def __init__(self, root, round):
+    '''
+    This class should work as a general workspace for validation jobs,
+    i.e. has subfolders for each design.
+    '''
+    def __init__(self, root, step):
         BigJobWorkspace.__init__(self, root)
-        self.round = int(round)
+        self.step = int(step)
 
     @staticmethod
     def from_directory(directory):
         root = os.path.join(directory, '..')
-        round = int(directory.strip('/').split('_')[-1])
-        return ValidatedDesigns(root, round)
+        step = int(directory.strip('/').split('_')[0])
+        return ValidatedDesigns(root, step)
 
     @property
     def predecessor(self):
-        return FixbbDesigns(self.root_dir, self.round)
+        pre_dir = glob.glob('{}/{}_*'.format(self.root_dir, self.step - 1))[0]
+        return workspace_from_dir(pre_dir)
 
     @property
     def focus_name(self):
@@ -809,9 +790,9 @@ class ValidatedDesigns(BigJobWorkspace, WithFragmentLibs):
 
     @property
     def focus_dir(self):
-        assert self.round > 0
-        prefix = 2 * self.round + 1
-        subdir = '{0:02}_{1}_round_{2}'.format(prefix, self.focus_name, self.round)
+        assert self.step > 0
+        prefix = self.step
+        subdir = '{0:02}_{1}'.format(prefix, self.focus_name)
         return os.path.join(self.root_dir, subdir)
 
     @property
