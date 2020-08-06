@@ -638,7 +638,7 @@ class DesignWorkspace(BigJobWorkspace):
         if self.step == 1:
             return workspace.input_pdb_path
         else:
-            return predecessor_from_dir(self, step)
+            return predecessor_from_dir(self, self.step)
 
     @property
     def focus_name(self):
@@ -712,7 +712,7 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
         if self.step == 1:
             return workspace.input_pdb_path
         else:
-            return predecessor_from_dir(self, step)
+            return predecessor_from_dir(self, self.step)
 
     @property
     def focus_name(self):
