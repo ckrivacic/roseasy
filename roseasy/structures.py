@@ -55,7 +55,7 @@ def load(pdb_dir, use_cache=True, job_report=None, require_io_dir=True):
     # Find all the structures in the given directory, then decide which have
     # already been cached and which haven't.
 
-    pdb_paths = glob.glob(os.path.join(pdb_dir, '*.pdb'))
+    pdb_paths = glob.glob(os.path.join(pdb_dir, '*.pdb.gz'))
     base_pdb_names = set(os.path.basename(x) for x in pdb_paths)
     cache_path = os.path.join(pdb_dir, 'metrics.pkl')
     metadata_path = os.path.join(pdb_dir, 'metrics.yml')
