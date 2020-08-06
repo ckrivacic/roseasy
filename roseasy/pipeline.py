@@ -962,6 +962,8 @@ def root_from_dir(directory, recurse=True):
     Similar to workspace_from_dir, but this returns the root directory
     of a workspace rather than a workspace object. 
     """
+    # This does not check whether this is a Workspace object and could
+    # therefore be prone to errors if we aren't careful.
 
     directory = os.path.abspath(directory)
     pickle_path = os.path.join(directory, 'workspace.pkl')

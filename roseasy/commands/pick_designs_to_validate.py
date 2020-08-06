@@ -76,6 +76,13 @@ def main():
     root = args['<workspace>']
     step = args['<step>']
 
+    if '--clear' not in args:
+        args['--clear'] = False
+    if '--recalc' not in args:
+        args['--recalc'] = False
+    if '--dry-run' not in args:
+        args['--dry-run'] = False
+
     workspace = pipeline.ValidationWorkspace(root, step)
     workspace.check_paths()
     workspace.make_dirs()
