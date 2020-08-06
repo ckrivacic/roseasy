@@ -15,7 +15,7 @@ Options:
 
 from klab import scripting
 import docopt
-from roseasy.workspace import pipeline
+from roseasy import pipeline
 
 @scripting.catch_and_print_errors()
 def main():

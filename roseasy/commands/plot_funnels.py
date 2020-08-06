@@ -93,7 +93,7 @@ Hotkeys:
 """
 
 import os, glob, numpy as np
-from roseasy.workspace import pipeline
+from roseasy import pipeline
 from roseasy import structures
 
 def main():

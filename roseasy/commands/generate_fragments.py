@@ -33,7 +33,7 @@ Options:
 import subprocess
 from klab import scripting, cluster
 import docopt
-from roseasy.workspace import pipeline
+from roseasy import pipeline
 
 def main():
     args = docopt.docopt(__doc__)

@@ -33,7 +33,7 @@ Options:
 from klab import scripting, cluster
 import docopt
 import sys, os, importlib, shutil
-from roseasy.workspace import pipeline
+from roseasy import pipeline
 from roseasy import big_jobs
 
 @scripting.catch_and_print_errors()

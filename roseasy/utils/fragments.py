@@ -28,7 +28,7 @@ Options:
 
 import subprocess
 from klab import docopt, scripting, cluster
-from .. import pipeline
+from roseasy import pipeline
 
 def main():
     args = docopt.docopt(__doc__)

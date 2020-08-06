@@ -216,7 +216,7 @@ workspace "my_design" and set its rsync URL to "chef:path/to"."""
 
 from klab import scripting
 import docopt
-from roseasy.workspace import pipeline
+from roseasy import pipeline
 
 @scripting.catch_and_print_errors()
 def main():

@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 import sys, os, re, json, subprocess
-from roseasy.workspace import pipeline
+from roseasy import pipeline
 
 def submit(script, workspace, **params):
     """Submit a job with the given parameters."""

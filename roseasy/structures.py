@@ -18,7 +18,7 @@ import numpy as np, scipy as sp, pandas as pd
 from scipy.spatial.distance import euclidean
 from klab import scripting
 from pprint import pprint
-from roseasy.workspace import pipeline
+from roseasy import pipeline
 
 def load(pdb_dir, use_cache=True, job_report=None, require_io_dir=True):
     """
