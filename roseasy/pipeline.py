@@ -631,7 +631,7 @@ class DesignWorkspace(BigJobWorkspace):
     def from_directory(directory):
         root = os.path.join(directory, '..')
         step = int(os.path.basename(directory).split('_')[0])
-        return RelaxModels(root, step)
+        return DesignWorkspace(root, step)
 
     @property
     def predecessor(self):
@@ -705,7 +705,7 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def from_directory(directory):
         root = os.path.join(directory, '..')
         step = int(os.path.basename(directory).split('_')[0])
-        return FKICModels(root, step)
+        return ValidationWorkspace(root, step)
 
     @property
     def predecessor(self):
