@@ -1,0 +1,9 @@
+threshold:
+  -ca_rmsd < 2.0
+
+pareto:
+- total_score
+- ca_rmsd
+
+depth: 1
+epsilon: 0.5
