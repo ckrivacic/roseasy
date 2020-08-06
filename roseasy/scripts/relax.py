@@ -4,7 +4,7 @@ from pyrosetta.rosetta.core.scoring import CA_rmsd
 from pyrosetta.rosetta.core.scoring import all_atom_rmsd
 from roseasy import pipeline
 from roseasy import big_jobs
-import os, sys, subprocess
+import os, sys, subprocess, gzip
 from roseasy.movers import relax as r
 
 def get_workspace(root_dir, step):
@@ -29,7 +29,7 @@ if __name__=='__main__':
     ca_rmsd = CA_rmsd(relax.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(relax.pose, input_pose)
 
-    pose.dump_pdb(output_prefix + 'input.pdb')
-    with open(output_prefix + 'input.pdb', 'a') as f:
-        f.write('\nCA_RMSD {}'.format(ca_rmsd))
-        f.write('\nAllAtom_RMSD {}'.format(all_atom_rmsd))
+    pose.dump_pdb(output_prefix + 'input.pdb.gz')
+    with gzip.open(output_prefix + 'input.pdb', 'a') as f:
+        f.write('\nEXTRA_METRIC_CA_RMSD {}'.format(ca_rmsd))
+        f.write('\nEXTRA_METRIC_AllAtom_RMSD {}'.format(all_atom_rmsd))

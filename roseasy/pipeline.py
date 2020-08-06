@@ -676,7 +676,10 @@ class DesignWorkspace(BigJobWorkspace):
 
     @property
     def output_subdirs(self):
-        return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
+        if subdirs:
+            return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
+        else:
+            return [self.output_dir]
 
     def output_subdir(self, input_name):
         basename = os.path.basename(input_name[:-len('.pdb.gz')])

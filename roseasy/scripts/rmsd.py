@@ -23,7 +23,7 @@ def main():
 
     for root, dirs, files in os.walk(folder):
         for name in files:
-            if name.endswith('.pdb'):
+            if name.endswith('.pdb.gz'):
                 mobile = pose_from_file(os.path.join(root, name))
                 rmsd = CA_rmsd(mobile, target)
                 print(rmsd)

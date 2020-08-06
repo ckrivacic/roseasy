@@ -183,7 +183,9 @@ def read_and_calculate(workspace, pdb_paths):
         # Read the PDB file, which we are assuming is gzipped.
 
         try:
-            #with gzip.open(path) as file:
+            with gzip.open(path) as file:
+                lines = file.readlines()
+        except:
             with open(path, 'r') as file:
                 lines = file.readlines()
         except IOError:
