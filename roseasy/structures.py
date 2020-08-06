@@ -186,11 +186,12 @@ def read_and_calculate(workspace, pdb_paths):
             with gzip.open(path) as file:
                 lines = file.readlines()
         except:
-            with open(path, 'r') as file:
-                lines = file.readlines()
-        except IOError:
-            print("\nFailed to read '{}'".format(path))
-            continue
+            try:
+                with open(path, 'r') as file:
+                    lines = file.readlines()
+            except IOError:
+                print("\nFailed to read '{}'".format(path))
+                continue
 
         if not lines:
             print("\n{} is empty".format(path))
