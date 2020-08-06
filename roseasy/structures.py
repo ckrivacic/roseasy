@@ -694,6 +694,8 @@ Did you mean:
         workspace.clear_inputs()
 
     predecessor = workspace.predecessor
+    if predecessor == workspace.input_pdb:
+        raise("Cannot pick designs for initial step.")
     metrics = []
     metadata = {}
 

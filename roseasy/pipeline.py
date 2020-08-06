@@ -676,7 +676,7 @@ class DesignWorkspace(BigJobWorkspace):
 
     @property
     def output_subdirs(self):
-        if subdirs:
+        if self.subdirs:
             return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
         else:
             return [self.output_dir]
