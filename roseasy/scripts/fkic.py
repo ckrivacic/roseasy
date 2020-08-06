@@ -37,6 +37,6 @@ if __name__=="__main__":
     if not os.path.exists(workspace.output_prefix(job_info)):
         os.mkdir(workspace.output_prefix(job_info))
     pose.dump_pdb(out)
-    with open(out, 'a') as f:
+    with open(out, 'at') as f:
         f.write('\nEXTRA_METRIC_CA_RMSD {}'.format(ca_rmsd))
         f.write('\nEXTRA_METRIC_AllAtom_RMSD {}'.format(all_atom_rmsd))

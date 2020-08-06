@@ -30,6 +30,6 @@ if __name__=='__main__':
     all_atom_rmsd = all_atom_rmsd(relax.pose, input_pose)
 
     pose.dump_pdb(output_prefix + 'input.pdb.gz')
-    with gzip.open(output_prefix + 'input.pdb', 'a') as f:
+    with gzip.open(output_prefix + 'input.pdb.gz', 'at') as f:
         f.write('\nEXTRA_METRIC_CA_RMSD {}'.format(ca_rmsd))
         f.write('\nEXTRA_METRIC_AllAtom_RMSD {}'.format(all_atom_rmsd))
