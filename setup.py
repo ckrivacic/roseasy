@@ -17,9 +17,8 @@ setuptools.setup(
     description="Rosetta simulations and analysis",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/pypa/sampleproject",
+    url="https://github.com/ckrivacic/roseasy",
     packages=setuptools.find_packages(),
-    #packages=find_namespace_packages(include=['roseasy.*']),
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
@@ -37,6 +36,7 @@ setuptools.setup(
             define_command('plot_funnels'),
             define_command('generate_fragments'),
             define_command('setup_workspace'),
+            define_command('pick_designs_to_validate'),
             ],
         }
 )
