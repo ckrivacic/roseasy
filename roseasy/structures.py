@@ -697,7 +697,7 @@ Did you mean:
     metrics = []
     metadata = {}
 
-    for input_dir in predecessor.output_subdirs:
+    for input_dir in pipeline.workspace_from_dir(predecessor).output_subdirs:
         submetrics, submetadata = load(
                 input_dir,
                 use_cache=use_cache,
