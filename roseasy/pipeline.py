@@ -622,8 +622,8 @@ class RestrainedModels(BigJobWorkspace, WithFragmentLibs):
 
 class DesignWorkspace(BigJobWorkspace):
 
-    def __init__(self, root, step):
-        BigJobWorkspace.__init__(self, root, subdirs=False)
+    def __init__(self, root, step, subdirs=False):
+        BigJobWorkspace.__init__(self, root)
         self._step = int(step)
         self._subdirs = subdirs
 
