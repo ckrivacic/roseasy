@@ -71,7 +71,8 @@ Tuning:
     have very similar scores across all the metrics being considered.
 """
 
-from klab import docopt, scripting
+from klab import scripting
+import docopt
 from .. import pipeline, structures
 from pprint import pprint
 
@@ -89,6 +90,7 @@ def main():
         args['--dry-run'] = False
     if '--keep-dups' not in args:
         args['--keep-dups'] = False
+    print(args['--keep-dups'])
 
     workspace = pipeline.ValidationWorkspace(root, step)
     workspace.check_paths()

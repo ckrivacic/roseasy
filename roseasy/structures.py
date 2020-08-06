@@ -808,7 +808,7 @@ correct the 'dir' field for any metrics necessary.""")
     if not keep_dups:
         groups = metrics.groupby('sequence', group_keys=False)
         metrics = groups.\
-                apply(lambda df: df.ix[df.total_score.idxmin()]).\
+                apply(lambda df: df.iloc[df.total_score.idxmin()]).\
                 reset_index(drop=True)
         print(status.update(metrics, 'minus duplicate sequences'))
 
@@ -938,7 +938,7 @@ def find_pareto_front(metrics, metadata, columns, depth=1, epsilon=None, progres
         return metrics
 
     # https://github.com/matthewjwoodruff/pareto.py
-    import pareto
+    from roseasy.utils import pareto
 
     indices_from_cols = lambda xs: [metrics.columns.get_loc(x) for x in xs]
     percentile = lambda x, q: metrics[x].quantile(q/100)
@@ -984,6 +984,8 @@ def find_pareto_front(metrics, metadata, columns, depth=1, epsilon=None, progres
 
             candidates = [labeled_metrics[too_close == False]]
 
+        if len(maximize_indices) == 0:
+            maximize_indices = None
         front = pareto.eps_sort(
                 candidates, column_indices, epsilons, maximize=maximize_indices)
 
