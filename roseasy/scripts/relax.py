@@ -19,6 +19,10 @@ if __name__=='__main__':
     pdbpath = workspace.input_pdb_path
     pose = pose_from_file(workspace.input_pdb_path)
     relax = r.Relax()
+
+    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
+            'external', 'DAlphaBall', 'DAlphaBall.gcc')
+    relax.add_init_arg('-holes:dalphaball {}'.format(dalphaball_path))
     if test_run:
         relax.rounds = 1
     relax.pose = pose

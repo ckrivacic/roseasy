@@ -22,6 +22,9 @@ if __name__=="__main__":
     lm.config = 'fkic'
     lm.fragments_flags = workspace.fragments_flags(pdbpath)
     lm.loops_from_file(workspace.loops_path)
+    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
+            'external', 'DAlphaBall', 'DAlphaBall.gcc')
+    lm.add_init_arg('-holes:dalphaball {}'.format(dalphaball_path))
     if test_run:
         lm.mover.centroid_stage().mark_as_test_run()
         lm.mover.fullatom_stage().mark_as_test_run()
