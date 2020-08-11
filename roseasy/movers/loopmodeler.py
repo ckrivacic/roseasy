@@ -39,9 +39,14 @@ class LoopModeler(Mover):
     def config(self):
         return self._config
 
+    def mark_as_test_run(self):
+        self.mover.centroid_stage().mark_as_test_run()
+        self.mover.fullatom_stage().mark_as_test_run()
+
     @config.setter
     def config(self, config):
         self._config = config
+        self.configure()
 
     @property
     def fa_temp_cycles(self):
