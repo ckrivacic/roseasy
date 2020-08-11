@@ -5,3 +5,4 @@ roseasy_codykrivacic.egg-info/*
 *.bak
 roseasy_codykrivacic.egg-info/PKG-INFO
 roseasy_codykrivacic.egg-info/SOURCES.txt
+*.swp

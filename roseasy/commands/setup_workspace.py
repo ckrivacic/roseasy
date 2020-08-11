@@ -175,10 +175,12 @@ Installing default scripts."""
     
     @staticmethod
     def install(workspace):
-        script_dir = os.path.join(os.path.dirname(__file__), '..', 'scripts')
+        script_dir = os.path.join(os.path.dirname(__file__), '..',
+                'standard_params')
         python = glob.glob(script_dir + '/*.py')
         yaml = glob.glob(script_dir + '/*.yml')
-        for script in python + yaml:
+        wts = glob.glob(script_dir + '/*.wts')
+        for script in python + yaml + wts:
             script_path = os.path.join(script_dir, script)
             workspace_path = os.path.join(workspace.standard_params_dir,
                     os.path.basename(script))

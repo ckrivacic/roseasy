@@ -190,13 +190,20 @@ def generate_loops_from_range(start, end, cut=None):
     return loops
 
 
-def generate_loop_from_range(start, end, cut=None):
+def generate_loop_from_range(start, end, cut=None, skip=0.0,
+        extended=False):
     '''Create a loops object from a start and finish position.'''
-    loop = rosetta.protocols.loops.Loop(start, end)
-    if cut:
-        loop.set_cut(cut)
-    else:
-        loop.set_cut(start + ((end - start)//2))
+    try:
+        # Can only set skip rate in constructor.
+        loop = rosetta.protocols.loops.Loop(start, end, cut, skip, extended)
+    except:
+        loop = rosetta.protocols.loops.Loop(start, end)
+        if cut:
+            loop.set_cut(cut)
+        else:
+            loop.set_cut(start + ((end - start)//2))
+
+        loop.set_extended(extended)
     return loop
 
 

@@ -34,7 +34,17 @@ def parse_loops(path):
             start = int(args[1])
             end = int(args[2])
             cut = int(args[3])
-            loop = generate_loop_from_range(start, end, cut=cut)
+            if len(args) > 3:
+                skip = float(args[4])
+                if len(args) > 4:
+                    extended = bool(int(args[5]))
+                else:
+                    extended = False
+            else:
+                skip = 0.0
+                extended = False
+            loop = generate_loop_from_range(start, end, cut=cut,
+                    skip=skip, extended=extended)
             loops.add_loop(loop)
 
     return loops
