@@ -12,7 +12,7 @@ the design, each of which is related to a cluster job.
 import os, re, glob, json, pickle
 from klab import scripting
 from pprint import pprint
-from roseasy.scripts import *
+from roseasy.standard_params import *
 
 class Workspace(object):
     """

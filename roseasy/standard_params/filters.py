@@ -41,8 +41,8 @@ def get_filters(workspace, job_id='0000', score_fragments=False,
         sort_by="FragmentCrmsd"
         threshold="9999" 
         direction="-"
-        start_res="{largest_loop_start }"
-        end_res="{largest_loop_end }"
+        start_res="{largest_loop_start}"
+        end_res="{largest_loop_end}"
         compute="maximum"
         outputs_folder="{seqprof_dir}"
         outputs_name="{job_id}" 
@@ -62,7 +62,7 @@ def get_filters(workspace, job_id='0000', score_fragments=False,
             largest_loop_end=workspace.largest_loop.end,
             seqprof_dir=workspace.seqprof_dir, job_id=job_id,
             fragment_weights_path=workspace.fragment_weights_path,
-            vall_path=workspace.vall_path(test_run))
+            vall_path=workspace.rosetta_vall_path(test_run))
 
     filters = [buns, packstat, prepro, exposed_hydrophobics]
     filter_objs = []
