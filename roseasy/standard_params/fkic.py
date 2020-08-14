@@ -2,8 +2,10 @@ from pyrosetta import init
 from pyrosetta import pose_from_file
 from pyrosetta.rosetta.core.scoring import CA_rmsd
 from pyrosetta.rosetta.core.scoring import all_atom_rmsd
+from pyrosetta.rosetta.core.pose import setPoseExtraScore
 from roseasy import pipeline
 from roseasy import big_jobs
+from roseasy.standard_params import filters
 import os, sys, subprocess
 
 
@@ -37,6 +39,14 @@ if __name__=="__main__":
 
     input_name = os.path.basename(workspace.input_path(job_info)).split('.')[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
+
+    filters = filters.get_filters(workspace, score_fragments=True,
+            test_run=test_run)
+
+    for f in filters:
+        fname = 'EXTRA_METRIC_' + f.get_user_defined_name()
+        score = f.report_sm(pose)
+        setPoseExtraScore(pose, fname, score)
     if not os.path.exists(workspace.output_prefix(job_info)):
         os.mkdir(workspace.output_prefix(job_info))
     pose.dump_pdb(out)
