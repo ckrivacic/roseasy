@@ -34,6 +34,9 @@ def get_filters(workspace, job_id='0000', score_fragments=False,
       />
       '''
 
+    print('SEQPROF DIR')
+    print(workspace.seqprof_dir)
+    print(workspace.rosetta_vall_path(test_run))
     fsf = '''
       <FragmentScoreFilter
         name="Max 9-Residue Fragment Crmsd[[-]]"
@@ -48,11 +51,11 @@ def get_filters(workspace, job_id='0000', score_fragments=False,
         outputs_name="{job_id}" 
         csblast="/wynton/home/kortemme/krivacic/software/fragments/csblast-2.2.3_linux64"  
         blast_pgp="/wynton/home/kortemme/krivacic/software/fragments/blast/blast-2.2.26/bin/blastpgp" 
-        placeholder_seqs="/wynton/home/kortemme/krivacic/software/fragments/derived_data/pdb_seqres.txt"
         psipred="/wynton/home/kortemme/krivacic/software/fragments/psipred/runpsipred_single" 
         sparks-x="/wynton/home/kortemme/krivacic/software/fragments/sparks-x" 
         sparks-x_query="/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh" 
         frags_scoring_config="{fragment_weights_path}"
+        placeholder_seqs="/wynton/home/database/blast/blastdb/pdbaa"
         n_frags="200"
         n_candidates="1000" 
         fragment_size="9"
@@ -63,6 +66,7 @@ def get_filters(workspace, job_id='0000', score_fragments=False,
             seqprof_dir=workspace.seqprof_dir, job_id=job_id,
             fragment_weights_path=workspace.fragment_weights_path,
             vall_path=workspace.rosetta_vall_path(test_run))
+        #placeholder_seqs="/wynton/home/kortemme/krivacic/software/fragments/derived_data/pdb_seqres.txt"
 
     filters = [buns, packstat, prepro, exposed_hydrophobics]
     filter_objs = []
