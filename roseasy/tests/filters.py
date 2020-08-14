@@ -11,7 +11,7 @@ dalphaball_path = os.path.join(ws.rosetta_dir, 'source',
         'external', 'DAlphaBall', 'DAlphaBall.gcc')
 init('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path,
     ws.input_pdb_path))
-pose =  pose_from_file('test_inputs/4lhx_chainA.pdb')
+pose =  pose_from_file(ws.input_pdb_path)
 
 filters = filters.get_filters(ws, score_fragments=True, test_run=True)
 for f in filters:
