@@ -12,20 +12,20 @@ def get_workspace(root_dir, step):
 
 if __name__=='__main__':
     workspace, job_info = big_jobs.initiate()
-    output_prefix = '{0}/{1}_{2:06d}_'.format(workspace.output_dir,
-            job_info['job_id'], job_info['task_id'])
     test_run = job_info.get('test_run', False)
     init()
-    pdbpath = workspace.input_pdb_path
+    pdbpath = workspace.input_path(job_info)
     pose = pose_from_file(workspace.input_pdb_path)
     relax = r.Relax()
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlphaBall', 'DAlphaBall.gcc')
-    relax.add_init_arg('-holes:dalphaball {}'.format(dalphaball_path))
+    relax.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     if test_run:
         relax.rounds = 1
     relax.pose = pose
+    # Warning: This is an all-atom movemap. Constrain to input coords if
+    # you don't want things to move around a lot.
     relax.setup_default_movemap()
     relax.apply()
 
@@ -33,7 +33,13 @@ if __name__=='__main__':
     ca_rmsd = CA_rmsd(relax.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(relax.pose, input_pose)
 
-    pose.dump_pdb(output_prefix + 'input.pdb.gz')
-    with gzip.open(output_prefix + 'input.pdb.gz', 'at') as f:
-        f.write('\nEXTRA_METRIC_CA_RMSD {}'.format(ca_rmsd))
-        f.write('\nEXTRA_METRIC_AllAtom_RMSD {}'.format(all_atom_rmsd))
+    filters = FilterContainer(workspace, relax.pose, 
+            task_id=job_info['task_id'], score_fragments=True,
+            test_run=test_run)
+    filters.run_filters()
+    out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
+
+    setPoseExtraScore(lm.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
+    setPoseExtraScore(lm.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
+
+    pose.dump_pdb(out)
