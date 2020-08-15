@@ -32,9 +32,10 @@ if __name__=='__main__':
     input_pose = pose_from_file(workspace.input_pdb_path)
     ca_rmsd = CA_rmsd(relax.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(relax.pose, input_pose)
+    score_fragments = os.path.exists(workspace.loops_path)
 
     filters = FilterContainer(workspace, relax.pose, 
-            task_id=job_info['task_id'], score_fragments=True,
+            task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
