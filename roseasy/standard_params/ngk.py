@@ -21,12 +21,12 @@ if __name__=="__main__":
     pdbpath = workspace.input_path(job_info)
     pose = pose_from_file(pdbpath)
     lm = LoopModeler()
-    lm.config = 'fkic'
+    lm.config = 'ngk'
     lm.fragments_flags = workspace.fragments_flags(pdbpath)
     lm.loops_from_file(workspace.loops_path)
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlphaBall', 'DAlphaBall.gcc')
-    lm.add_init_arg('-holes:dalphaball {}'.format(dalphaball_path))
+    #lm.add_init_arg('-holes:dalphaball {}'.format(dalphaball_path))
     lm.add_init_arg('-in:file:s {}'.format(pdbpath))
     if test_run:
         lm.mover.centroid_stage().mark_as_test_run()
@@ -41,8 +41,8 @@ if __name__=="__main__":
     input_name = os.path.basename(workspace.input_path(job_info)).split('.')[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
 
-    filters = FilterContainer(workspace, lm.pose,
-            task_id=job_info['task_id']score_fragments=True,
+    filters = FilterContainer(workspace, lm.pose, 
+            task_id=job_info['task_id'], score_fragments=True,
             test_run=test_run)
     filters.run_filters()
 
