@@ -149,7 +149,7 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
 
     def rosetta_vall_path(self, test_run=False):
         return os.path.join(self.rosetta_database_path, 'sampling',
-                'small.vall.gz' if test_run else 'vall.jul19.2011.gz')
+                'small.vall.gz' if test_run else 'vall.jul19.2011')
 
     def rosetta_subpath(self, *subpaths):
         return os.path.join(self.rosetta_dir, *subpaths)
