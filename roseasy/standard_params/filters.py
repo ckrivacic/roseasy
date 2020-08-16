@@ -90,7 +90,6 @@ class FilterContainer(object):
 
     def run_filter(self, f):
         if f.name() == 'FragmentScoreFilter':
-            print("YEPYEPEYP")
             # FragmentScoreFilter can be finicky and sometimes requires you
             # to run sparks-x outside of C++. I have no idea why, just roll
             # with it.
@@ -100,7 +99,6 @@ class FilterContainer(object):
                 score = f.report_sm(self.pose)
             except:
                 import subprocess
-                print('DOING AN EXCEPT OK')
                 # Now get rid of the empty .fasta.pssm file it creates
                 # and try again in Python
                 rempath = os.path.join(self.workspace.seqprof_dir,
@@ -111,24 +109,14 @@ class FilterContainer(object):
                 print('TASK: {}'.format(self.task_id))
                 print('FILES IN CWD:')
                 print(os.listdir(os.getcwd()))
-                #os.system('export SPARKSXDIR=/wynton/home/kortemme/krivacic/software/fragments/sparks-x && /wynton/home/kortemme/krivacic/software/fragments/sparks-x-/bin/buildinp_query.sh {}.fasta'.format(self.task_id))
-                #cmd = ['export',
-                        #'SPARKSXDIR=/wynton/home/kortemme/krivacic/software/fragments/sparks-x',
-                        #'&&',
                 cmd = [
                         '/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh',
                         '{}.fasta'.format(self.task_id),
                         ]
 
-                #process = subprocess.Popen(cmd)
                 process = subprocess.run(cmd,
                         env=dict(SPARKSXDIR='/wynton/home/kortemme/krivacic/software/fragments/sparks-x',
                             **os.environ))
-                        #stdout=subprocess.PIPE,
-                        #stderr=subprocess.PIPE)
-                #stdout, stderr = process.communicate
-                #print(stdout)
-                #print(stderr)
                 score = f.report_sm(self.pose)
         else:
             score = f.report_sm(self.pose)
