@@ -133,6 +133,7 @@ class LoopModeler(Mover):
         arguments for Rosetta to be used with Init. Recommended that you
         use a workspace to set this flag.'''
         self._fragments_flags = flags
+        init(' '.join(self._fragments_flags))
     
     @property
     def mover(self):

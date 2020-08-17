@@ -21,8 +21,8 @@ if __name__=="__main__":
     pdbpath = workspace.input_path(job_info)
     pose = pose_from_file(pdbpath)
     lm = LoopModeler()
-    lm.config = 'fkic'
     lm.fragments_flags = workspace.fragments_flags(pdbpath)
+    lm.config = 'fkic'
     lm.loops_from_file(workspace.loops_path)
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlphaBall', 'DAlphaBall.gcc')
