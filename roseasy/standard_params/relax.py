@@ -44,7 +44,7 @@ if __name__=='__main__':
     input_name = pdbpath.split(".")[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
 
-    setPoseExtraScore(lm.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
-    setPoseExtraScore(lm.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
+    setPoseExtraScore(relax.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
+    setPoseExtraScore(relax.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
 
     pose.dump_pdb(out)
