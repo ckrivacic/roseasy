@@ -1,4 +1,5 @@
 from pyrosetta import init
+from pyrosetta.rosetta.core.pose import setPoseExtraScore
 from pyrosetta import pose_from_file
 from pyrosetta.rosetta.core.scoring import CA_rmsd
 from pyrosetta.rosetta.core.scoring import all_atom_rmsd
