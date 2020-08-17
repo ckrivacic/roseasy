@@ -192,7 +192,7 @@ class LoopModeler(Mover):
             self.fragments_flags
             init_args = ' '.join(self.init_args) + ' ' + ' '.join(self.fragments_flags)
             print('Running init with args {}'.format(init_args))
-            init(' '.join(self.init_args) + ' '.join(self.fragments_flags))
+            init(init_args)
         else:
             init(' '.join(self.init_args))
         self.configure()
