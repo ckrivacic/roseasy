@@ -39,6 +39,8 @@ if __name__=='__main__':
             task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
+
+    input_name = pdbpath.split(".")[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
 
     setPoseExtraScore(lm.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
