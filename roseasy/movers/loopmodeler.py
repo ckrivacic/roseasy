@@ -190,7 +190,7 @@ class LoopModeler(Mover):
             # constructed, otherwise it won't have the attribute and
             # will throw an error.
             self.fragments_flags
-            init_args = ' '.join(self.init_args) + ' '.join(self.fragments_flags)
+            init_args = ' '.join(self.init_args) + ' ' + ' '.join(self.fragments_flags)
             print('Running init with args {}'.format(init_args))
             init(' '.join(self.init_args) + ' '.join(self.fragments_flags))
         else:
