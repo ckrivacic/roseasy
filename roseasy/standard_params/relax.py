@@ -41,7 +41,7 @@ if __name__=='__main__':
             test_run=test_run)
     filters.run_filters()
 
-    input_name = pdbpath.split(".")[0]
+    input_name = os.path.basename(pdbpath).split(".")[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
 
     setPoseExtraScore(relax.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
