@@ -20,6 +20,7 @@ from roseasy import pipeline
 @scripting.catch_and_print_errors()
 def main():
     args = docopt.docopt(__doc__)
-    pipeline.push_data(args['<directory>'], args['--remote'], args['--dry-run'])
+    pipeline.push_data(args['<directory>'], remote_url=args['--remote'],
+            dry_run=args['--dry-run'])
 
 

@@ -711,7 +711,10 @@ Did you mean:
         metrics.append(submetrics)
         metadata.update(submetadata)
 
+    print(metrics)
+    print('---------------------------')
     metrics = pd.concat(metrics, ignore_index=True)
+    print(metrics)
 
     # Check to make sure we know about all the metrics we were given, and 
     # produce a helpful error if we find something unexpected (e.g. maybe a 
