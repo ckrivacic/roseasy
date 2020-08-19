@@ -730,7 +730,7 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def focus_dir(self):
         assert self.step > 0
         prefix = self.step
-        sbdir = '{0:02}_{1}'.format(prefix, self.focus_name)
+        subdir = '{0:02}_{1}'.format(prefix, self.focus_name)
         return os.path.join(self.root_dir, subdir)
 
     @property
