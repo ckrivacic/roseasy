@@ -714,7 +714,7 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     @property
     def predecessor(self):
         if self.step == 1:
-            return workspace.input_pdb_path
+            return self.input_pdb_path
         else:
             return predecessor_from_dir(self, self.step)
 
