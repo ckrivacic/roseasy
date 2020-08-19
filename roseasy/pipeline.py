@@ -662,11 +662,11 @@ class DesignWorkspace(BigJobWorkspace):
 
     @property
     def protocol_path(self):
-        return self.find_path('relax.py')
+        return self.find_path('run.py')
 
     @property
     def script_path(self):
-        return os.path.join(self.focus_dir, 'relax.py')
+        return os.path.join(self.focus_dir, 'run.py')
     def input_path(self, job_info):
         if self.step > 1:
             bb_models = job_info['inputs']
