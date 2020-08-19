@@ -13,6 +13,7 @@ from pyrosetta.rosetta.core.scoring import CA_rmsd
 from pyrosetta.rosetta.core.scoring import all_atom_rmsd
 from pyrosetta import pose_from_file
 from pyrosetta import init
+from roseasy import workspace
 import os
 
 def main():
@@ -20,6 +21,11 @@ def main():
     folder = args['<folder>']
     init()
     target = pose_from_file(args['<input>'])
+    workspace = pipeline.workspace_from_dir(folder)
+    loop = workspace.largest_loop
+    residues = []
+    for i in range(int(loop.start), int(loop.end) + 1):
+        residues.append(i)
 
     for root, dirs, files in os.walk(folder):
         for name in files:

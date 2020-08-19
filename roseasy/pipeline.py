@@ -730,7 +730,7 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def focus_dir(self):
         assert self.step > 0
         prefix = self.step
-        subdir = '{0:02}_{1}'.format(prefix, self.focus_name)
+        sbdir = '{0:02}_{1}'.format(prefix, self.focus_name)
         return os.path.join(self.root_dir, subdir)
 
     @property
@@ -749,7 +749,10 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
             return self.input_pdb_path
     @property
     def output_subdirs(self):
-        return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
+        if self.step > 1:
+            return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
+        else:
+            return [self.output_dir]
 
     def output_subdir(self, input_name):
         basename = os.path.basename(input_name[:-len('.pdb.gz')])
