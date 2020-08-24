@@ -82,7 +82,7 @@ def main():
             ]
     nstruct = len(inputs) * int(args['--nstruct'])
 
-    if workspace.subdirs():
+    if workspace.subdirs:
         for inp in inputs:
             subdir = workspace.output_subdir(inp)
             scripting.clear_directory(subdir)
