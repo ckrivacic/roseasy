@@ -740,11 +740,11 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
 
     @property
     def protocol_path(self):
-            return self.find_path('fkic.py')
+            return self.find_path('run.py')
 
     @property
     def script_path(self):
-        return os.path.join(self.focus_dir, 'fkic.py')
+        return os.path.join(self.focus_dir, 'run.py')
     def input_path(self, job_info):
         if self.step > 1:
             models = job_info['inputs']
