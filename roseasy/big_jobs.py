@@ -21,7 +21,6 @@ def submit(script, workspace, **params):
     max_memory = params.get('max_memory', '1G')
 
     if test_run:
-        nstruct = 10
         max_runtime = '0:30:00'
 
     if nstruct is None:
