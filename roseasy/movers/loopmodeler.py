@@ -15,13 +15,16 @@ class LoopModeler(Mover):
         self.mover = rLoopModeler()
         self.edited_fa_cycles = False
         self.edited_cen_cycles = False
+        self.perturb_seq=True
+        self.seqpose_no_mutate=''
         super().__init__()
 
     def configure(self):
         if self.config=='ngk':
             self.mover.setup_kic_config()
         elif self.config=='lhk':
-            self.mover.setup_loophash_kic_config()
+            self.mover.setup_loophash_kic_config(self.perturb_seq,
+                    self.seqpose_no_mutate)
         elif self.config=='fkic':
             '''
             Commented out for now b/c I don't think I want to go with
