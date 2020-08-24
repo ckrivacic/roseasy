@@ -185,7 +185,7 @@ def generate_loops_from_range(start, end, cut=None):
         loop.set_cut(cut)
     else:
         loop.set_cut(start + ((end - start)//2))
-    loops = rosetta.protocol.loops.Loops()
+    loops = rosetta.protocols.loops.Loops()
     loops.add_loop(loop)
     return loops
 
