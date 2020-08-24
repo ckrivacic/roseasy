@@ -77,14 +77,25 @@ def main():
     if args['--clear'] or args['--test-run']:
         workspace.clear_outputs()
 
+    inputs = [
+            x for x in workspace.unclaimed_inputs
+            ]
+    nstruct = len(inputs) * int(args['--nstruct'])
+
+    if workspace.subdirs():
+        for inp in inputs:
+            subdir = workspace.output_subdir(inp)
+            scripting.clear_directory(subdir)
+
     # Submit the job
 
     big_jobs.submit(
             workspace.script_path, workspace,
-            nstruct=args['--nstruct'],
+            nstruct=nstruct,
             max_runtime=args['--max-runtime'],
             max_memory=args['--max-memory'],
-            test_run=args['--test-run']
+            test_run=args['--test-run'],
+            inputs=inputs
             )
 
 if __name__=='__main__':

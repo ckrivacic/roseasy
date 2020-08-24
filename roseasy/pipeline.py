@@ -704,12 +704,17 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def __init__(self, root, step):
         BigJobWorkspace.__init__(self, root)
         self._step = int(step)
+        self._subdirs = True
 
     @staticmethod
     def from_directory(directory):
         root = os.path.join(directory, '..')
         step = int(os.path.basename(directory).split('_')[0])
         return ValidationWorkspace(root, step)
+
+    @property
+    def subdirs(self):
+        return self._subdirs
 
     @property
     def predecessor(self):
