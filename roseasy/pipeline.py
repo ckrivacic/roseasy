@@ -748,7 +748,7 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def input_path(self, job_info):
         if self.step > 1:
             models = job_info['inputs']
-            model = models[job_info['task_id'] % len(bb_models)]
+            model = models[job_info['task_id'] % len(models)]
             return os.path.join(self.input_dir, model)
         else:
             return self.input_pdb_path
