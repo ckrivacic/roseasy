@@ -80,10 +80,16 @@ def main():
     inputs = [
             x for x in workspace.unclaimed_inputs
             ]
-    if args['--test-run']:
-        nstruct = len(inputs) * 10
+
+    if step==1:
+        num_inputs = 1
     else:
-        nstruct = len(inputs) * int(args['--nstruct'])
+        num_inputs = len(inputs)
+
+    if args['--test-run']:
+        nstruct = num_inputs * 10
+    else:
+        nstruct = num_inputs * int(args['--nstruct'])
 
     if workspace.subdirs:
         for inp in inputs:
