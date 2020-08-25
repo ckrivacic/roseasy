@@ -44,44 +44,44 @@ class FilterContainer(object):
           />
           '''
 
-        fsf = '''
-          <FragmentScoreFilter
-            name="Avg. 9-Residue Fragment Crmsd[[-]]"
-            scoretype="FragmentCrmsd"
-            sort_by="FragmentCrmsd"
-            threshold="9999" 
-            direction="-"
-            start_res="{largest_loop_start}"
-            end_res="{largest_loop_end}"
-            compute="average"
-            outputs_folder="{seqprof_dir}"
-            outputs_name="{task_id}" 
-            csblast="/wynton/home/kortemme/krivacic/software/fragments/csblast-2.2.3_linux64"  
-            blast_pgp="/wynton/home/kortemme/krivacic/software/fragments/blast/blast-2.2.26/bin/blastpgp" 
-            psipred="/wynton/home/kortemme/krivacic/software/fragments/psipred/runpsipred_single" 
-            sparks-x="/wynton/home/kortemme/krivacic/software/fragments/sparks-x" 
-            sparks-x_query="/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh" 
-            frags_scoring_config="{fragment_weights_path}"
-            placeholder_seqs="/wynton/home/database/blast/blastdb/pdbaa"
-            print_to_pdb="false"
-            n_frags="200"
-            n_candidates="1000" 
-            fragment_size="9"
-            vall_path="{vall_path}"
-          />
-        '''.format(largest_loop_start=self.workspace.largest_loop.start,
-                largest_loop_end=self.workspace.largest_loop.end,
-                seqprof_dir=self.workspace.seqprof_dir, task_id=self.task_id,
-                fragment_weights_path=self.workspace.fragment_weights_path,
-                vall_path=self.workspace.rosetta_vall_path(test_run))
-            #placeholder_seqs="/wynton/home/kortemme/krivacic/software/fragments/derived_data/pdb_seqres.txt"
-
         #filters = [buns, packstat, prepro, exposed_hydrophobics]
         filters = [packstat, prepro, exposed_hydrophobics]
         filter_objs = []
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
         if score_fragments:
+
+            fsf = '''
+              <FragmentScoreFilter
+                name="Avg. 9-Residue Fragment Crmsd[[-]]"
+                scoretype="FragmentCrmsd"
+                sort_by="FragmentCrmsd"
+                threshold="9999" 
+                direction="-"
+                start_res="{largest_loop_start}"
+                end_res="{largest_loop_end}"
+                compute="average"
+                outputs_folder="{seqprof_dir}"
+                outputs_name="{task_id}" 
+                csblast="/wynton/home/kortemme/krivacic/software/fragments/csblast-2.2.3_linux64"  
+                blast_pgp="/wynton/home/kortemme/krivacic/software/fragments/blast/blast-2.2.26/bin/blastpgp" 
+                psipred="/wynton/home/kortemme/krivacic/software/fragments/psipred/runpsipred_single" 
+                sparks-x="/wynton/home/kortemme/krivacic/software/fragments/sparks-x" 
+                sparks-x_query="/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh" 
+                frags_scoring_config="{fragment_weights_path}"
+                placeholder_seqs="/wynton/home/database/blast/blastdb/pdbaa"
+                print_to_pdb="false"
+                n_frags="200"
+                n_candidates="1000" 
+                fragment_size="9"
+                vall_path="{vall_path}"
+              />
+            '''.format(largest_loop_start=self.workspace.largest_loop.start,
+                    largest_loop_end=self.workspace.largest_loop.end,
+                    seqprof_dir=self.workspace.seqprof_dir, task_id=self.task_id,
+                    fragment_weights_path=self.workspace.fragment_weights_path,
+                    vall_path=self.workspace.rosetta_vall_path(test_run))
+                #placeholder_seqs="/wynton/home/kortemme/krivacic/software/fragments/derived_data/pdb_seqres.txt"
             filter_objs.append(XmlObjects.static_get_filter(fsf))
 
         return filter_objs
