@@ -28,6 +28,10 @@ Options:
     --test-run
         Do a test run
 
+    --make-dirs  
+        Just make the directories for the new workspace without
+        submitting any jobs.
+
 """
 
 from klab import scripting, cluster
@@ -70,6 +74,8 @@ def main():
     workspace.check_paths()
     workspace.check_rosetta()
     workspace.make_dirs()
+    if args['--make-dirs']:
+        sys.exit()
     # Copying the script to the focus directory helps track exactly what
     # we did at each step.
     shutil.copyfile(script, workspace.script_path)
