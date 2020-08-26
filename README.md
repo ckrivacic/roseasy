@@ -1,10 +1,6 @@
 The purpose of this repository will be to help track designs and make Rosetta 
 job submissions easier. 
 
-Ideally, you would be able to specify a protocol in a file somewhere and
-easily share it with others. You could then run that protocol by going
-"despl next" or whatever.
-
 
 INSTALLATION
 
