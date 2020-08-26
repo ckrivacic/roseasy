@@ -12,6 +12,10 @@ useful to add the capability to pass any number of folders as input.
 Usage:
     roseasy add_residues <file_or_folder> <residue_string> <pdb_position> [options]
 
+Options:
+    --chain [CH], -c [CH]:
+        Specify a chain for the insertion. Defaults to A.  [default: A]
+
 """
 
 import os, shutil, glob
@@ -26,6 +30,7 @@ def main():
     input_path = args['<file_or_folder>']
     resis = args['<residue_string>']
     position = int(args['<pdb_position>'])
+    chain = args['--chain']
 
     init()
 
@@ -36,12 +41,14 @@ def main():
             basename = os.path.basename(path)
             shutil.copyfile(path, os.path.join(bk_folder, basename))
             pose = pose_from_file(path)
-            add_residues.add_aas(pose, position, resis, pdbnum=True)
+            add_residues.add_aas(pose, position, resis, pdbnum=True,
+                    chain=chain)
             pose.dump_pdb(path)
 
     elif os.path.isfile(input_path):
         shutil.copyfile(input_path, input_path + '.bk')
         pose = pose_from_file(input_path)
-        add_residues.add_aas(pose, position, resis, pdbnum=True)
+        add_residues.add_aas(pose, position, resis, pdbnum=True,
+                chain=chain)
         pose.dump_pdb(input_path)
 
