@@ -6,3 +6,7 @@ roseasy_codykrivacic.egg-info/*
 roseasy_codykrivacic.egg-info/PKG-INFO
 roseasy_codykrivacic.egg-info/SOURCES.txt
 *.swp
+build
+build/*
+dist
+dist/*
