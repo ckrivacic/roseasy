@@ -100,19 +100,19 @@ klab (python3_compatibility branch)
   applicable to your usage, or provide one later.
 
 
-Cluster:  
+*Cluster:*  
 `roseasy setup test`
 
 
   On your local workstation, set up the remote workspace.
 
-Local:  
+*Local:*  
 `roseasy setup test -r`
 
 
   Now, on the cluster, run your first script:
 
-Cluster:  
+*Cluster:*  
 `roseasy submit test test/standard_params/relax.py`
 
 
@@ -120,7 +120,7 @@ Cluster:
   pull the data to your computer for analysis and to pick designs 
   for the next step, then push your changes to the cluster.
 
-Local:  
+*Local:*  
 `roseasy fetch test`  
 `roseasy pick 2 test/standard_params/picks.yml`  
 `roseasy push test`  
@@ -128,7 +128,7 @@ Local:
 
   Now you're ready to run the next step, in this example FKIC.
 
-Cluster:
+*Cluster:*
 
 `roseasy generate_fragments test/02`  
 (wait for fragment generation to finish)  
@@ -137,6 +137,6 @@ Cluster:
 
   Pull your decoys to your local workstation and view them in the GUI.
 
-Local:  
+*Local:*  
 `roseasy fetch test`  
 `roseasy plot test/02/outputs/*`  
