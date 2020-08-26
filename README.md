@@ -2,6 +2,16 @@ The purpose of this repository will be to help track designs and make Rosetta
 job submissions easier. 
 
 
+DEPENDENCIES
+matplotlib version 3.1.3
+pygobject
+pygtk
+pandas
+numpy
+docopt
+klab (python3_compatibility branch)
+
+
 INSTALLATION
 
 
