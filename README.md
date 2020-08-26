@@ -4,19 +4,13 @@ job submissions easier.
 
 DEPENDENCIES
 
-matplotlib version 3.1.3
-
-pygobject
-
-pygtk
-
-pandas
-
-numpy
-
-docopt
-
-klab (python3_compatibility branch)
+matplotlib version 3.1.3  
+pygobject  
+pygtk  
+pandas  
+numpy  
+docopt  
+klab (python3_compatibility branch)  
 
 
 INSTALLATION
@@ -26,7 +20,7 @@ git clone https://github.com/ckrivacic/roseasy.git
 
 python setup.py develop
 
-USAGE
+USAGE  
 
 roseasy <command> <arguents> [options]
 
@@ -35,7 +29,7 @@ roseasy <command> <arguents> [options]
   ambiguity.
 
 
-COMMANDS
+COMMANDS  
 
 setup_workspace <name> [-r] - 
 
