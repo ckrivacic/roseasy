@@ -7,7 +7,7 @@ easily share it with others. You could then run that protocol by going
 
 INSTALLATION
 git clone https://github.com/ckrivacic/roseasy.git
-python setup.py
+python setup.py develop
 
 USAGE
 roseasy <command> <arguents> [options]
@@ -53,7 +53,7 @@ add_residues <pdb file or folder> <residue_string> <pdb_position> -
   Defaults to chain A, pass the --chain option to specify a different 
   chain.
 
-pick_designs_to_validate - 
+pick_designs_to_validate <step> [<picks_file>] [options] - 
   Pick the designs that are at or near the Pareto front of the given metrics to
   validate in the next step. You may also specify thresholds that designs much pass 
   in order to be chosen for the next step. This will create the workspace for the 
@@ -66,3 +66,42 @@ fetch_data <workspace> -
 push_data <workspace> - 
   Push data from a "remote" workspace to the main workspace.
 
+plot <directory> [options] - 
+  Generates a GUI for viewing designs.
+
+EXAMPLE USAGE (basic)
+First, set up a workspace on the cluster. It will ask you for a path to your 
+Rosetta directory (the 'main' folder, rosetta/main in most installations), an 
+input PDB file, and your Python executable where PyRosetta is installed. You 
+will also be asked to provide a loop file, but you can ignore this if it is not 
+applicable to your usage, or provide one later.
+
+Cluster:
+roseasy setup test
+
+On your local workstation, set up the remote workspace.
+Local:
+roseasy setup test -r
+
+Now, on the cluster, run your first script:
+Cluster:
+roseasy submit test test/standard_params/relax.py
+
+When it's done running (check job status with the 'qstat' command), 
+pull the data to your computer for analysis and to pick designs 
+for the next step, then push your changes to the cluster.
+Local:
+roseasy fetch test
+roseasy pick 2 test/standard_params/picks.yml
+roseasy push test
+
+Now you're ready to run the next step, in this example FKIC.
+Cluster:
+roseasy generate_fragments test/02
+(wait for fragment generation to finish)
+roseasy submit 02 standard_params/fkic.py
+
+Pull your decoys to your local workstation and view them in the GUI.
+Local:
+roseasy fetch test
+roseasy plot test/02/outputs/*
