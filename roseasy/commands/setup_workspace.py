@@ -33,6 +33,9 @@ class PythonPath:
 Python path: Path to your python binary. 
     """
 
+    if 'ROSEASY_PYTHON' in os.environ:
+        setting_env_var = os.environ.get('ROSEASY_PYTHON')
+
     @staticmethod
     def install(workspace, python_path):
         python_path = ensure_path_exists(python_path)
@@ -42,11 +45,14 @@ Python path: Path to your python binary.
 class RosettaDir:
     prompt = "Path to rosetta: "
     description = """\
-Rosetta checkout: Path to the main directory of a Rosetta source code checkout.  
-This is the directory called 'main' in a normal rosetta checkout.  Rosetta is 
-used both locally and on the cluster, but the path you specify here probably 
-won't apply to both machines.  You can manually correct the path by changing 
-the symlink called 'rosetta' in the workspace directory."""
+    Rosetta checkout: Path to the main directory of a Rosetta source code checkout.  
+    This is the directory called 'main' in a normal rosetta checkout.  Rosetta is 
+    used both locally and on the cluster, but the path you specify here probably 
+    won't apply to both machines.  You can manually correct the path by changing 
+    the symlink called 'rosetta' in the workspace directory."""
+
+    if 'ROSETTA_DIR' in os.environ:
+        setting_env_var = os.environ.get('ROSETTA_DIR')
 
     @staticmethod
     def install(workspace, rosetta_dir):
@@ -283,8 +289,14 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
             installer.install(workspace)
             continue
 
+        # Check if an environment variable is defined for the installer
+        if hasattr(installer, 'setting_env_var'):
+            installer.install(workspace, installer.setting_env_var)
+            continue
+
         # Otherwise, print a description of the setting being installed and 
         # prompt the user for a value.
+
 
         print(installer.description)
         print()

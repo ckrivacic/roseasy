@@ -696,6 +696,7 @@ Did you mean:
         workspace.clear_inputs()
 
     predecessor = workspace.predecessor
+    print(predecessor)
     if predecessor == workspace.input_pdb_path:
         raise("Cannot pick designs for initial step.")
     metrics = []
@@ -712,7 +713,7 @@ Did you mean:
         )
         metrics.append(submetrics)
         metadata.update(submetadata)
-
+    print('Metrics', metrics)
     metrics = pd.concat(metrics, ignore_index=True)
 
     # Check to make sure we know about all the metrics we were given, and 
