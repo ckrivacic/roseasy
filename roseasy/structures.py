@@ -130,8 +130,10 @@ def read_and_calculate(workspace, pdb_paths):
     # For example, the validation runs don't use restraints but the restraint
     # distance is a very important metric for deciding which designs worked.
 
-    #restraints = parse_restraints(workspace.restraints_path)
-    restraints = []
+    if os.path.exists(workspace.restraints_path):
+        restraints = parse_restraints(workspace.restraints_path)
+    else:
+        restraints = []
 
     # Calculate score and distance metrics for each structure.
 
