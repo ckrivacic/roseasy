@@ -811,7 +811,7 @@ correct the 'dir' field for any metrics necessary.""")
     if not keep_dups:
         groups = metrics.groupby('sequence', group_keys=False)
         metrics = groups.\
-                apply(lambda df: df.iloc[df.total_score.idxmin()]).\
+                apply(lambda df: df.loc[df.total_score.idxmin()]).\
                 reset_index(drop=True)
         print(status.update(metrics, 'minus duplicate sequences'))
 
