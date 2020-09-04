@@ -24,22 +24,22 @@ if __name__=='__main__':
             'external', 'DAlphaBall', 'DAlphaBall.gcc')
     fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     if test_run:
-        relax.rounds = 1
-    relax.pose = pose
+        fd.rounds = 1
+    fd.pose = pose
     # Warning: This is an all-atom movemap. Constrain to input coords if
     # you don't want things to move around a lot.
     loop = workspace.largest_loop
     fd.task_factory_from_range(loop.start, loop.end)
     print(fd.movemap)
     print(fd.task_factory)
-    relax.apply()
+    fd.apply()
 
     input_pose = pose_from_file(workspace.input_pdb_path)
-    ca_rmsd = CA_rmsd(relax.pose, input_pose)
-    all_atom_rmsd = all_atom_rmsd(relax.pose, input_pose)
+    ca_rmsd = CA_rmsd(fd.pose, input_pose)
+    all_atom_rmsd = all_atom_rmsd(fd.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)
 
-    filters = FilterContainer(workspace, relax.pose, 
+    filters = FilterContainer(workspace, fd.pose,
             task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
@@ -47,7 +47,7 @@ if __name__=='__main__':
     input_name = os.path.basename(pdbpath).split(".")[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
 
-    setPoseExtraScore(relax.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
-    setPoseExtraScore(relax.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
+    setPoseExtraScore(fd.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
+    setPoseExtraScore(fd.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
 
     pose.dump_pdb(out)
