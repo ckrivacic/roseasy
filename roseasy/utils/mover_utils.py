@@ -53,7 +53,7 @@ def setup_restrained_sfxn(restraint_types, weights):
 
 def setup_task_factory(pose, designable_residue_selector,
         repackable_residue_selector,
-        motif_dict=None,
+        motif_dict={},
         extra_rotamers=True, limit_aro_chi2=True, layered_design=True,
         designable_aa_types=None, prepare_focus=False):
     """
