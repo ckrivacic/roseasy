@@ -38,7 +38,7 @@ class FastDesign(Mover):
         focus = [i for i in range(start, end+1)]
         design_residues, repack_residues =\
                 choose_designable_residues(self.pose, focus)
-        task_factory = setup_task_factory(design_residues,
+        task_factory = setup_task_factory(self.pose, design_residues,
                 repack_residues)
         movemap = setup_movemap_from_resselectors(design_residues, repack_residues)
         self.movemap = movemap

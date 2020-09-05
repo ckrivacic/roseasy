@@ -105,7 +105,7 @@ class Mover(object):
 
     @property
     def task_factory(self):
-        retrn self._task_factory
+        return self._task_factory
 
     @task_factory.setter
     def task_factory(self, tf):
