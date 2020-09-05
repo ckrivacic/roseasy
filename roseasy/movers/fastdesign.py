@@ -3,7 +3,7 @@ from roseasy.utils.mover_utils import setup_task_factory
 from roseasy.utils.mover_utils import choose_designable_residues
 from roseasy.utils.mover_utils import setup_movemap_from_resselectors
 from pyrosetta import init
-from pyrosetta.rosetta.protocols.denovo_design.movers import FastDesign
+from pyrosetta.rosetta.protocols.denovo_design.movers import rFastDesign
 
 
 class FastDesign(Mover):
@@ -17,7 +17,7 @@ class FastDesign(Mover):
         if hasattr(self, '_mvr'):
             return self._mvr
         else:
-            return FastDesign(self.sfxn, self.rounds)
+            return rFastDesign(self.sfxn, self.rounds)
     
     @mover.setter
     def mover(self, mover):
@@ -45,7 +45,7 @@ class FastDesign(Mover):
         self.task_factory = task_factory
 
     def update_mover(self):
-        self.mover = FastDesign(self.sfxn, self.rounds)
+        self.mover = rFastDesign(self.sfxn, self.rounds)
         self.mover.set_up_default_task_factory()
         if hasattr(self, '_task_factor'):
             self.mover.set_task_factory(self.task_factory)
