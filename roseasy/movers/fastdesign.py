@@ -38,6 +38,9 @@ class FastDesign(Mover):
         focus = [i for i in range(start, end+1)]
         design_residues, repack_residues =\
                 choose_designable_residues(self.pose, focus)
+        print('Designable/repack residues:')
+        print(design_residues)
+        print(repack_residues)
         task_factory = setup_task_factory(self.pose, design_residues,
                 repack_residues)
         movemap = setup_movemap_from_resselectors(design_residues, repack_residues)
@@ -47,13 +50,14 @@ class FastDesign(Mover):
     def update_mover(self):
         self.mover = rFastDesign(self.sfxn, self.rounds)
         self.mover.set_up_default_task_factory()
-        if hasattr(self, '_task_factor'):
+        init(' '.join(self.init_args))
+        if self.edited_movemap:
+            self.mover.set_movemap(self.movemap)
+
+        if hasattr(self, '_task_factory'):
             self.mover.set_task_factory(self.task_factory)
         # Only update movemap if edited (includes calling
         # self.setup_default_movemap())
-        if self.edited_movemap:
-            self.mover.set_movemap(self.movemap)
-        init(' '.join(self.init_args))
 
     def apply(self):
         self.update_mover()
