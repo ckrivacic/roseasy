@@ -15,7 +15,7 @@ def get_workspace(root_dir, step):
 if __name__=='__main__':
     workspace, job_info = big_jobs.initiate()
     test_run = job_info.get('test_run', False)
-    init('-relax:constrain_relax_to_start_coords')
+    init('-relax:constrain_relax_to_start_coords -total_threads 1')
     pdbpath = workspace.input_path(job_info)
     pose = pose_from_file(workspace.input_pdb_path)
     relax = r.Relax()
@@ -23,6 +23,7 @@ if __name__=='__main__':
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlphaBall', 'DAlphaBall.gcc')
     relax.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
+    relax.add_init_arg('-total_threads 1')
     if test_run:
         relax.rounds = 1
     relax.pose = pose
