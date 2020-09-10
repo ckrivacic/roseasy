@@ -752,6 +752,14 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
             return os.path.join(self.input_dir, model)
         else:
             return self.input_pdb_path
+    
+    def input_name(self, job_info):
+        return os.path.basename(self.input_path(job_info)).split('.')[0]
+
+    def output_path(self, job_info):
+        return self.output_prefix(job_info) + self.input_name(job_info) +\
+                self.output_suffix(job_info) + '.pdb.gz'
+
     @property
     def output_subdirs(self):
         if self.step > 1:

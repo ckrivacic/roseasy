@@ -104,6 +104,14 @@ class Mover(object):
         self._pose = pose
 
     @property
+    def task_factory(self):
+        return self._task_factory
+
+    @task_factory.setter
+    def task_factory(self, tf):
+        self._task_factory = tf
+
+    @property
     def movemap(self):
         if hasattr(self, '_mm'):
             return self._mm

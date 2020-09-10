@@ -55,7 +55,8 @@ def load(pdb_dir, use_cache=True, job_report=None, require_io_dir=True):
     # Find all the structures in the given directory, then decide which have
     # already been cached and which haven't.
 
-    pdb_paths = glob.glob(os.path.join(pdb_dir, '*.pdb.gz'))
+    pdb_paths = glob.glob(os.path.join(pdb_dir, '*.pdb.gz')) +\
+            glob.glob(os.path.join(pdb_dir, '*.pdb'))
     base_pdb_names = set(os.path.basename(x) for x in pdb_paths)
     cache_path = os.path.join(pdb_dir, 'metrics.pkl')
     metadata_path = os.path.join(pdb_dir, 'metrics.yml')
@@ -130,8 +131,10 @@ def read_and_calculate(workspace, pdb_paths):
     # For example, the validation runs don't use restraints but the restraint
     # distance is a very important metric for deciding which designs worked.
 
-    #restraints = parse_restraints(workspace.restraints_path)
-    restraints = []
+    if os.path.exists(workspace.restraints_path):
+        restraints = parse_restraints(workspace.restraints_path)
+    else:
+        restraints = []
 
     # Calculate score and distance metrics for each structure.
 
@@ -809,7 +812,7 @@ correct the 'dir' field for any metrics necessary.""")
     if not keep_dups:
         groups = metrics.groupby('sequence', group_keys=False)
         metrics = groups.\
-                apply(lambda df: df.iloc[df.total_score.idxmin()]).\
+                apply(lambda df: df.loc[df.total_score.idxmin()]).\
                 reset_index(drop=True)
         print(status.update(metrics, 'minus duplicate sequences'))
 
