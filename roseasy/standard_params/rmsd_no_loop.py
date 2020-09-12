@@ -30,6 +30,21 @@ def add_lines_to_gzip(fname, lines):
         for line in final_lines:
             f.write(line)
 
+def add_lines_reg(fname, lines):
+    final_lines = []
+    final_lines.append('\n')
+    with open(fname, 'rt') as f:
+        for line in f:
+            final_lines.append(line)
+
+    for line in lines:
+        final_lines.append(line + '\n')
+
+    with open(fname, 'wt') as f:
+        for line in final_lines:
+            f.write(line)
+
+
 def main():
     args = docopt.docopt(__doc__)
     folder = args['<folder>']
@@ -55,7 +70,7 @@ def main():
 
     for root, dirs, files in os.walk(workspace.output_dir):
         for name in files:
-            if name.endswith('.pdb.gz'):
+            if name.endswith('.pdb.gz') or name.endswith('.pdb'):
                 pdbpath = os.path.join(root, name)
                 mobile = pose_from_file(pdbpath) 
                 ins_len = chain_end_res(mobile, 1) - chain_end_res(target, 1) 
@@ -69,7 +84,11 @@ def main():
                 rmsd = CA_rmsd(mobile, target, res_map)
                 metric_name = 'EXTRA_METRIC_CA_RMSD_NO_LOOP [[-]]'
 
-                add_lines_to_gzip(pdbpath, [metric_name + ' ' + str(rmsd)])
+                if name.endswith('.pdb.gz'):
+                    add_lines_to_gzip(pdbpath, [metric_name + ' ' + str(rmsd)])
+
+                if name.endswith('.pdb'):
+                    add_lines_reg(pdbpath, [metric_name + ' ' + str(rmsd)])
                 #rmsd = all_atom_rmsd(mobile, target)
                 print(rmsd)
 

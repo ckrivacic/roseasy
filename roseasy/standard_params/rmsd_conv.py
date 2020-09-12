@@ -98,6 +98,7 @@ Hotkeys:
 import os, glob, numpy as np, random
 from scipy.stats import ks_2samp
 import matplotlib.pyplot as plt
+import pandas as pd
 from roseasy import pipeline
 from roseasy import structures
 from roseasy import gui
@@ -127,12 +128,13 @@ def main():
     ax2 = fig.add_subplot(122)
 
     ref_records, ref_metadata = structures.load(ref_dir, use_cache=not args['--force'])
-    prop = 'ca_rmsd_no_loop'
+    #prop = 'ca_rmsd_no_loop'
+    prop = 'ca_rmsd'
     ref_prop = 'ca_rmsd'
 
     width = 0.35
     x = np.arange(len(sample_sizes))
-
+    prev = np.zeros(len(sample_sizes))
     for pdb_dir in pdb_dirs:
         p_vals = []
         all_records, metadata = structures.load(pdb_dir, use_cache=not args['--force'])
@@ -147,12 +149,20 @@ def main():
                 if val < 0.05:
                     diff_count += 1
                 p_val.append(val)
-                diff_counts.append(diff_count)
+            diff_counts.append(diff_count/num_samples)
             p_vals.append(np.average(p_val))
         ax1.plot(sample_sizes, p_vals,'--o', label = pdb_dir)
-        ax2.bar(x , diff_counts)
+        bins = [x + width for x in prev]
+        ax2.bar(x , diff_counts, label = pdb_dir)
+        prev = bins
+    ax1.set_ylabel('K-S p value')
+    ax1.set_xlabel('relax sample size')
+    ax2.set_ylabel('Rejection Proportion')
+    ax2.set_xticks(x)
+    ax2.set_xticklabels(sample_sizes)
+    ax2.set_xlabel('relax sample size')
     ax1.legend()
-    ax2.legend
+    ax2.legend()
     #plt.xlabel('# relax structures sampled')
     #plt.ylabel('K-S p value')
     plt.show()
