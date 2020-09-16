@@ -35,7 +35,11 @@ if __name__=='__main__':
     print(fd.task_factory)
     fd.apply()
 
-    input_pose = pose_from_file(workspace.input_pdb_path)
+    # This will compare it to the input to the step
+    input_pose = pose_from_file(pdbpath)
+    # But you can uncomment this to compare it to the input to the
+    # project
+    #input_pose = pose_from_file(workspace.input_pdb_path)
     ca_rmsd = CA_rmsd(fd.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(fd.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)

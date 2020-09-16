@@ -17,7 +17,7 @@ if __name__=='__main__':
     test_run = job_info.get('test_run', False)
     init('-total_threads 1')
     pdbpath = workspace.input_path(job_info)
-    pose = pose_from_file(workspace.input_pdb_path)
+    pose = pose_from_file(pdbpath)
     relax = r.Relax()
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
@@ -32,7 +32,11 @@ if __name__=='__main__':
     relax.setup_default_movemap()
     relax.apply()
 
-    input_pose = pose_from_file(workspace.input_pdb_path)
+    # This will compare it to the input to this step
+    input_pose = pose_from_file(pdbpath)
+    # But you can uncomment this to compare to the input to the
+    # workspace
+    #input_pose = pose_from_file(workspace.input_pdb_path)
     ca_rmsd = CA_rmsd(relax.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(relax.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)
