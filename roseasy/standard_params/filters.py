@@ -16,9 +16,15 @@ class FilterContainer(object):
         <WriteFiltersToPose name="writer" prefix="EXTRA_SCORE_"/>
         '''
 
-        buns = '''
+        buns_all = '''
         <BuriedUnsatHbonds name="Buried Unsat [[-]]"
         report_all_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true" dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
+
+        '''
+
+        buns_sc = '''
+        <BuriedUnsatHbonds name="Buried Unsat Sidechains [[-]]"
+        report_sc_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true" dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
 
         '''
 
@@ -52,8 +58,10 @@ class FilterContainer(object):
             'external',
             'DAlpahBall',
             'DAlphaBall.gcc'
-            )
-        )
+                )
+            ):
+            filters.append(buns_all)
+            filters.append(buns_sc)
         filter_objs = []
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
