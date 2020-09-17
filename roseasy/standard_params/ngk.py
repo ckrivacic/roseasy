@@ -41,7 +41,7 @@ if __name__=="__main__":
     input_name = os.path.basename(workspace.input_path(job_info)).split('.')[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
 
-    filters = FilterContainer(workspace, lm.pose, 
+    filters = workspace.get_filters(lm.pose, 
             task_id=job_info['task_id'], score_fragments=True,
             test_run=test_run)
     filters.run_filters()

@@ -46,6 +46,14 @@ class FilterContainer(object):
 
         #filters = [buns, packstat, prepro, exposed_hydrophobics]
         filters = [packstat, prepro, exposed_hydrophobics]
+        if os.path.exists(os.path.join(
+            workspace.rosetta_dir,
+            'source',
+            'external',
+            'DAlpahBall',
+            'DAlphaBall.gcc'
+            )
+        )
         filter_objs = []
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
@@ -118,6 +126,18 @@ class FilterContainer(object):
                         env=dict(SPARKSXDIR='/wynton/home/kortemme/krivacic/software/fragments/sparks-x',
                             **os.environ))
                 score = f.report_sm(self.pose)
+        elif f.name().startswith('Buried Unsat'):
+            try:
+                score = f.report_sm(self.pose)
+            except:
+                print('Buried Unsats FAILED; make sure DAlphaBall is '\
+                        'installed and working. You may need to install '\
+                        'gfortran \n(conda install -c anaconda '\
+                        'gfortran_<OS>-64 gmp)')
+                print('Once installed, add the library path to your '\
+                        'environment.\n'\
+                        'Ex. export '\
+                        'LD_LIBRARY_PATH=anaconda/lib:LD_LIBRARY_PATH')
         else:
             score = f.report_sm(self.pose)
 

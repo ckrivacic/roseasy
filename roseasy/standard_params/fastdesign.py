@@ -44,7 +44,7 @@ if __name__=='__main__':
     all_atom_rmsd = all_atom_rmsd(fd.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)
 
-    filters = FilterContainer(workspace, fd.pose,
+    filters = workspace.get_filters(fd.pose,
             task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()

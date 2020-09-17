@@ -39,7 +39,7 @@ if __name__=='__main__':
     ca_rmsd = CA_rmsd(relax.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)
 
-    filters = FilterContainer(workspace, relax.pose, 
+    filters = workspace.get_filters(relax.pose, 
             task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
