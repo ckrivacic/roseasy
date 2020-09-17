@@ -9,7 +9,7 @@ of a design.  It's subclasses deal with file in the different subdirectories of
 the design, each of which is related to a cluster job.
 """
 
-import os, re, glob, json, pickle
+import os, re, glob, json, pickle, sys
 from klab import scripting
 from pprint import pprint
 from roseasy.standard_params import *

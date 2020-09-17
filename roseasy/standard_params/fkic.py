@@ -5,7 +5,7 @@ from pyrosetta.rosetta.core.scoring import all_atom_rmsd
 from pyrosetta.rosetta.core.pose import setPoseExtraScore
 from roseasy import pipeline
 from roseasy import big_jobs
-from roseasy.standard_params.filters import FilterContainer
+#from roseasy.standard_params.filters import FilterContainer
 import os, sys, subprocess
 
 

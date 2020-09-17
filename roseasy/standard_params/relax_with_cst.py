@@ -7,7 +7,7 @@ from roseasy import pipeline
 from roseasy import big_jobs
 import os, sys, subprocess, gzip
 from roseasy.movers import relax as r
-from roseasy.standard_params.filters import FilterContainer
+#from roseasy.standard_params.filters import FilterContainer
 
 def get_workspace(root_dir, step):
     return pipeline.DesignWorkspace(root_dir, step)
