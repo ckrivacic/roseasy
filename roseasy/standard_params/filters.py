@@ -53,7 +53,7 @@ class FilterContainer(object):
         #filters = [buns, packstat, prepro, exposed_hydrophobics]
         filters = [packstat, prepro, exposed_hydrophobics]
         if os.path.exists(os.path.join(
-            workspace.rosetta_dir,
+            self.workspace.rosetta_dir,
             'source',
             'external',
             'DAlpahBall',
