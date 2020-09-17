@@ -349,10 +349,10 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         # edit the filters file just like any other script
         # Add standard_params and then project_params so that it looks for
         # filters script in project_params first.
-        sys.path.insert(0, os.path.join(self.root_dir,
-            'standard_params', 'filters.py'))
-        sys.path.insert(0, os.path.join(self.root_dir,
-            'project_params', 'filters.py'))
+        sys.path.insert(1, os.path.join(self.root_dir,
+            'standard_params'))
+        sys.path.insert(1, os.path.join(self.root_dir,
+            'project_params'))
         import filters as f
         return f.FilterContainer(self, *args, **kwargs)
 

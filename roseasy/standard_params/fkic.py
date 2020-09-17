@@ -34,7 +34,10 @@ if __name__=="__main__":
     # Get loops from loops file; can also get loops from a range of
     # residues
     lm.loops_from_file(workspace.loops_path)
-    # Argument needed for FragmentScoreFilter
+    # Argument needed for FragmentScoreFilter & BUNS
+    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
+            'external', 'DAlpahBall', 'DAlphaBall.gcc')
+    lm.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     lm.add_init_arg('-in:file:s {}'.format(pdbpath))
     if test_run:
         # What happens when --test-run is supplied?

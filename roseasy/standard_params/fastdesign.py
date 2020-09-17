@@ -21,7 +21,7 @@ if __name__=='__main__':
     fd = fastdesign.FastDesign()
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
-            'external', 'DAlphaBall', 'DAlphaBall.gcc')
+            'external', 'DAlpahBall', 'DAlphaBall.gcc')
     fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     fd.add_init_arg('-total_threads 1')
     if test_run:

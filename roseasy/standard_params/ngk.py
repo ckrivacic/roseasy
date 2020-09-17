@@ -27,6 +27,10 @@ if __name__=="__main__":
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlphaBall', 'DAlphaBall.gcc')
     #lm.add_init_arg('-holes:dalphaball {}'.format(dalphaball_path))
+    # Init arguments needed to run FragmentScoreFilter & BUNS
+    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
+            'external', 'DAlpahBall', 'DAlphaBall.gcc')
+    lm.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     lm.add_init_arg('-in:file:s {}'.format(pdbpath))
     if test_run:
         lm.mover.centroid_stage().mark_as_test_run()

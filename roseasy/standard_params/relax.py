@@ -21,7 +21,7 @@ if __name__=='__main__':
     relax = r.Relax()
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
-            'external', 'DAlphaBall', 'DAlphaBall.gcc')
+            'external', 'DAlpahBall', 'DAlphaBall.gcc')
     relax.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     relax.add_init_arg('-total_threads 1')
     if test_run:
