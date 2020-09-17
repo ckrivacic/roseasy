@@ -126,7 +126,7 @@ class FilterContainer(object):
                         env=dict(SPARKSXDIR='/wynton/home/kortemme/krivacic/software/fragments/sparks-x',
                             **os.environ))
                 score = f.report_sm(self.pose)
-        elif f.name().startswith('Buried Unsat'):
+        elif f.name() == ('BuriedUnsatHbonds'):
             try:
                 score = f.report_sm(self.pose)
             except:
