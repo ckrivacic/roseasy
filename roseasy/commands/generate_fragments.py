@@ -96,7 +96,7 @@ def pick_inputs(workspace):
     if not frags_present:
         return [workspace.input_dir]
 
-    print '{0} of {1} inputs are missing fragments.'.format(
-        len(frags_absent), len(workspace.input_paths))
+    print('{0} of {1} inputs are missing fragments.'.format(
+        len(frags_absent), len(workspace.input_paths)))
 
     return sorted(frags_absent)
