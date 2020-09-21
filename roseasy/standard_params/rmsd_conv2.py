@@ -96,7 +96,7 @@ Hotkeys:
 """
 
 import os, glob, numpy as np, random
-from scipy.stats import ks_2samp
+from scipy.stats import ks_2samp, anderson_ksamp
 import matplotlib.pyplot as plt
 import pandas as pd
 from roseasy import pipeline
@@ -122,50 +122,109 @@ def main():
     #sample_size = int(args['--sample_size'])
 
     #num_samples = 50
-    sample_sizes = [5, 10, 20, 30, 50, 100, 150, 200]
-    fig = plt.figure()
-    ax1 = fig.add_subplot(121)
-    ax2 = fig.add_subplot(122)
+    sample_sizes = [1, 5, 10, 20, 30, 50, 100, 150, 200,]
 
-    ref_records, ref_metadata = structures.load(ref_dir, use_cache=not args['--force'])
-    prop = 'ca_rmsd_no_loop'
+    #ref_records, ref_metadata = structures.load(ref_dir, use_cache=not args['--force'])
+    #prop = 'ca_rmsd_no_loop'
     #prop = 'ca_rmsd'
-    ref_prop = 'ca_rmsd'
+    #ref_prop = 'ca_rmsd'
 
-    width = 0.35
-    x = np.arange(len(sample_sizes))
-    prev = np.zeros(len(sample_sizes))
+    avg_p_vals = {}
+    diff_props = {}
     for pdb_dir in pdb_dirs:
-        p_vals = []
-        all_records, metadata = structures.load(pdb_dir, use_cache=not args['--force'])
+
+        sample_p_vals = []
+        diff_counts = []
+        try:
+            all_records, metadata = structures.load(pdb_dir, use_cache=not args['--force'])
+        except:
+            continue
+
+        print(pdb_dir, len(all_records))
+        if 'ca_rmsd_no_loop' in all_records.keys():
+            prop = 'ca_rmsd_no_loop'
+        else:
+            prop = 'ca_rmsd' 
+
+        # remove outliers
+        
+        mean = np.mean(all_records[prop])
+        sd = np.std(all_records[prop])
+
+        #print(mean, 2*sd)
+
+        #print(all_records.loc[all_records[prop] > (mean + 2*sd)].index)
+        #all_records.drop(all_records.loc[all_records[prop] > (mean + 2*sd)].index)    
+        #all_records.drop(all_records.loc[all_records[prop] > (mean - 2*sd)].index)
+
         for sample_size in sample_sizes:
+            #print(len(all_records))
+            if sample_size > len(all_records):
+                sample_p_vals.append(np.nan)
+                diff_counts.append(np.nan)
+                print(pdb_dir, "smaller than", sample_size)
+                continue
             #print(sample_size)
             p_val = []
             diff_count = 0
-            diff_counts = []
             for sample in range(num_samples):
                 records = all_records.sample(n=sample_size)
-                val = ks_2samp(records[prop],all_records[prop])[1]
+                if 'ca_rmsd_no_loop' in records.keys():
+                    prop = 'ca_rmsd_no_loop'
+                else:
+                    prop = 'ca_rmsd'
+                #val = ks_2samp(records[prop],ref_records[ref_prop])[1]
+                val = anderson_ksamp([records[prop],all_records[prop]])[2]
                 if val < 0.05:
                     diff_count += 1
                 p_val.append(val)
             diff_counts.append(diff_count/num_samples)
-            p_vals.append(np.average(p_val))
-        ax1.plot(sample_sizes, p_vals,'--o', label = pdb_dir)
-        bins = [x + width for x in prev]
-        ax2.bar(x , diff_counts, label = pdb_dir)
-        prev = bins
-    ax1.set_ylabel('K-S p value')
-    ax1.set_xlabel('relax sample size')
-    ax2.set_ylabel('Rejection Proportion')
-    ax2.set_xticks(x)
-    ax2.set_xticklabels(sample_sizes)
-    ax2.set_xlabel('relax sample size')
-    #ax1.legend()
-    #ax2.legend()
-    #plt.xlabel('# relax structures sampled')
-    #plt.ylabel('K-S p value')
+            sample_p_vals.append(np.average(p_val) )
+        avg_p_vals[pdb_dir] = sample_p_vals
+        diff_props[pdb_dir] = diff_counts
+
+    all_p_vals = pd.DataFrame(avg_p_vals, sample_sizes)
+    #print(all_p_vals)
+    all_diff_props = pd.DataFrame(diff_props, sample_sizes)
+    #print(all_diff_props)
+
+    #all_p_vals = all_p_vals.dropna()
+    #all_diff_props = all_diff_props.dropna()
+
+    fig, axes = plt.subplots(nrows=1, ncols=2)
+
+    #all_p_vals = all_p_vals.transpose()
+    all_p_vals.plot(kind = 'line', ax=axes[0], marker = 'o', legend = False)
+    all_diff_props.plot(kind='bar', ax = axes[1], legend = False)
+
+    axes[1].legend()
+    axes[0].set_ylabel('Avg. A-D significance level')
+    #axes[0].set_xticklabels(sample_sizes)
+    axes[0].set_xlabel('relax sample size')
+    axes[1].set_ylabel('Rejection Proportion (< 0.05)')
+    #axes[1].set_xticks(x)
+    #axes[1].set_xticklabels(sample_sizes)
+    axes[1].set_xlabel('relax sample size')
+
+    #plt.legend()
     plt.show()
+
+
+    #     ax1.plot(sample_sizes, p_vals,'--o', label = pdb_dir)
+    #     bins = [x + width for x in prev]
+    #     ax2.bar(bins , diff_counts, label = pdb_dir)
+    #     prev = bins
+    # ax1.set_ylabel('K-S p value')
+    # ax1.set_xlabel('relax sample size')
+    # ax2.set_ylabel('Rejection Proportion')
+    # ax2.set_xticks(x)
+    # ax2.set_xticklabels(sample_sizes)
+    # ax2.set_xlabel('relax sample size')
+    # ax1.legend()
+    # ax2.legend()
+    # #plt.xlabel('# relax structures sampled')
+    # #plt.ylabel('K-S p value')
+    # plt.show()
 
 if __name__=='__main__':
     main()

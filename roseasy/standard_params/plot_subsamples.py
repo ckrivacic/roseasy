@@ -6,7 +6,7 @@ Visualize the results from the loop modeling simulations in PIP and identify
 promising designs.
 
 Usage:
-    rmsd_conv.py <ref_dir> <pdb_directories>... [options]
+    plot_subsamples.py <pdb_directory> [options]
 
 Options:
     -F, --fork
@@ -20,6 +20,9 @@ Options:
 
     --samples SAMPLES, -s SAMPLES [default: 10]
         number of pdb samples to randomly select
+
+    --sample_size SIZE, -n SIZE [default: 10]
+        size of a given sample (i.e. number of relaxed structures)
 
 This command launches a GUI designed to visualize the results for the loop 
 modeling simulations in PIP and to help you identify promising designs.  To 
@@ -96,9 +99,10 @@ Hotkeys:
 """
 
 import os, glob, numpy as np, random
-from scipy.stats import ks_2samp
+from scipy.stats import ks_2samp, anderson_ksamp
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 from roseasy import pipeline
 from roseasy import structures
 from roseasy import gui
@@ -116,56 +120,60 @@ def main():
 
     print(args)
 
-    pdb_dirs = args['<pdb_directories>']
-    ref_dir = args['<ref_dir>']
+    pdb_dir = args['<pdb_directory>']
+    #ref_dir = args['<ref_dir>']
     num_samples = int(args['--samples'])
-    #sample_size = int(args['--sample_size'])
+    sample_size = int(args['--sample_size'])
 
     #num_samples = 50
-    sample_sizes = [5, 10, 20, 30, 50, 100, 150, 200]
-    fig = plt.figure()
-    ax1 = fig.add_subplot(121)
-    ax2 = fig.add_subplot(122)
+    sample_sizes = [10, 25, 48, 100]
 
-    ref_records, ref_metadata = structures.load(ref_dir, use_cache=not args['--force'])
-    prop = 'ca_rmsd_no_loop'
+    #ref_records, ref_metadata = structures.load(ref_dir, use_cache=not args['--force'])
+    #prop = 'ca_rmsd_no_loop'
     #prop = 'ca_rmsd'
-    ref_prop = 'ca_rmsd'
+    #ref_prop = 'ca_rmsd'
 
-    width = 0.35
-    x = np.arange(len(sample_sizes))
-    prev = np.zeros(len(sample_sizes))
-    for pdb_dir in pdb_dirs:
-        p_vals = []
-        all_records, metadata = structures.load(pdb_dir, use_cache=not args['--force'])
-        for sample_size in sample_sizes:
-            #print(sample_size)
-            p_val = []
-            diff_count = 0
-            diff_counts = []
-            for sample in range(num_samples):
-                records = all_records.sample(n=sample_size)
-                val = ks_2samp(records[prop],all_records[prop])[1]
-                if val < 0.05:
-                    diff_count += 1
-                p_val.append(val)
-            diff_counts.append(diff_count/num_samples)
-            p_vals.append(np.average(p_val))
-        ax1.plot(sample_sizes, p_vals,'--o', label = pdb_dir)
-        bins = [x + width for x in prev]
-        ax2.bar(x , diff_counts, label = pdb_dir)
-        prev = bins
-    ax1.set_ylabel('K-S p value')
-    ax1.set_xlabel('relax sample size')
-    ax2.set_ylabel('Rejection Proportion')
-    ax2.set_xticks(x)
-    ax2.set_xticklabels(sample_sizes)
-    ax2.set_xlabel('relax sample size')
-    #ax1.legend()
-    #ax2.legend()
-    #plt.xlabel('# relax structures sampled')
-    #plt.ylabel('K-S p value')
+    avg_p_vals = {}
+    diff_props = {}
+    # for pdb_dir in pdb_dirs:
+
+    fig, axes = plt.subplots(nrows=2, ncols=2)
+    
+    
+    all_records, metadata = structures.load(pdb_dir, use_cache=not args['--force'])
+    print(len(all_records))
+
+    if 'ca_rmsd_no_loop' in all_records.keys():
+        prop = 'ca_rmsd_no_loop'
+    else:
+        prop = 'ca_rmsd' 
+
+    for  i, ax  in enumerate(axes.reshape(-1)):
+
+        sample_records = {}
+        all_records['sample'] = 'all'
+        sample_records['all'] = all_records
+        sample_size = sample_sizes[i]
+
+        if sample_size > len(all_records):
+            continue
+
+        for index, sample in enumerate(range(num_samples)):
+            record = all_records.sample(n=sample_size)
+            record['sample'] = str(index)
+            sample_records[index] = record
+
+        data = pd.concat(sample_records)
+
+    #print(data.groupby('sample'))
+
+        bp = sns.violinplot(x=data[prop], y=data['sample'], inner = 'point', ax = ax )
+        ax.set_title("n= %s" % sample_size)
+
+    fig.suptitle(pdb_dir)
+
     plt.show()
+
 
 if __name__=='__main__':
     main()

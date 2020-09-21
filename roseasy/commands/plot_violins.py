@@ -6,7 +6,7 @@ Visualize the results from the loop modeling simulations in PIP and identify
 promising designs.
 
 Usage:
-    rmsd_conv.py <ref_dir> <pdb_directories>... [options]
+    roseasy plot_violins <pdb_directories>... [options]
 
 Options:
     -F, --fork
@@ -17,9 +17,6 @@ Options:
 
     -q, --quiet
         Build the cache, but don't launch the GUI.
-
-    --samples SAMPLES, -s SAMPLES [default: 10]
-        number of pdb samples to randomly select
 
 This command launches a GUI designed to visualize the results for the loop 
 modeling simulations in PIP and to help you identify promising designs.  To 
@@ -95,77 +92,44 @@ Hotkeys:
     escape: Unfocus the search and description forms.
 """
 
-import os, glob, numpy as np, random
-from scipy.stats import ks_2samp
-import matplotlib.pyplot as plt
-import pandas as pd
+import os, glob, numpy as np
 from roseasy import pipeline
 from roseasy import structures
-from roseasy import gui
-
-
-def select_random_subset(pdb_paths, sample_size):
-    subset = random.choices(pdb_paths, k=sample_size)
-
-    return subset
-
 
 def main():
     import docopt
     args = docopt.docopt(__doc__)
 
-    print(args)
+    # Defer trying to use PyGTK (which will happen when ``show_my_designs`` is 
+    # imported) until after ``docopt`` has had a chance to print the help 
+    # message.  This was a problem because ReadTheDocs needs to run this 
+    # command with the help flag to generate the command usage page, but PyGTK 
+    # can't be installed with pip.
 
-    pdb_dirs = args['<pdb_directories>']
-    ref_dir = args['<ref_dir>']
-    num_samples = int(args['--samples'])
-    #sample_size = int(args['--sample_size'])
+    from roseasy import new_gui as smd
 
-    #num_samples = 50
-    sample_sizes = [5, 10, 20, 30, 50, 100, 150, 200]
-    fig = plt.figure()
-    ax1 = fig.add_subplot(121)
-    ax2 = fig.add_subplot(122)
+    smd.default_x_metric = 'CA_rmsd'
+    #smd.default_y_metric = 'total_score'
 
-    ref_records, ref_metadata = structures.load(ref_dir, use_cache=not args['--force'])
-    prop = 'ca_rmsd_no_loop'
-    #prop = 'ca_rmsd'
-    ref_prop = 'ca_rmsd'
+    smd.metric_titles['total_score'] = u"Total Score (REU)"
+    smd.metric_titles['dunbrack_score'] = u"Dunbrack Score (REU)"
+    smd.metric_titles['buried_unsat_score'] = u"Δ Buried Unsats"
+    smd.metric_titles['restraint_dist'] = u"Restraint Satisfaction (Å)"
+    smd.metric_titles['loop_dist'] = u"Loop RMSD (Å)"
 
-    width = 0.35
-    x = np.arange(len(sample_sizes))
-    prev = np.zeros(len(sample_sizes))
-    for pdb_dir in pdb_dirs:
-        p_vals = []
-        all_records, metadata = structures.load(pdb_dir, use_cache=not args['--force'])
-        for sample_size in sample_sizes:
-            #print(sample_size)
-            p_val = []
-            diff_count = 0
-            diff_counts = []
-            for sample in range(num_samples):
-                records = all_records.sample(n=sample_size)
-                val = ks_2samp(records[prop],all_records[prop])[1]
-                if val < 0.05:
-                    diff_count += 1
-                p_val.append(val)
-            diff_counts.append(diff_count/num_samples)
-            p_vals.append(np.average(p_val))
-        ax1.plot(sample_sizes, p_vals,'--o', label = pdb_dir)
-        bins = [x + width for x in prev]
-        ax2.bar(x , diff_counts, label = pdb_dir)
-        prev = bins
-    ax1.set_ylabel('K-S p value')
-    ax1.set_xlabel('relax sample size')
-    ax2.set_ylabel('Rejection Proportion')
-    ax2.set_xticks(x)
-    ax2.set_xticklabels(sample_sizes)
-    ax2.set_xlabel('relax sample size')
-    #ax1.legend()
-    #ax2.legend()
-    #plt.xlabel('# relax structures sampled')
-    #plt.ylabel('K-S p value')
-    plt.show()
+    smd.metric_limits['total_score'] = lambda x: (min(x), np.percentile(x, 85))
+    smd.metric_limits['restraint_dist'] = lambda x: (0, np.percentile(x, 95))
+    smd.metric_limits['loop_dist'] = lambda x: (0, np.percentile(x, 95))
+
+    smd.metric_guides['restraint_dist'] = 1.0
+    smd.metric_guides['loop_dist'] = 1.0
+
+    smd.show_my_violins(
+            args['<pdb_directories>'],
+            use_cache=not args['--force'],
+            launch_gui=not args['--quiet'],
+            fork_gui=args['--fork'],
+    )
 
 if __name__=='__main__':
     main()
