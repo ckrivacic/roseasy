@@ -9,7 +9,7 @@ of a design.  It's subclasses deal with file in the different subdirectories of
 the design, each of which is related to a cluster job.
 """
 
-import os, re, glob, json, pickle
+import os, re, glob, json, pickle, sys
 from klab import scripting
 from pprint import pprint
 from roseasy.standard_params import *
@@ -343,6 +343,19 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
                     if step > latest:
                         latest = step
         return latest + 1
+    
+    def get_filters(self, *args, **kwargs):
+        # Get a filters object from the workspace directory so users can
+        # edit the filters file just like any other script
+        # Add standard_params and then project_params so that it looks for
+        # filters script in project_params first.
+        sys.path.insert(1, os.path.join(self.root_dir,
+            'standard_params'))
+        sys.path.insert(1, os.path.join(self.root_dir,
+            'project_params'))
+        import filters as f
+        return f.FilterContainer(self, *args, **kwargs)
+
 
     @property
     def incompatible_with_fragments_script(self):
@@ -582,45 +595,6 @@ class WithFragmentLibs(object):
         scripting.clear_directory(self.fragments_dir)
 
 
-class RestrainedModels(BigJobWorkspace, WithFragmentLibs):
-
-    def __init__(self, root):
-        BigJobWorkspace.__init__(self, root)
-
-    @staticmethod
-    def from_directory(directory):
-        return RestrainedModels(os.path.join(directory, '..'))
-
-    @property
-    def focus_name(self):
-        return 'build_models'
-
-    @property
-    def focus_dir(self):
-        return os.path.join(self.root_dir, '01_{0}'.format(self.focus_name))
-
-    @property
-    def protocol_path(self):
-        return self.build_script_path
-
-    @property
-    def input_dir(self):
-        return self.root_dir
-
-    def input_path(self, parameters):
-        return self.input_pdb_path
-
-    @property
-    def input_paths(self):
-        return [self.input_pdb_path]
-
-    def output_prefix(self, job_info):
-        return os.path.join(
-                self.output_dir,
-                '{0}_{1:06d}_'.format(job_info['job_id'], job_info['task_id']),
-        )
-
-
 class DesignWorkspace(BigJobWorkspace):
 
     def __init__(self, root, step, subdirs=False):
@@ -784,63 +758,6 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
         else:
             design_id = job_info['task_id']
         return '_{0:03}'.format(design_id)
-
-
-class ValidatedDesigns(BigJobWorkspace, WithFragmentLibs):
-
-    '''
-    This class should work as a general workspace for validation jobs,
-    i.e. has subfolders for each design.
-    '''
-    def __init__(self, root, step):
-        BigJobWorkspace.__init__(self, root)
-        self.step = int(step)
-
-    @staticmethod
-    def from_directory(directory):
-        root = os.path.join(directory, '..')
-        step = int(directory.strip('/').split('_')[0])
-        return ValidatedDesigns(root, step)
-
-    @property
-    def predecessor(self):
-        pre_dir = glob.glob('{}/{}_*'.format(self.root_dir, self.step - 1))[0]
-        return workspace_from_dir(pre_dir)
-
-    @property
-    def focus_name(self):
-        return 'validate_designs'
-
-    @property
-    def focus_dir(self):
-        assert self.step > 0
-        prefix = self.step
-        subdir = '{0:02}_{1}'.format(prefix, self.focus_name)
-        return os.path.join(self.root_dir, subdir)
-
-    @property
-    def protocol_path(self):
-        return self.validate_script_path
-
-    def input_path(self, job_info):
-        designs = job_info['inputs']
-        design = designs[job_info['task_id'] % len(designs)]
-        return os.path.join(self.input_dir, design)
-
-    @property
-    def output_subdirs(self):
-        return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
-
-    def output_subdir(self, input_name):
-        basename = os.path.basename(input_name[:-len('.pdb.gz')])
-        return os.path.join(self.output_dir, basename)
-
-    def output_prefix(self, job_info):
-        input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
-        return os.path.join(self.output_dir, input_model) + '/'
-
-    def output_suffix(self, job_info):
-        return '_{0:03d}'.format(job_info['task_id'] / len(job_info['inputs']))
 
 
 class AdditionalMetricWorkspace (Workspace):

@@ -66,7 +66,7 @@ def main():
     # Workspace type is defined in the run script, so we first need to
     # import that.
     script_path = os.path.dirname(script)
-    sys.path.insert(0, script_path)
+    sys.path.insert(1, script_path)
     script_name = os.path.basename(script)[:-3]
     imp = importlib.import_module(script_name)
 
@@ -110,6 +110,7 @@ def main():
             max_runtime=args['--max-runtime'],
             max_memory=args['--max-memory'],
             test_run=args['--test-run'],
+            job_name=script_name,
             inputs=inputs
             )
 

@@ -7,7 +7,7 @@ from roseasy import pipeline
 from roseasy import big_jobs
 import os, sys, subprocess, gzip
 from roseasy.movers import relax as r
-from roseasy.standard_params.filters import FilterContainer
+#from roseasy.standard_params.filters import FilterContainer
 
 def get_workspace(root_dir, step):
     return pipeline.DesignWorkspace(root_dir, step)
@@ -21,7 +21,7 @@ if __name__=='__main__':
     relax = r.Relax()
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
-            'external', 'DAlphaBall', 'DAlphaBall.gcc')
+            'external', 'DAlpahBall', 'DAlphaBall.gcc')
     relax.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     relax.add_init_arg('-total_threads 1')
     if test_run:
@@ -39,7 +39,7 @@ if __name__=='__main__':
     ca_rmsd = CA_rmsd(relax.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)
 
-    filters = FilterContainer(workspace, relax.pose, 
+    filters = workspace.get_filters(relax.pose, 
             task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()

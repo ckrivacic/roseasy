@@ -35,6 +35,7 @@ def submit(script, workspace, **params):
     qsub_command += '-l', 'h_rt={0}'.format(max_runtime),
     qsub_command += '-l', 'mem_free={0}'.format(max_memory),
     qsub_command += '-b', 'y',
+    qsub_command += '-N', params.get('job_name'),
     qsub_command += workspace.python_path,
     qsub_command += script,
     qsub_command += workspace.focus_dir,

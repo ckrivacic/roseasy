@@ -49,19 +49,21 @@ def main():
     workspace.make_dirs()
     workspace.clear_fragments()
 
-    if not '--input_model' in args:
-        model = workspace.input_pdb_path
-    else:
-        model = args['--input_model']
+    inputs = pick_inputs(workspace)
+    if not inputs:
+        print('All inputs already have fragments')
+    # if not '--input_model' in args:
+        # model = workspace.input_pdb_path
+    # else:
+        # model = args['--input_model']
 
     # Run the fragment generation script.
 
     generate_fragments = [
             'klab_generate_fragments',
-            workspace.input_pdb_path,
             '--outdir', workspace.fragments_dir,
             '--memfree', args['--mem-free'],
-            ]
+            ] + inputs
     if not args['--ignore-loop-file']:
         generate_fragments += [
                 '--loops_file', workspace.loops_path,
@@ -71,3 +73,30 @@ def main():
         print(' '.join(generate_fragments))
     else:
         subprocess.call(generate_fragments)
+
+
+def pick_inputs(workspace):
+    """
+    Figure out which inputs don't yet have fragments.
+    
+    This is useful when some of your fragment generation jobs fail and you need 
+    to rerun them.  
+    """
+    frags_present = set()
+    frags_absent = set()
+
+    for path in workspace.input_paths:
+        if workspace.fragments_missing(path):
+            frags_absent.add(path)
+        else:
+            frags_present.add(path)
+
+    # If no fragments have been generated yet, just return the directory to 
+    # make the resulting 'klab_generate_fragments' command a little simpler.
+    if not frags_present:
+        return [workspace.input_dir]
+
+    print('{0} of {1} inputs are missing fragments.'.format(
+        len(frags_absent), len(workspace.input_paths)))
+
+    return sorted(frags_absent)

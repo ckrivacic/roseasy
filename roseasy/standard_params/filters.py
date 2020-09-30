@@ -16,9 +16,15 @@ class FilterContainer(object):
         <WriteFiltersToPose name="writer" prefix="EXTRA_SCORE_"/>
         '''
 
-        buns = '''
+        buns_all = '''
         <BuriedUnsatHbonds name="Buried Unsat [[-]]"
         report_all_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true" dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
+
+        '''
+
+        buns_sc = '''
+        <BuriedUnsatHbonds name="Buried Unsat Sidechains [[-]]"
+        report_sc_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true" dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
 
         '''
 
@@ -46,6 +52,16 @@ class FilterContainer(object):
 
         #filters = [buns, packstat, prepro, exposed_hydrophobics]
         filters = [packstat, prepro, exposed_hydrophobics]
+        if os.path.exists(os.path.join(
+            self.workspace.rosetta_dir,
+            'source',
+            'external',
+            'DAlpahBall',
+            'DAlphaBall.gcc'
+                )
+            ):
+            filters.append(buns_all)
+            filters.append(buns_sc)
         filter_objs = []
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
@@ -118,6 +134,19 @@ class FilterContainer(object):
                         env=dict(SPARKSXDIR='/wynton/home/kortemme/krivacic/software/fragments/sparks-x',
                             **os.environ))
                 score = f.report_sm(self.pose)
+
+        elif f.name() == 'BuriedUnsatHbondFilter':
+            try:
+                score = f.report_sm(self.pose)
+            except:
+                print('Buried Unsats FAILED; make sure DAlphaBall is '\
+                        'installed and working. You may need to install '\
+                        'gfortran \n(conda install -c anaconda '\
+                        'gfortran_<OS>-64 gmp)')
+                print('Once installed, add the library path to your '\
+                        'environment.\n'\
+                        'Ex. export '\
+                        'LD_LIBRARY_PATH=anaconda/lib:LD_LIBRARY_PATH')
         else:
             score = f.report_sm(self.pose)
 

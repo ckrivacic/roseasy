@@ -5,7 +5,7 @@ from pyrosetta.rosetta.core.scoring import all_atom_rmsd
 from pyrosetta.rosetta.core.pose import setPoseExtraScore
 from roseasy import pipeline
 from roseasy import big_jobs
-from roseasy.standard_params.filters import FilterContainer
+#from roseasy.standard_params.filters import FilterContainer
 import os, sys, subprocess
 
 
@@ -34,7 +34,10 @@ if __name__=="__main__":
     # Get loops from loops file; can also get loops from a range of
     # residues
     lm.loops_from_file(workspace.loops_path)
-    # Argument needed for FragmentScoreFilter
+    # Argument needed for FragmentScoreFilter & BUNS
+    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
+            'external', 'DAlpahBall', 'DAlphaBall.gcc')
+    lm.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     lm.add_init_arg('-in:file:s {}'.format(pdbpath))
     if test_run:
         # What happens when --test-run is supplied?
@@ -45,7 +48,7 @@ if __name__=="__main__":
     lm.apply()
 
     # Get and run default filters
-    filters = FilterContainer(workspace, lm.pose,
+    filters = workspace.get_filters(lm.pose,
             task_id=job_info['task_id'], score_fragments=True,
             test_run=test_run)
     filters.run_filters()
