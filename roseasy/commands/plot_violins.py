@@ -106,7 +106,7 @@ def main():
     # command with the help flag to generate the command usage page, but PyGTK 
     # can't be installed with pip.
 
-    from roseasy import new_gui as smd
+    from roseasy import gui as smd
 
     smd.default_x_metric = 'CA_rmsd'
     #smd.default_y_metric = 'total_score'
