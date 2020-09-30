@@ -690,7 +690,7 @@ class ShowMyDesigns (gtk.Window):
         assert len(self.keys) == 1
         design = self.designs[self.keys[0]]
         bounds = buffer.get_bounds()
-        design.notes = buffer.get_text(*bounds)
+        design.notes = buffer.get_text(*bounds, True)
 
     def on_change_x_metric(self, widget):
         self.x_metric = widget.get_active_text()
