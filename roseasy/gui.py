@@ -1157,10 +1157,10 @@ class ShowMyViolins (gtk.Window):
                 default_x_metric
                 if default_x_metric in self.metrics
                 else self.sorted_metrics[0])
-        # self.y_metric = (
-        #         default_y_metric
-        #         if default_y_metric in self.metrics
-        #         else self.sorted_metrics[1])
+        self.y_metric = (
+                default_y_metric
+                if default_y_metric in self.metrics
+                else self.sorted_metrics[1])
 
         # Setup the GUI.
 
@@ -2047,12 +2047,12 @@ class NavigationToolbar (NavigationToolbar2GTK3):
 
         self.x_axis_menu = parent.setup_metric_menu(
                 parent.on_change_x_metric, parent.x_metric)
-        # self.y_axis_menu = parent.setup_metric_menu(
-                # parent.on_change_y_metric, parent.y_metric)
+        self.y_axis_menu = parent.setup_metric_menu(
+                parent.on_change_y_metric, parent.y_metric)
 
         table = gtk.Table(3, 4)
         table.attach(gtk.SeparatorToolItem(), 0, 1, 0, 3)
-        # table.attach(self.y_axis_menu, 1, 2, 1, 2, xoptions=0, yoptions=0)
+        table.attach(self.y_axis_menu, 1, 2, 1, 2, xoptions=0, yoptions=0)
         table.attach(gtk.Label(' vs. '), 2, 3, 1, 2, xoptions=0, yoptions=0)
         table.attach(self.x_axis_menu, 3, 4, 1, 2, xoptions=0, yoptions=0)
 
