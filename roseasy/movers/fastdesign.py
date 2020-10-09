@@ -47,6 +47,15 @@ class FastDesign(Mover):
         self.movemap = movemap
         self.task_factory = task_factory
 
+    @property
+    def task_factory(self):
+        if hasattr(self, '_task_factory'):
+            return self._task_factory
+
+    @task_factory.setter
+    def task_factory(self, task_factory):
+        self._task_factory = task_factory
+
     def update_mover(self):
         self.mover = rFastDesign(self.sfxn, self.rounds)
         self.mover.set_up_default_task_factory()
