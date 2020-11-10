@@ -34,6 +34,7 @@ setuptools.setup(
             define_command('push_data'),
             define_command('submit'),
             define_command('plot_funnels'),
+            define_command('plot_violins'),
             define_command('generate_fragments'),
             define_command('setup_workspace'),
             define_command('pick_designs_to_validate'),

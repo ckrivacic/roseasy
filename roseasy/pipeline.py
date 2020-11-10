@@ -873,6 +873,7 @@ def workspace_from_dir(directory, recurse=True):
     if not os.path.exists(pickle_path):
         if recurse:
             parent_dir = os.path.dirname(directory)
+            print(parent_dir)
 
             # Keep looking for a workspace as long as we haven't hit the root
             # of the file system.  If an exception is raised, that means no
