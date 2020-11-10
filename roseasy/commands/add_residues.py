@@ -15,6 +15,8 @@ Usage:
 Options:
     --chain [CH], -c [CH]:
         Specify a chain for the insertion. Defaults to A.  [default: A]
+    --out [STR], -o [STR]
+        Specify an output file
 
 """
 
@@ -46,9 +48,14 @@ def main():
             pose.dump_pdb(path)
 
     elif os.path.isfile(input_path):
-        shutil.copyfile(input_path, input_path + '.bk')
+        if not args['--out']:
+            shutil.copyfile(input_path, input_path + '.bk')
         pose = pose_from_file(input_path)
         add_residues.add_aas(pose, position, resis, pdbnum=True,
                 chain=chain)
-        pose.dump_pdb(input_path)
+        if not args['--out']:
+            pose.dump_pdb(input_path)
+        else:
+            pose.dump_pdb(args['--out'])
+
 
