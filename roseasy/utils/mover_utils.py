@@ -180,11 +180,9 @@ def generate_loops_simple(pose, focus_residue, resbuffer=3):
 
 def generate_loops_from_range(start, end, cut=None):
     '''Create a loops object from a start and finish position.'''
-    loop = rosetta.protocols.loops.Loop(start, end)
-    if cut:
-        loop.set_cut(cut)
-    else:
-        loop.set_cut(start + ((end - start)//2))
+    if not cut:
+        cut = start + ((end - start)//2)
+    loop = rosetta.protocols.loops.Loop(start, end, cut, 0.0, True)
     loops = rosetta.protocols.loops.Loops()
     loops.add_loop(loop)
     return loops
