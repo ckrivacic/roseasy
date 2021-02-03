@@ -11,6 +11,7 @@ pygtk (easiest to install via `conda install -c vgauthier pygtk`)
 pandas  
 numpy  
 docopt  
+yaml  
 klab (python3_compatibility branch)  
 
 
