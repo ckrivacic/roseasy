@@ -8,7 +8,7 @@ matplotlib version 3.1.3
 pygobject (try `conda install -c conda-forge pygobject`)  
 pango (easiest to install via `conda install -c anaconda pango`)  
 ~~pygtk (easiest to install via `conda install -c vgauthier pygtk`)~~  
-pygtk (conda install -c pkgw-roge gtk3). 
+pygtk (conda install -c pkgw-roge gtk3)  
 pandas  
 numpy  
 docopt  
