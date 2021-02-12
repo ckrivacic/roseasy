@@ -4,17 +4,19 @@ job submissions easier.
 
 ### DEPENDENCIES
 
-matplotlib version 3.1.3  
-pygobject (try `conda install -c conda-forge pygobject`)  
-pango (easiest to install via `conda install -c anaconda pango`)  
-~~pygtk (easiest to install via `conda install -c vgauthier pygtk`)~~  
-pygtk (conda install -c pkgw-roge gtk3)  
+#### General:  
 pandas  
 numpy  
 docopt  
 yaml  
 klab (python3_compatibility branch)  
-
+#### Plotting dependencies:  
+matplotlib version 3.1.3  
+pygobject (try `conda install -c conda-forge pygobject`)  
+pango (easiest to install via `conda install -c anaconda pango`)  
+~~pygtk (easiest to install via `conda install -c vgauthier pygtk`)~~  
+pygtk (conda install -c pkgw-roge gtk3)  
+seaborn  
 
 ### INSTALLATION
 
