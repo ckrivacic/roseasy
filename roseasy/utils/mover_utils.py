@@ -6,6 +6,30 @@ Functions to help set up movers.
 """
 
 
+def setup_movemap_from_resfile(residues_bb_movable, residues_sc_movable,
+        pdbinfo=None, chain='A'):
+    mm = rosetta.core.kinematics.MoveMap()
+    mm.set_chi(False)
+    mm.set_bb(False)
+
+    for i in residues_bb_movable:
+        if pdbinfo:
+            resi = pdbinfo.pdb2pose(chain, i)
+        else:
+            resi = i
+        mm.set_bb(i, True)
+        mm.set_chi(i, True)
+
+    for i in residues_sc_movable:
+        if pdbinfo:
+            resi = pdbinfo.pdb2pose(chain, i)
+        else:
+            resi = i
+        mm.set_chi(i, True)
+
+    return mm
+
+
 def setup_movemap(residues_bb_movable, residues_sc_movable):
     mm = rosetta.core.kinematics.MoveMap()
     mm.set_chi(False)

@@ -7,11 +7,11 @@ from pyrosetta import rosetta
 class Transformation(object):
     """Class for calculating and storing rotation & transformation information"""
 
-    def __init__(self, xyz1, xy2):
+    def __init__(self, xyz1, xyz2):
         self.xyz1 = xyz1
         self.xyz2 = xyz2
         self.rotation, self.translation = \
-                self.get_superimpose_transformation(self, 
+                self.get_superimpose_transformation( 
                 self.xyz1, self.xyz2)
 
     def get_superimpose_transformation(self, P1, P2):
@@ -33,6 +33,13 @@ class Transformation(object):
         M = np.transpose(np.array(np.dot(V, W)))
 
         return M, com2 - np.dot(M, com1)
+
+    def apply(self, vector):
+        rotated = np.transpose(np.dot(self.rotation,
+            np.transpose(vector)))
+        for i in range(0, len(rotated)):
+            rotated[i] = rotated[i] + self.translation
+        return rotated
 
 
 def apply_transformation(Transformation, template_coordinate_set):

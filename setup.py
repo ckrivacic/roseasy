@@ -39,6 +39,7 @@ setuptools.setup(
             define_command('setup_workspace'),
             define_command('pick_designs_to_validate'),
             define_command('add_residues'),
+            define_command('make_table'),
             ],
         }
 )
