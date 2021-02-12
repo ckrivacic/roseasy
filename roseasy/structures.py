@@ -449,6 +449,22 @@ def read_and_calculate(workspace, pdb_paths):
         # Finish calculating some records that depend on the whole structure.
 
         record['sequence'] = sequence
+        norm_meta = ScoreMetadata(
+                name='normalized_score',
+                title = 'Length-Normalized score (REU)',
+                unit='REU',
+                order=5
+                )
+        len_meta = ScoreMetadata(
+                name='design_length',
+                title = 'Design length (residues)',
+                unit='residues',
+                order=5
+                )
+        record['design_length'] = len(sequence)
+        record['normalized_score'] = record['total_score'] / record['design_length']
+        metadata[norm_meta.name]  = norm_meta
+        metadata[len_meta.name] = len_meta
         for i, score in list(dunbrack_scores.items()):
             aa = sequence_map[i] if is_sidechain_restraint[i] else 'X'
             res = '{0}{1}'.format(aa, i)
