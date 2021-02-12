@@ -1004,8 +1004,10 @@ def find_pareto_front(metrics, metadata, columns, depth=1, epsilon=None, progres
 
             candidates = [labeled_metrics[too_close == False]]
 
-        if len(maximize_indices) == 0:
-            maximize_indices = None
+        print(maximize_indices)
+        if maximize_indices is not None:
+            if len(maximize_indices) == 0:
+                maximize_indices = None
         front = pareto.eps_sort(
                 candidates, column_indices, epsilons, maximize=maximize_indices)
 

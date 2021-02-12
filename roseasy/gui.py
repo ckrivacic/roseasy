@@ -201,11 +201,12 @@ class Design (object):
 
 class ShowMyDesigns (gtk.Window):
 
-    def __init__(self, designs):
+    def __init__(self, designs, normalize_to_all=True):
 
         # Setup the parent class.
 
         gtk.Window.__init__(self)
+        self.normalize_to_all = normalize_to_all
         self.add_events(gdk.EventMask.KEY_PRESS_MASK)
         self.connect('key-press-event', self.on_hotkey_press)
         self.set_icon_from_file(os.path.join(
@@ -1039,12 +1040,24 @@ class ShowMyDesigns (gtk.Window):
         # Pick the axis limits based on the range of every design.  This is done
         # so you can scroll though every design without the axes changing size.
 
-        def get_metric_limits(metric): #
-            values = np.concatenate([x.get_metric(metric) for x in self])
+        def get_metric_limits(metric, current_design=False): #
+            # Testing: Can we get metric limit of current only?
+            if current_design:
+                try:
+                    values = np.concatenate([x.get_metric(metric) for x
+                        in designs])
+                except Exception as e:
+                    print('EXCEPT..')
+                    print(e)
+                    values = np.concatenate([x.get_metric(metric) for x in self])
+            # Default code
+            else:
+                values = np.concatenate([x.get_metric(metric) for x in self])
             return self.metrics[metric].limits(values)
 
         x_min, x_max = get_metric_limits(x_metric)
-        y_min, y_max = get_metric_limits(y_metric)
+        y_min, y_max = get_metric_limits(y_metric, current_design=not
+                self.normalize_to_all)
 
         x_pad = 0.05 * (x_max - x_min)
         y_pad = 0.05 * (y_max - y_min)
