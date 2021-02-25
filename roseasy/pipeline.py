@@ -335,7 +335,8 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
     
     def get_next_step(self):
         latest = 0
-        for root, dirs, files in os.walk(self.root_dir):
+        dirs = [d for d in os.listdir(self.root_dir) if os.path.isdir(d)]
+        for d in dirs:
             for d in dirs:
                 step = d.split('_')[0]
                 if re.match('[0-9]+', step):
