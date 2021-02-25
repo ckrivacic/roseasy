@@ -20,7 +20,7 @@ setuptools.setup(
     url="https://github.com/ckrivacic/roseasy",
     packages=setuptools.find_packages(),
     package_data={
-        'roseasy:' [
+        'roseasy': [
             'standard_params/*.py',
             'standard_params/*.wts',
             'standard_params/*.yml',
