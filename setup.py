@@ -19,6 +19,16 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ckrivacic/roseasy",
     packages=setuptools.find_packages(),
+    package_data={
+        'roseasy:' [
+            'standard_params/*',
+            '*.png',
+            '*.py',
+            'movers/*.py',
+            'utils/*.py',
+            'commands/*.py',
+            ]
+        }
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
