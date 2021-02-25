@@ -25,6 +25,19 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    install_requires=[
+        'klab',
+        ],
+    extras_require={
+        'analysis':[
+            'numpy',
+            'scipy',
+            'pandas',
+            'matplotlib==3.1.3',
+            'nonstdlib',
+            'seaborn',
+            ]
+        },
     entry_points={
         'console_scripts':[
             'roseasy=roseasy.main:main',
