@@ -21,7 +21,9 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     package_data={
         'roseasy:' [
-            'standard_params/*',
+            'standard_params/*.py',
+            'standard_params/*.wts',
+            'standard_params/*.yml',
             '*.png',
             '*.py',
             'movers/*.py',
