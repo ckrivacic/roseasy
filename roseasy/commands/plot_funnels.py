@@ -116,6 +116,7 @@ def main():
     smd.metric_titles['buried_unsat_score'] = u"Δ Buried Unsats"
     smd.metric_titles['restraint_dist'] = u"Restraint Satisfaction (Å)"
     smd.metric_titles['loop_dist'] = u"Loop RMSD (Å)"
+    smd.metric_titles['norm_score'] = u"Normalized score (REU)"
 
     smd.metric_limits['total_score'] = lambda x: (min(x), np.percentile(x, 85))
     smd.metric_limits['restraint_dist'] = lambda x: (0, np.percentile(x, 95))

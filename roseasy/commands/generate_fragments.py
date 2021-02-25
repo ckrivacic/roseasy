@@ -28,6 +28,9 @@ Options:
     -i, --input_model=MODEL
         Generate fragments for a model other than the workspace input
         model.
+
+    -x, --indices=RANGE
+        Generate fragments for a residue range instead of a loops file.
 """
 
 import subprocess

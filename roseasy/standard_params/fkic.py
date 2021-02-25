@@ -57,10 +57,14 @@ if __name__=="__main__":
     input_pose = pose_from_file(workspace.input_path(job_info))
     ca_rmsd = CA_rmsd(lm.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(lm.pose, input_pose)
+    loop = workspace.largest_loop
+    rmsd = CA_rmsd(input_pose, lm.pose, loop.start,
+            loop.end)
 
     # Add RMSDs to pose for parsing
     setPoseExtraScore(lm.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
     setPoseExtraScore(lm.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
+    setPoseExtraScore(lm.pose, 'EXTRA_METRIC_Loop_RMSD', rmsd)
 
     if not os.path.exists(workspace.output_prefix(job_info)):
         os.mkdir(workspace.output_prefix(job_info))

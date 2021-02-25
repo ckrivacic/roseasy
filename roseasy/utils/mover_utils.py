@@ -6,6 +6,30 @@ Functions to help set up movers.
 """
 
 
+def setup_movemap_from_resfile(residues_bb_movable, residues_sc_movable,
+        pdbinfo=None, chain='A'):
+    mm = rosetta.core.kinematics.MoveMap()
+    mm.set_chi(False)
+    mm.set_bb(False)
+
+    for i in residues_bb_movable:
+        if pdbinfo:
+            resi = pdbinfo.pdb2pose(chain, i)
+        else:
+            resi = i
+        mm.set_bb(i, True)
+        mm.set_chi(i, True)
+
+    for i in residues_sc_movable:
+        if pdbinfo:
+            resi = pdbinfo.pdb2pose(chain, i)
+        else:
+            resi = i
+        mm.set_chi(i, True)
+
+    return mm
+
+
 def setup_movemap(residues_bb_movable, residues_sc_movable):
     mm = rosetta.core.kinematics.MoveMap()
     mm.set_chi(False)
@@ -180,11 +204,9 @@ def generate_loops_simple(pose, focus_residue, resbuffer=3):
 
 def generate_loops_from_range(start, end, cut=None):
     '''Create a loops object from a start and finish position.'''
-    loop = rosetta.protocols.loops.Loop(start, end)
-    if cut:
-        loop.set_cut(cut)
-    else:
-        loop.set_cut(start + ((end - start)//2))
+    if not cut:
+        cut = start + ((end - start)//2)
+    loop = rosetta.protocols.loops.Loop(start, end, cut, 0.0, True)
     loops = rosetta.protocols.loops.Loops()
     loops.add_loop(loop)
     return loops
