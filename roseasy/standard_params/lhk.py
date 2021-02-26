@@ -38,8 +38,6 @@ if __name__=="__main__":
     nomutate += ','
     nomutate += str(int(start) + 1)
     nomutate += ','
-    nomutate += str(int(start) + 2)
-    nomutate += ','
     nomutate += str(int(end) - 1)
     nomutate += ','
     nomutate += str(end)
