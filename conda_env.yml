@@ -1,4 +1,4 @@
-name: roseasy
+name: roseasy_test
 channels:
   - anaconda
   - schrodinger
