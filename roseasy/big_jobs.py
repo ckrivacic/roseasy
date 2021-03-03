@@ -64,6 +64,8 @@ def submit_slurm(workspace, **params):
 #SBATCH -o {logs}.o%j
 #SBATCH -e {logs}.e%j
 #SBATCH -t {runtime}
+#SBATCH --mail-user={email}
+#SBATCH --mail-type=all
 ##SBATCH -A <acct_name>   #uncomment and insert acct name if necessary
 #------------------------------------------------------
 
@@ -86,6 +88,7 @@ $LAUNCHER_DIR/paramrun    # will run the executions in the LAUNCHER_JOB_FILE fil
           logs=os.path.join(workspace.focus_dir,
               'logs', params.get('job_name',
                   'roseasy_job')),
+          email=workspace.user_email,
           runtime=max_runtime,
           commands=job_file,
           focus_dir=workspace.focus_dir

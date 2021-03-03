@@ -87,6 +87,21 @@ class Workspace(object):
         return latest
 
     @property
+    def user_email(self):
+        '''
+        Slurm jobs require an email to be submitted with a job. This can
+        be provided in either standard_params or project_params.
+        '''
+        path = self.find_path('email')
+        if not os.path.exists(path):
+            print('WARNING: Slurm requires an email to submit a job.')
+            print('Please provide this via a file named \'email\' in project_params.')
+            raise PathNotFound(path)
+        with open(path, 'r') as f:
+            email = f.read().strip('\n')
+        return email
+
+    @property
     def slurm_submit_file(self):
         jobno = self.slurm_custom_jobno
         return os.path.join(self.focus_dir,
