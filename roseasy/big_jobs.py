@@ -86,7 +86,7 @@ $LAUNCHER_DIR/paramrun    # will run the executions in the LAUNCHER_JOB_FILE fil
           logs=os.path.join(workspace.focus_dir,
               'logs', params.get('job_name',
                   'roseasy_job')),
-          runtime=params.get(max_runtime),
+          runtime=max_runtime,
           commands=job_file,
           focus_dir=workspace.focus_dir
           )
