@@ -5,6 +5,7 @@ from roseasy import pipeline
 
 
 def submit_slurm(workspace, **params):
+    from klab import process
     """Submit a job to a workstation with a Slurm job scheduler."""
     
     # Parse some job parameters for the keyword arguments.
