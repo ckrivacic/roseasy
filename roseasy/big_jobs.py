@@ -94,7 +94,6 @@ $LAUNCHER_DIR/paramrun    # will run the executions in the LAUNCHER_JOB_FILE fil
     with open(workspace.slurm_submit_file, 'w') as f:
         f.write(submission_script)
 
-    load_module = process.check_output(('module', 'load', 'launcher'))
     status = process.check_output(('bash',workspace.slurm_submit_file)).decode('utf-8')
     print('Job submission status:')
     print(status)
