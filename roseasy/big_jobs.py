@@ -97,6 +97,9 @@ $LAUNCHER_DIR/paramrun    # will run the executions in the LAUNCHER_JOB_FILE fil
     print('Job submission status:')
     print(status)
 
+    with open(workspace.job_info_path(workspace_jobno), 'w') as file:
+        json.dump(params, file)
+
 
 def submit(script, workspace, **params):
     """Submit a job with the given parameters."""
@@ -163,11 +166,12 @@ def initiate():
     workspace = pipeline.workspace_from_dir(sys.argv[1])
     workspace.cd_to_root()
 
-    job_info = read_job_info(workspace.job_info_path(os.environ['JOB_ID']))
     try:
+        job_info = read_job_info(workspace.job_info_path(os.environ['JOB_ID']))
         job_info['job_id'] = int(os.environ['JOB_ID'])
         job_info['task_id'] = int(os.environ['SGE_TASK_ID']) - 1
     except:
+        job_info = read_job_info(workspace.slurm_custom_jobno)
         job_info['task_id'] = int(sys.argv[2])
 
     return workspace, job_info
