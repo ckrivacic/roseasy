@@ -76,7 +76,7 @@ def main():
 
     workspace = imp.get_workspace(workspace.root_dir, step)
     workspace.check_paths()
-    workspace.check_rosetta()
+    # workspace.check_rosetta()
     workspace.make_dirs()
     if args['--make-dirs']:
         sys.exit()
