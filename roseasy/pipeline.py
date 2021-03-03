@@ -70,6 +70,37 @@ class Workspace(object):
         return ''
 
     @property
+    def slurm_custom_jobno(self):
+        """
+        Return the number associated with the latest slurm command file. 
+        Slurm command files should have the format slurm_<jobnumber>, where 
+        jobnumber increments by 1 for each job submitted in a particular 
+        workspace. This function simply returns the latest <jobnumber>.
+        """
+        latest = 0
+        for f in glob.glob(self.focus_dir + '/slurm_*'):
+            f = os.path.basename(f)
+            num = int(f.split('_')[1])
+            if num > latest:
+                latest = num
+
+        return latest
+
+    @property
+    def slurm_submit_file(self):
+        jobno = self.slurm_custom_jobno
+        return os.path.join(self.focus_dir,
+                'submit_{}.slurm'.format(jobno))
+
+    @property
+    def slurm_cmd_file(self):
+        """
+        Returns the latest slurm command file.
+        """
+        jobno = self.slurm_custom_jobno
+        return os.path.join(self.focus_dir, 'slurm_{}'.format(jobno))
+
+    @property
     def focus_dir(self):
         """
         The particular directory managed by this class.  This is meant to be

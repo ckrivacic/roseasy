@@ -22,6 +22,10 @@ Options:
     --local, -l
         Run locally
 
+    --slurm, -u  
+        Submit job on a system with a Slurm task scheduler (otherwise
+        will default to SGE)
+
     --clear
         Clear existing results before submitting new job.
 
@@ -43,7 +47,7 @@ from roseasy import big_jobs
 @scripting.catch_and_print_errors()
 def main():
     args = docopt.docopt(__doc__)
-    if not args['--local']:
+    if not args['--local'] and not args['--slurm']:
         cluster.require_qsub()
 
     workspace = pipeline.workspace_from_dir(args['<workspace>'])
@@ -104,15 +108,32 @@ def main():
 
     # Submit the job
 
-    big_jobs.submit(
-            workspace.script_path, workspace,
-            nstruct=nstruct,
-            max_runtime=args['--max-runtime'],
-            max_memory=args['--max-memory'],
-            test_run=args['--test-run'],
-            job_name=script_name,
-            inputs=inputs
-            )
+    if args['--local']:
+        #big_jobs.submit_local()
+        print('Local submission not yet implemented')
+        pass
+
+    if args['--slurm']:
+        big_jobs.submit_slurm(
+                workspace, 
+                nstruct=nstruct,
+                max_runtime=args['--max-runtime'],
+                max_memory=args['--max-memory'],
+                test_run=args['--test-run'],
+                job_name=script_name,
+                inputs=inputs
+                )
+
+    else:
+        big_jobs.submit(
+                workspace.script_path, workspace,
+                nstruct=nstruct,
+                max_runtime=args['--max-runtime'],
+                max_memory=args['--max-memory'],
+                test_run=args['--test-run'],
+                job_name=script_name,
+                inputs=inputs
+                )
 
 if __name__=='__main__':
     main()

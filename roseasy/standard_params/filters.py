@@ -86,7 +86,7 @@ class FilterContainer(object):
                 sparks-x_query="/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh" 
                 frags_scoring_config="{fragment_weights_path}"
                 placeholder_seqs="/wynton/home/database/blast/blastdb/pdbaa"
-                print_to_pdb="false"
+                print_to_pdb="true"
                 n_frags="200"
                 n_candidates="1000" 
                 fragment_size="9"
