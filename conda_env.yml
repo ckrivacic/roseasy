@@ -4,7 +4,6 @@ channels:
   - schrodinger
   - conda-forge
   - defaults
-  - https://levinthal:paradox@conda.graylab.jhu.edu
 dependencies:
   - apbs=1.5=h1de35cc_3
   - atk=2.36.0=h694c41f_4
