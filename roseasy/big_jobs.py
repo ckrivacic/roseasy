@@ -41,64 +41,64 @@ def submit_slurm(workspace, **params):
     f.close()
 
 
-    # submission_script = '''#!/bin/bash
-# #
-# # Simple SLURM script for submitting multiple serial
-# # commands (e.g. parametric studies) using a script wrapper
-# # to launch the commands.
-# #
-# # To use, change this job script to accommodate
-# # running your serial application(s) in your WORKDIR
-# # directory (usually the directory of submission).
-# # Edit the commands file to specify the executions
-# # for the launcher (paramrun) to perform.
-# #-------------------------------------------------------
-# #-------------------------------------------------------
-# #
-# #         <------ Setup Parameters ------>
-# #
-# #SBATCH -J {name}
-# #SBATCH -N 1
-# #SBATCH -n 1             #use site recommended # of cores
-# #SBATCH -p skx-normal
-# #SBATCH -o {logs}.o%j
-# #SBATCH -e {logs}.e%j
-# #SBATCH -t {runtime}
-# ##SBATCH -A <acct_name>   #uncomment and insert acct name if necessary
-# #------------------------------------------------------
+    submission_script = '''#!/bin/bash
+#
+# Simple SLURM script for submitting multiple serial
+# commands (e.g. parametric studies) using a script wrapper
+# to launch the commands.
+#
+# To use, change this job script to accommodate
+# running your serial application(s) in your WORKDIR
+# directory (usually the directory of submission).
+# Edit the commands file to specify the executions
+# for the launcher (paramrun) to perform.
+#-------------------------------------------------------
+#-------------------------------------------------------
+#
+#         <------ Setup Parameters ------>
+#
+#SBATCH -J {name}
+#SBATCH -N 1
+#SBATCH -n 1             #use site recommended # of cores
+#SBATCH -p skx-normal
+#SBATCH -o {logs}.o%j
+#SBATCH -e {logs}.e%j
+#SBATCH -t {runtime}
+##SBATCH -A <acct_name>   #uncomment and insert acct name if necessary
+#------------------------------------------------------
 
-# #                         # USING SLURM; plugins defines SLURM env. vars.
-# export LAUNCHER_RMI=SLURM
-# export LAUNCHER_PLUGIN_DIR=$LAUNCHER_DIR/plugins
+#                         # USING SLURM; plugins defines SLURM env. vars.
+export LAUNCHER_RMI=SLURM
+export LAUNCHER_PLUGIN_DIR=$LAUNCHER_DIR/plugins
 
 
-# #                         # JOB_FILE is a list of executions to run
+#                         # JOB_FILE is a list of executions to run
 
-# export LAUNCHER_JOB_FILE={commands}
-# export LAUNCHER_SCHED=dynamic
-# export LAUNCHER_WORKDIR={focus_dir}
+export LAUNCHER_JOB_FILE={commands}
+export LAUNCHER_SCHED=dynamic
+export LAUNCHER_WORKDIR={focus_dir}
 
-# $LAUNCHER_DIR/paramrun    # will run the executions in the LAUNCHER_JOB_FILE file
-                          # # "JOB" is a misnomer--these are not slurm jobs
-                          # # Each line in the commands file is an
-                          # # execution.'''.format(
-          # name=params.get('job_name', 'roseasy_job'),
-          # logs=os.path.join(workspace.focus_dir,
-              # 'logs', params.get('job_name',
-                  # 'roseasy_job')) + '.',
-          # runtime=max_runtime,
-          # commands=job_file,
-          # focus_dir=workspace.focus_dir
-          # )
+$LAUNCHER_DIR/paramrun    # will run the executions in the LAUNCHER_JOB_FILE file
+                          # "JOB" is a misnomer--these are not slurm jobs
+                          # Each line in the commands file is an
+                          # execution.'''.format(
+          name=params.get('job_name', 'roseasy_job'),
+          logs=os.path.join(workspace.focus_dir,
+              'logs', params.get('job_name',
+                  'roseasy_job')) + '.',
+          runtime=max_runtime,
+          commands=job_file,
+          focus_dir=workspace.focus_dir
+          )
     
-    # with open(workspace.slurm_submit_file, 'w') as f:
-        # f.write(submission_script)
+    with open(workspace.slurm_submit_file, 'w') as f:
+        f.write(submission_script)
 
-    # status = process.check_output(('bash',workspace.slurm_submit_file)).decode('utf-8')
-    # print('Job submission status:')
-    # print(status)
+    status = process.check_output(('bash',workspace.slurm_submit_file)).decode('utf-8')
+    print('Job submission status:')
+    print(status)
 
-    submission = 
+    #submission = 
 
     with open(workspace.job_info_path(workspace_jobno), 'w') as file:
         json.dump(params, file)
