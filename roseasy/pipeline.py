@@ -89,7 +89,7 @@ class Workspace(object):
     @property
     def user_email(self):
         '''
-        Slurm jobs require an email to be submitted with a job. This can
+        Slurm jobs can accept an email to be submitted with a job. This can
         be provided in either standard_params or project_params.
         '''
         path = self.find_path('email')

@@ -18,6 +18,9 @@ Options:
     -q, --quiet
         Build the cache, but don't launch the GUI.
 
+    -n, --normalize
+        Normalize y-axis so that it is the same for all designs.
+
 This command launches a GUI designed to visualize the results for the loop 
 modeling simulations in PIP and to help you identify promising designs.  To 
 this end, the following features are supported:
@@ -130,6 +133,7 @@ def main():
             use_cache=not args['--force'],
             launch_gui=not args['--quiet'],
             fork_gui=args['--fork'],
+            normalize_to_all=args['--normalize'],
     )
 
 if __name__=='__main__':

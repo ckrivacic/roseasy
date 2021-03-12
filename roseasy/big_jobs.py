@@ -110,8 +110,8 @@ def submit(script, workspace, **params):
 
     # Make sure the rosetta symlink has been created.
 
-    if not os.path.exists(workspace.rosetta_dir):
-        raise pipeline.RosettaNotFound(workspace)
+    # if not os.path.exists(workspace.rosetta_dir):
+        # raise pipeline.RosettaNotFound(workspace)
 
     # Parse some job parameters for the keyword arguments.
 
@@ -163,25 +163,44 @@ def submit(script, workspace, **params):
     print(status, end=' ')
 
 def initiate():
-    """Return some relevant information about the currently running job."""
-    print_debug_header()
 
     workspace = pipeline.workspace_from_dir(sys.argv[1])
     workspace.cd_to_root()
 
     try:
+        print('Trying qsub')
+        """Return some relevant information about the currently running job."""
+        print_debug_header()
         job_info = read_job_info(workspace.job_info_path(os.environ['JOB_ID']))
         job_info['job_id'] = int(os.environ['JOB_ID'])
         job_info['task_id'] = int(os.environ['SGE_TASK_ID']) - 1
     except:
-        job_info = read_job_info(workspace.slurm_custom_jobno)
-        job_info['task_id'] = int(sys.argv[2])
+        try:
+            print('Trying slurm')
+            # If not qsub, slurm?
+            job_info = read_job_info(workspace.slurm_cmd_file)
+            print('Read job info')
+            job_info['task_id'] = int(sys.argv[2])
+            print('Assigned task id')
+        except:
+            print('Trying local')
+            # Apparently this is a local job.
+            # TODO: Need a better way to get job info for local jobs.
+            job_info = {
+                    'inputs': [x for x in workspace.unclaimed_inputs],
+                    'nstruct': 1,
+                    'test_run': False,
+                    'task_id': int(sys.argv[2])
+                    }
 
     return workspace, job_info
 
 def read_job_info(params_path):
-    with open(params_path) as file:
-        return json.load(file)
+    print('reading job info')
+    with open(params_path) as f:
+        print('opened {}'.format(params_path))
+        return json.load(f)
+    print('loaded')
 
 def print_debug_info():
     from datetime import datetime

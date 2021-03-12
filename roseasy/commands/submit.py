@@ -44,10 +44,62 @@ import sys, os, importlib, shutil
 from roseasy import pipeline
 from roseasy import big_jobs
 
+import subprocess
+from io import StringIO
+
+import asyncio
+import sys
+from asyncio.subprocess import PIPE
+
+@asyncio.coroutine
+def read_and_display(*cmd):
+    """Read cmd's stdout, stderr while displaying them as they arrive."""
+    # start process
+    process = yield from asyncio.create_subprocess_exec(*cmd,
+            stdout=PIPE, stderr=PIPE)
+
+    # read child's stdout/stderr concurrently
+    stdout, stderr = [], [] # stderr, stdout buffers
+    tasks = {
+        asyncio.Task(process.stdout.readline()): (
+            stdout, process.stdout, sys.stdout.buffer),
+        asyncio.Task(process.stderr.readline()): (
+            stderr, process.stderr, sys.stderr.buffer)}
+    while tasks:
+        done, pending = yield from asyncio.wait(tasks,
+                return_when=asyncio.FIRST_COMPLETED)
+        assert done
+        for future in done:
+            buf, stream, display = tasks.pop(future)
+            line = future.result()
+            if line: # not EOF
+                buf.append(line)    # save for later
+                display.write(line) # display in terminal
+                # schedule to read the next line
+                tasks[asyncio.Task(stream.readline())] = buf, stream, display
+
+    # wait for the process to exit
+    rc = yield from process.wait()
+    return rc, b''.join(stdout), b''.join(stderr)
+
+def execute(cmd):
+    print('Running command:')
+    print(' '.join(cmd))
+    import time
+
+    with subprocess.Popen(cmd, stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT, bufsize=1,
+           universal_newlines=True) as p, StringIO() as buf:
+        for line in p.stdout:
+            print(line, end='')
+            buf.write(line)
+        output = buf.getvalue()
+    rc = p.returncode
+
 @scripting.catch_and_print_errors()
 def main():
     args = docopt.docopt(__doc__)
-    if not args['--local'] and not args['--slurm']:
+    if not args['--local'] and not args['--slurm'] and not args['--make-dirs']:
         cluster.require_qsub()
 
     workspace = pipeline.workspace_from_dir(args['<workspace>'])
@@ -109,11 +161,16 @@ def main():
     # Submit the job
 
     if args['--local']:
-        #big_jobs.submit_local()
-        print('Local submission not yet implemented')
-        pass
+        print('Running locally.')
+        for n in range(1,nstruct + 1):
+            cmd = [workspace.python_path]
+            cmd.append(workspace.script_path)
+            cmd.append(workspace.focus_dir)
+            cmd.append(str(n))
+            execute(cmd)
+            # read_and_display(cmd)
 
-    if args['--slurm']:
+    elif args['--slurm']:
         big_jobs.submit_slurm(
                 workspace, 
                 nstruct=nstruct,

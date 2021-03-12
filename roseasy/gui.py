@@ -2304,7 +2304,8 @@ def get_metric_limits(metric, design=None):
     return metric_limits.get(metric, lambda x: (min(x), max(x)))
 
 
-def show_my_designs(directories, use_cache=True, launch_gui=True, fork_gui=True):
+def show_my_designs(directories, use_cache=True, launch_gui=True,
+        fork_gui=True, normalize_to_all=True):
     try:
         designs = load_designs(directories, use_cache=use_cache)
         #designs['relax_holo/01_relax_models/outputs/']._load_metrics
@@ -2319,7 +2320,8 @@ def show_my_designs(directories, use_cache=True, launch_gui=True, fork_gui=True)
             except Exception:
                 pass
 
-            gui = ShowMyDesigns(designs)
+            gui = ShowMyDesigns(designs,
+                    normalize_to_all=normalize_to_all)
             gtk.main()
 
     except KeyboardInterrupt:

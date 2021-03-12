@@ -1,4 +1,4 @@
-name: roseasy_test
+name: proteindesign
 channels:
   - anaconda
   - schrodinger

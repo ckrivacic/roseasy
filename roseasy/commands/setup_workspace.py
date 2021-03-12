@@ -28,12 +28,16 @@ def ensure_path_exists(path):
     return path
 
 class PythonPath:
-    prompt = "Path to python binary: "
+    prompt = "Path to python binary where PyRosetta is installed: "
     description = """\
-Python path: Path to your python binary. 
+Python path: Path to your python binary. Make sure PyRosetta package is
+installed. You can skip this step in the future by adding a ROSEASY_PYTHON
+variable to your environment.
     """
 
     if 'ROSEASY_PYTHON' in os.environ:
+        print('ROSEASY_PYTHON found in environment: {}'.format(
+            os.environ.get('ROSEASY_PYTHON')))
         setting_env_var = os.environ.get('ROSEASY_PYTHON')
 
     @staticmethod
@@ -259,13 +263,13 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
 
     if arguments['--remote']:
         installers = (
-                RosettaDir,
+                # RosettaDir,
                 RsyncUrl,
                 PythonPath,
         )
     else:
         installers = (
-                RosettaDir,
+                # RosettaDir,
                 InputPdb,
                 PythonPath,
                 DefaultScripts,
