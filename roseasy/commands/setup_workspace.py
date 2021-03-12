@@ -128,8 +128,11 @@ repack.  I recommend designing as few residues as possible outside the loops."""
 
     @staticmethod
     def install(workspace, resfile_path):
-        resfile_path = ensure_path_exists(resfile_path)
-        shutil.copyfile(resfile_path, workspace.resfile_path)
+        if resfile_path:
+            resfile_path = ensure_path_exists(resfile_path)
+            shutil.copyfile(resfile_path, workspace.resfile_path)
+        else:
+            pass
 
 
 class RestraintsFile:
@@ -274,6 +277,7 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
                 PythonPath,
                 DefaultScripts,
                 LoopsFile,
+                ResFile,
         )
 
     # Get the necessary settings from the user and use them to fill in the 
