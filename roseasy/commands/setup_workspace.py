@@ -277,7 +277,7 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
                 PythonPath,
                 DefaultScripts,
                 LoopsFile,
-                ResFile,
+                Resfile,
         )
 
     # Get the necessary settings from the user and use them to fill in the 
