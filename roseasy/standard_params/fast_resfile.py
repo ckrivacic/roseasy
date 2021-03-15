@@ -51,6 +51,8 @@ if __name__=='__main__':
     designable = [int(key) for key in resfile_parser.design[chain]]
     if chain in resfile_parser.repack:
         repackable = [int(key) for key in resfile_parser.repack[chain]]
+    else:
+        repackable = []
     # fd.movemap = mover_utils.setup_movemap_from_resfile(designable,
             # repackable, pdbinfo=fd.pose.pdb_info(), chain='A')
     # fd.movemap = mover_utils.setup_movemap(designable,
