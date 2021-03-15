@@ -36,7 +36,8 @@ if __name__=='__main__':
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlpahBall', 'DAlphaBall.gcc')
-    fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
+    if os.path.exists(dalphaball_path):
+        fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     fd.add_init_arg('-total_threads 1')
 
     fd.pose = pose
