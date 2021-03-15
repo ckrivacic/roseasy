@@ -45,9 +45,12 @@ if __name__=='__main__':
     readresfile = ReadResfile(workspace.resfile_path)
     taskfactory.push_back(readresfile)
     fd.task_factory = taskfactory
+    chain = 'C'
+
     resfile_parser = input_files.Resfile(input_resfile=workspace.resfile_path)
-    designable = [int(key) for key in resfile_parser.design['A']]
-    repackable = [int(key) for key in resfile_parser.repack['A']]
+    designable = [int(key) for key in resfile_parser.design[chain]]
+    if chain in resfile_parser.repack:
+        repackable = [int(key) for key in resfile_parser.repack[chain]]
     # fd.movemap = mover_utils.setup_movemap_from_resfile(designable,
             # repackable, pdbinfo=fd.pose.pdb_info(), chain='A')
     # fd.movemap = mover_utils.setup_movemap(designable,
