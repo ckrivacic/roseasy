@@ -3,6 +3,7 @@ from klab.rosetta import input_files
 from roseasy.utils import mover_utils
 from pyrosetta import init
 from pyrosetta.rosetta.protocols.rosetta_scripts import XmlObjects
+from pyrosetta.rosetta.protocols import rosetta_scripts
 from pyrosetta.rosetta.core.pose import setPoseExtraScore
 from pyrosetta import pose_from_file
 from pyrosetta.rosetta.core.scoring import CA_rmsd
@@ -21,7 +22,7 @@ def get_workspace(root_dir, step):
 if __name__=='__main__':
     workspace, job_info = big_jobs.initiate()
     test_run = job_info.get('test_run', False)
-    init('-total_threads 1')
+    init('-out:levels protocols.fixbb.LayerDesignOperation:warning')
 
     # Figure out input pdb and create a pose
     pdbpath = workspace.input_path(job_info)
@@ -31,10 +32,26 @@ if __name__=='__main__':
     fd = fastdesign.FastDesign()
     fd.pose = pose
 
-    # Create task factory and read the resfile
+    # Create task factory (tells Rosetta which positions to design and
+    # which to move) and read the resfile
     taskfactory = TaskFactory()
     readresfile = ReadResfile(workspace.resfile_path)
     taskfactory.push_back(readresfile)
+
+    ld = rosetta_scripts.XmlObjects.static_get_task_operation(
+        '''<LayerDesign name="layer_all" layer="core_boundary_surface_Nterm_Cterm" use_sidechain_neighbors="True">
+            <Nterm>
+                    <all append="DEGHKNQRST" />
+                    <all exclude="CAFILMPVWY" />
+            </Nterm>
+            <Cterm>
+                    <all append="DEGHKNQRST" />
+                    <all exclude="CAFILMPVWY" />
+            </Cterm>
+    </LayerDesign>''')
+    taskfactory.push_back(ld)
+    packertask = taskfactory.create_task_and_apply_taskoperations(pose)
+
     fd.task_factory = taskfactory
 
     # Parse resfile & create movemap
