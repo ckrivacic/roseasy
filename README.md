@@ -20,7 +20,7 @@ seaborn
 
 ### INSTALLATION
 
-The easiest way to install all the dependencies is to use the included conda environment file.
+The easiest way to install all the dependencies is to use the included conda environment file.  
 (Mac) `curl -O https://raw.githubusercontent.com/ckrivacic/roseasy/master/conda_env.yml`  
 (Linux) `wget https://raw.githubusercontent.com/ckrivacic/roseasy/master/conda_env.yml`  
 `conda env create --file conda_env.yml`
