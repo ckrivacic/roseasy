@@ -342,8 +342,8 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         # Look for the file in standard folders
         hits = []
         for dir in self.find_path_dirs:
-            path = glob.glob(os.path.join(dir, basename))
-            hits.extend(os.path.abspath(path))
+            paths = glob.glob(os.path.join(dir, basename))
+            hits.extend([os.path.abspath(path) for path in paths])
 
         return hits
 
