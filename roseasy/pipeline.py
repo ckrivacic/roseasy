@@ -688,12 +688,14 @@ class DesignWorkspace(BigJobWorkspace):
     @property
     def script_path(self):
         return os.path.join(self.focus_dir, 'run.py')
+
     def input_path(self, job_info):
-        if self.step > 1:
-            bb_models = job_info['inputs']
+        bb_models = job_info['inputs']
+        if len(bb_models) > 0:
             bb_model = bb_models[job_info['task_id'] % len(bb_models)]
             return os.path.join(self.input_dir, bb_model)
         else:
+            print('No inputs found; using workspace input pdb as sole input.')
             return self.input_pdb_path
 
     @property
@@ -714,7 +716,7 @@ class DesignWorkspace(BigJobWorkspace):
             return self.output_dir + '/'
 
     def output_suffix(self, job_info):
-        if self.step > 1:
+        if len(job_info['inputs']) > 0:
             design_id = job_info['task_id'] // len(job_info['inputs'])
         else:
             design_id = job_info['task_id']
