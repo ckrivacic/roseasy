@@ -231,7 +231,7 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         return Loop(*largest_segment)
 
     @property
-    def ligand_params_path(self):
+    def ligand_params_paths(self):
         return self.find_all_paths('*.params')
 
     @property
