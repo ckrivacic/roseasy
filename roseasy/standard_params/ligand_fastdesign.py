@@ -10,6 +10,7 @@ from pyrosetta import Pose
 from pyrosetta.rosetta.protocols.rosetta_scripts import XmlObjects
 from pyrosetta.rosetta.core.pose import setPoseExtraScore
 from pyrosetta import pose_from_file
+from pyrosetta import pose_from_pdb
 from pyrosetta import generate_nonstandardresidue_set
 from pyrosetta.rosetta.core.scoring import CA_rmsd
 from pyrosetta.rosetta.core.scoring import all_atom_rmsd
@@ -26,13 +27,13 @@ if __name__=='__main__':
     test_run = job_info.get('test_run', False)
     init()
 
-    # Figure out input pdb and create a pose
-    pdbpath = workspace.input_path(job_info)
     # Create residue typeset
     pose = Pose()
     typeset = generate_nonstandardresidue_set(pose,
             workspace.ligand_params_paths)
-    pose = pose_from_file(pose, pdbpath)
+    # Figure out input pdb and create a pose
+    pdbpath = workspace.input_path(job_info)
+    pose = pose_from_pdb(pose, pdbpath)
 
 
     # Create FastDesign object
