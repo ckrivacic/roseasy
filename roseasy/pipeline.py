@@ -231,6 +231,10 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         return Loop(*largest_segment)
 
     @property
+    def ligand_params_path(self):
+        return self.find_all_paths('*.params')
+
+    @property
     def resfile_path(self):
         return self.find_path('resfile')
 
@@ -328,6 +332,20 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
                     os.path.join(self.standard_params_dir, self.focus_name),
                     self.standard_params_dir,
             ]
+
+    def find_all_paths(self, basename):
+        """
+        Looks in a few places for any files with a given name or
+        pattern and returns them as a list.
+        """
+
+        # Look for the file in standard folders
+        hits = []
+        for dir in self.find_path_dirs:
+            path = glob.glob(os.path.join(dir, basename))
+            hits.extend(os.path.abspath(path))
+
+        return hits
 
     def find_path(self, basename, install_dir=None):
         """

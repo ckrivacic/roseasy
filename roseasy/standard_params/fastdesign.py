@@ -21,7 +21,7 @@ def get_workspace(root_dir, step):
 if __name__=='__main__':
     workspace, job_info = big_jobs.initiate()
     test_run = job_info.get('test_run', False)
-    init('-total_threads 1')
+    init()
 
     # Figure out input pdb and create a pose
     pdbpath = workspace.input_path(job_info)
