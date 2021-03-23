@@ -211,9 +211,15 @@ Installing default scripts."""
         python = glob.glob(script_dir + '/*.py')
         yaml = glob.glob(script_dir + '/*.yml')
         wts = glob.glob(script_dir + '/*.wts')
+        sho = glob.glob(script_dir + '/*.sho')
         for script in python + yaml + wts:
             script_path = os.path.join(script_dir, script)
             workspace_path = os.path.join(workspace.standard_params_dir,
+                    os.path.basename(script))
+            shutil.copyfile(script_path, workspace_path)
+        for script in sho:
+            script_path = os.path.join(script_dir, script)
+            workspace_path = os.path.join(workspace.root_dir,
                     os.path.basename(script))
             shutil.copyfile(script_path, workspace_path)
 
