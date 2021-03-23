@@ -120,6 +120,24 @@ added to subdirectories to apply them to only specific steps."""
             pass
 
 
+class ParamsFile:
+    prompt = "Path to any ligand params files: "
+    description = """\
+Loops file: A file specifying scoring parameters for ligands not
+recognized by Rosetta by default. Leave blank if you don't have any params files
+you want to install or if you want to add one later. """
+
+    @staticmethod
+    def install(workspace, params_path):
+        if params_path:
+            params_path = ensure_path_exists(params_path)
+            shutil.copyfile(params_path,
+                    os.path.join(workspace.root_dir, 'project_params',
+                        os.path.basename(params_path)))
+        else:
+            pass
+
+
 class Resfile:
     prompt = "Path to resfile: "
     description = """\
@@ -278,6 +296,7 @@ Design '{0}' already exists.  Use '-o' to overwrite.""", workspace.root_dir)
                 DefaultScripts,
                 LoopsFile,
                 Resfile,
+                ParamsFile,
         )
 
     # Get the necessary settings from the user and use them to fill in the 

@@ -232,6 +232,9 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
 
     @property
     def ligand_params_paths(self):
+        '''Finds all ligand params files, rather than one per step, 
+        since there it should be minimally impactful to  load extra
+        residue typesets.'''
         return self.find_all_paths('*.params')
 
     @property
