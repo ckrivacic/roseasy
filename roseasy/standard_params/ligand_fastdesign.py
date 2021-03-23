@@ -33,7 +33,7 @@ if __name__=='__main__':
             workspace.ligand_params_paths)
     # Figure out input pdb and create a pose
     pdbpath = workspace.input_path(job_info)
-    pose = pose_from_file(pose, pdbpath)
+    pose_from_file(pose, typeset, pdbpath)
 
 
     # Create FastDesign object
