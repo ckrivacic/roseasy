@@ -689,11 +689,12 @@ class DesignWorkspace(BigJobWorkspace):
     def script_path(self):
         return os.path.join(self.focus_dir, 'run.py')
     def input_path(self, job_info):
-        if self.step > 1:
-            bb_models = job_info['inputs']
+        bb_models = job_info['inputs']
+        if len(bb_models) > 0:
             bb_model = bb_models[job_info['task_id'] % len(bb_models)]
             return os.path.join(self.input_dir, bb_model)
         else:
+            print('No inputs found; using workspace input pdb as sole input.')
             return self.input_pdb_path
 
     @property
@@ -767,11 +768,12 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def script_path(self):
         return os.path.join(self.focus_dir, 'run.py')
     def input_path(self, job_info):
-        if self.step > 1:
-            models = job_info['inputs']
-            model = models[job_info['task_id'] % len(models)]
-            return os.path.join(self.input_dir, model)
+        bb_models = job_info['inputs']
+        if len(bb_models) > 0:
+            bb_model = bb_models[job_info['task_id'] % len(bb_models)]
+            return os.path.join(self.input_dir, bb_model)
         else:
+            print('No inputs found; using workspace input pdb as sole input.')
             return self.input_pdb_path
     
     def input_name(self, job_info):
