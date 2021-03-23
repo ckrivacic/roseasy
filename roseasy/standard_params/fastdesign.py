@@ -39,7 +39,7 @@ if __name__=='__main__':
 
     # Parse resfile & create movemap
     resfile_parser = input_files.Resfile(input_resfile=workspace.resfile_path)
-    chain = 'C'
+    chain = 'A'
     designable = [int(key) for key in resfile_parser.design[chain]]
     if chain in resfile_parser.repack:
         repackable = [int(key) for key in resfile_parser.repack[chain]]
