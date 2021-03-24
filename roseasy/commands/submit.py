@@ -143,7 +143,7 @@ def main():
             x for x in workspace.unclaimed_inputs
             ]
 
-    if step==1 or len(inputs)==0:
+    len(inputs)==0:
         num_inputs = 1
     else:
         num_inputs = len(inputs)

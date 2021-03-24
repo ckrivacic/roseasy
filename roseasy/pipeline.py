@@ -462,8 +462,7 @@ class BigJobWorkspace(Workspace):
 
     @property
     def input_paths(self):
-        return glob.glob(os.path.join(self.input_dir, '*.pdb.gz')) +
-                glob.glob(os.path.join(self.input_dir, '*.pdb'))
+        return glob.glob(os.path.join(self.input_dir, '*.pdb.gz')) + glob.glob(os.path.join(self.input_dir, '*.pdb'))
 
     def input_path(self, job_info):
         raise NotImplementedError
