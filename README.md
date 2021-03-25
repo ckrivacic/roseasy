@@ -152,3 +152,7 @@ To install RosEasy:
 *Local:*  
 `roseasy fetch test`  
 `roseasy plot test/02/outputs/*`  
+
+### ACKNOWLEDGEMENTS
+
+RosEasy is inspired by the code for [Pull Into Place](https://github.com/kortemme-lab/pull_into_place), developed by Kale Kundert and Cody Krivacic, and the desire to generalize its workspace paradigm to any Rosetta method.
