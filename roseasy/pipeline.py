@@ -571,7 +571,7 @@ class WithFragmentLibs(object):
         return os.path.join(self.focus_dir, 'fragments')
 
     def fragments_tag(self, input_path):
-        return os.path.basename(input_path)[:4]
+        return '.'.join(os.path.basename(input_path).split('.')[:-1])
 
     def fragments_missing(self, input_path):
         tag = self.fragments_tag(input_path)
