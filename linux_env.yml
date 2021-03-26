@@ -95,4 +95,3 @@ dependencies:
   - zstd=1.4.9=ha95c52a_0
   - pip:
     - klab==0.4.1
-prefix: /home/cody/software/anaconda3/envs/proteindesign
