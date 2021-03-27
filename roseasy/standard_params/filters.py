@@ -50,8 +50,8 @@ class FilterContainer(object):
           />
           '''
 
-        #filters = [buns, packstat, prepro, exposed_hydrophobics]
-        filters = [packstat, prepro, exposed_hydrophobics]
+        filters = [buns_all, packstat, prepro, exposed_hydrophobics]
+        # filters = [packstat, prepro, exposed_hydrophobics]
         if os.path.exists(os.path.join(
             self.workspace.rosetta_dir,
             'source',
