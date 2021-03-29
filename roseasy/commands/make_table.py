@@ -19,7 +19,7 @@ Options:
         Only consider designs where the lowest scoring decoy has a restraint
         satisfaction distance less than the given threshold.
 
-    -x, --reasonable EXPR   [default: restraint_dist < 1.2]
+    -x, --reasonable EXPR
         Only consider designs where the lowest scoring decoy passes the given 
         condition, which must be in the format understood by pandas.query().
 
