@@ -5,6 +5,58 @@ import random
 Functions to help set up movers.
 """
 
+def fold_tree_from_resfile(workspace, pose):
+    from klab.rosetta import input_files
+    resfile_parser = input_files.Resfile(input_resfile=workspace.resfile_path)
+    ft_dict = {}
+
+    for chain in resfile_parser.design:
+        designable = [int(key) for key in resfile_parser.design[chain]]
+        if chain in resfile_parser.repack:
+            repackable = [int(key) for key in resfile_parser.repack[chain]]
+            print(repackable)
+        else:
+            repackable = []
+
+        designable.extend(repackable)
+        if designable:
+            start = pose.pdb_info().pdb2pose(chain, min(designable))
+            end = pose.pdb_info().pdb2pose(chain, max(designable))
+            mid = int((start + end)/2)
+            ft_dict[chain] = (start, mid, end)
+
+    print(ft_dict)
+    ft = FoldTree()
+    # go through each chain
+    jumpno = 1
+    for chain in range(1, pose.num_chains() + 1):
+        chainstart = pose.chain_begin(chain)
+        chainstop = pose.chain_end(chain)
+
+        pdbchain = pose.pdb_info().pose2pdb(chainstart).split(' ')[1]
+        print(pdbchain)
+        if pdbchain in ft_dict:
+            # Edge to start of design region
+            ft.add_edge(chainstart, ft_dict[pdbchain][0], -1)
+            # Edge from start of design region to middle of design region
+            ft.add_edge(ft_dict[pdbchain][0], ft_dict[pdbchain][1], -1)
+            # Edge from end of design region to end of chain
+            ft.add_edge(ft_dict[pdbchain][2], chainstop, -1)
+            # Edge from end of design region to middle of chain
+            ft.add_edge(ft_dict[pdbchain][2], ft_dict[pdbchain][1], -1)
+            # Jump from start of design region to end of design region
+            ft.add_edge(ft_dict[pdbchain][0], ft_dict[pdbchain][2], jumpno)
+            jumpno += 1
+        else:
+            ft.add_edge(chainstart, chainstop, -1)
+
+        # Add jump between chain and next chain
+        if chain < pose.num_chains():
+            ft.add_edge(chainstop, chainstop+1, jumpno)
+            jumpno += 1
+
+    return ft
+
 
 def setup_movemap_from_resfile(residues_bb_movable, residues_sc_movable,
         pdbinfo=None, chain='A'):
