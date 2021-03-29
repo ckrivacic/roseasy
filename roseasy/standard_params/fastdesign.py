@@ -14,11 +14,13 @@ from pyrosetta.rosetta.core.pack.task.operation import ReadResfile
 from pyrosetta import create_score_function
 from roseasy.movers import fastdesign
 #from roseasy.standard_params.filters import FilterContainer
+import time
 
 def get_workspace(root_dir, step):
     return pipeline.DesignWorkspace(root_dir, step)
 
 if __name__=='__main__':
+    start_time = time.time()
     workspace, job_info = big_jobs.initiate()
     test_run = job_info.get('test_run', False)
     init()
@@ -71,6 +73,9 @@ if __name__=='__main__':
     # the PDB file.
     setPoseExtraScore(fd.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
     setPoseExtraScore(fd.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
+
+    total_time = time.time() - start_time
+    setPoseExtraScore(fd.pose, 'EXTRA_METRIC_Run time', total_time)
 
     # Save final pose as a pdb file.
     input_name = os.path.basename(pdbpath).split(".")[0]
