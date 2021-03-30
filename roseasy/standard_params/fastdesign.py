@@ -32,6 +32,7 @@ if __name__=='__main__':
     # Create FastDesign object
     fd = fastdesign.FastDesign()
     fd.pose = pose
+    fd.add_init_arg('-ex1 -ex2 -use_input_sc -ex1aro')
 
     # Create task factory and read the resfile
     taskfactory = TaskFactory()
