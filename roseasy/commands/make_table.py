@@ -600,19 +600,20 @@ def find_reasonable_designs(workspaces, condition=None, verbose=False):
     return designs
 
 
-def designs_from_list(workspace, design_list, verbose=False):
+def designs_from_list(workspaces, design_list, verbose=False):
     """
     Return a list of designs from a list of design names (names should
     be comma-separated format, i.e. "###,###,###")
     """
     design_list = [int(x) for x in design_list.split(',')]
     designs = []
-    for name in design_list:
-        folder = os.path.join(workspace.output_dir, "{0:04}".format(name))
-        if verbose:
-            print('  ' + folder)
-        design = structures.Design(folder)
-        designs.append(design)
+    for workspace in workspaces:
+        for name in design_list:
+            folder = os.path.join(workspace.output_dir, "{0:04}".format(name))
+            if verbose:
+                print('  ' + folder)
+            design = structures.Design(folder)
+            designs.append(design)
 
     return designs
 
