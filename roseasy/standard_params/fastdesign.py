@@ -46,10 +46,10 @@ if __name__=='__main__':
     designable = []
     repackable = []
     for chain in resfile_parser.design:
-        designable.extend([int(key) for key in
+        designable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
             resfile_parser.design[chain]])
     for chain in resfile_parser.repack:
-        repackable.extend([int(key) for key in
+        repackable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
             resfile_parser.repack[chain]])
     fd.setup_default_movemap(bb=designable.extend(repackable),
             chi=designable.extend(repackable))
