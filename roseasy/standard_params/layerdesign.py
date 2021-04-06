@@ -59,12 +59,14 @@ if __name__=='__main__':
 
     # Parse resfile & create movemap
     resfile_parser = input_files.Resfile(input_resfile=workspace.resfile_path)
-    chain = 'A'
-    designable = [int(key) for key in resfile_parser.design[chain]]
-    if chain in resfile_parser.repack:
-        repackable = [int(key) for key in resfile_parser.repack[chain]]
-    else:
-        repackable = []
+    designable = []
+    repackable = []
+    for chain in resfile_parser.design:
+        designable.extend([int(key) for key in
+            resfile_parser.design[chain]])
+    for chain in resfile_parser.repack:
+        repackable.extend([int(key) for key in
+            resfile_parser.repack[chain]])
     fd.setup_default_movemap(bb=designable.extend(repackable),
             chi=designable.extend(repackable))
 
