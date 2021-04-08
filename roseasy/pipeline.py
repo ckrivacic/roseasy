@@ -823,7 +823,7 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
             return self.output_dir + '/'
 
     def output_suffix(self, job_info):
-        if self.step > 1:
+        if len(job_info['inputs']) > 0:
             design_id = job_info['task_id'] // len(job_info['inputs'])
         else:
             design_id = job_info['task_id']
