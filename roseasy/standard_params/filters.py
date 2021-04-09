@@ -4,11 +4,12 @@ import os
 
 class FilterContainer(object):
     def __init__(self, workspace, pose, task_id='0000', score_fragments=False,
-            test_run=False):
+            test_run=False, fragment_full_pose=False):
         self.workspace = workspace
         self.task_id = task_id
         self.pose = pose
         self.filters = self.get_default_filters(score_fragments=score_fragments, test_run=test_run)
+        self.fragment_full_pose = fragment_full_pose
 
     def get_default_filters(self, score_fragments=False,
             test_run=False):
@@ -66,6 +67,12 @@ class FilterContainer(object):
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
         if score_fragments:
+            if fragment_full_pose:
+                start = 1
+                stop = pose.size() - 10
+            else:
+                start = workspace.largest_loop.start
+                stop = workspace.largest_loop.end
 
             fsf = '''
               <FragmentScoreFilter
@@ -92,8 +99,8 @@ class FilterContainer(object):
                 fragment_size="9"
                 vall_path="{vall_path}"
               />
-            '''.format(largest_loop_start=self.workspace.largest_loop.start,
-                    largest_loop_end=self.workspace.largest_loop.end,
+            '''.format(largest_loop_start=.start,
+                    largest_loop_end=stop,
                     seqprof_dir=self.workspace.seqprof_dir, task_id=self.task_id,
                     fragment_weights_path=self.workspace.fragment_weights_path,
                     vall_path=self.workspace.rosetta_vall_path(test_run))

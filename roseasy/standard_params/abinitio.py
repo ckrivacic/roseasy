@@ -120,7 +120,8 @@ def main():
             all_atom_rmsd)
 
     filters = workspace.get_filters(pose, task_id=job_info['task_id'],
-            score_fragments=not test_run, test_run=test_run)
+            score_fragments=not test_run, test_run=test_run,
+            fragment_full_pose=True)
     filters.run_filters()
 
     total_time = time.time() - start_time
