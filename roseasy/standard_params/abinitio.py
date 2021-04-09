@@ -101,7 +101,14 @@ def main():
     else:
         subprocess.call(relax_abinitio)
 
-    init()
+    rosettadir = '/wynton/home/kortemme/krivacic/rosetta'
+    init_args = []
+    dalphaball_path = os.path.join(rosettadir, 'source',
+            'external', 'DAlpahBall', 'DAlphaBall.gcc')
+    init_args.append('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
+    init_args.extend(workspace.fragments_flags(pdbpath))
+    init(' '.join(init_args))
+
     pose = pose_from_file(outpath)
     input_pose = pose_from_file(pdbpath)
 
