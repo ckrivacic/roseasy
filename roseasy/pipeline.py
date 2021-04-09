@@ -816,11 +816,8 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
         return os.path.join(self.output_dir, basename)
 
     def output_prefix(self, job_info):
-        if self.step > 1:
-            input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
-            return os.path.join(self.output_dir, input_model) + '/'
-        else:
-            return self.output_dir + '/'
+        input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
+        return os.path.join(self.output_dir, input_model) + '/'
 
     def output_suffix(self, job_info):
         if len(job_info['inputs']) > 0:
