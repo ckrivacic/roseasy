@@ -8,14 +8,22 @@ class FilterContainer(object):
         self.workspace = workspace
         self.task_id = task_id
         self.pose = pose
-        self.filters = self.get_default_filters(score_fragments=score_fragments, test_run=test_run)
         self.fragment_full_pose = fragment_full_pose
+        self.filters = self.get_default_filters(score_fragments=score_fragments, test_run=test_run)
 
     def get_default_filters(self, score_fragments=False,
             test_run=False):
         writer = '''
         <WriteFiltersToPose name="writer" prefix="EXTRA_SCORE_"/>
         '''
+
+        npsa = '''
+        <BuriedSurfaceArea name="Buried Nonpolar Surface Area [[+]]"
+        select_only_FAMILYVW="true" filter_out_low="false"
+        atom_mode="all_atoms"
+        confidence="1.0"
+        />
+'''
 
         buns_all = '''
         <BuriedUnsatHbonds name="Buried Unsat [[-]]"
@@ -51,7 +59,7 @@ class FilterContainer(object):
           />
           '''
 
-        filters = [buns_all, packstat, prepro, exposed_hydrophobics]
+        filters = [npsa, buns_all, packstat, prepro, exposed_hydrophobics]
         # filters = [packstat, prepro, exposed_hydrophobics]
         if os.path.exists(os.path.join(
             self.workspace.rosetta_dir,
@@ -67,9 +75,9 @@ class FilterContainer(object):
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
         if score_fragments:
-            if fragment_full_pose:
+            if self.fragment_full_pose:
                 start = 1
-                stop = pose.size() - 10
+                stop = self.pose.size() - 10
             else:
                 start = workspace.largest_loop.start
                 stop = workspace.largest_loop.end
@@ -99,7 +107,7 @@ class FilterContainer(object):
                 fragment_size="9"
                 vall_path="{vall_path}"
               />
-            '''.format(largest_loop_start=.start,
+            '''.format(largest_loop_start=start,
                     largest_loop_end=stop,
                     seqprof_dir=self.workspace.seqprof_dir, task_id=self.task_id,
                     fragment_weights_path=self.workspace.fragment_weights_path,
