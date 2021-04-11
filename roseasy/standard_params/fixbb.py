@@ -34,6 +34,7 @@ if __name__=='__main__':
     fd = fastdesign.FastDesign()
     fd.pose = pose
     fd.add_init_arg('-ex1 -ex2 -use_input_sc -ex1aro')
+    fd.add_init_arg('-total_threads 1')
 
     # Create task factory and read the resfile
     taskfactory = TaskFactory()
