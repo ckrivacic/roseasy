@@ -76,10 +76,12 @@ if __name__=='__main__':
             )
     poselast = pose_from_file(output_prefix + '_last.pdb')
     poselow = pose_from_file(output_prefix + '_low.pdb')
+    sfxn = create_score_function('ref2015')
 
     for tup in [(poselast, '_last'), (poselow, '_low')]:
         # Create new pose from input file for comparison
         pose = tup[0]
+        sfxn(pose)
         suffix = tup[1]
         input_pose = pose_from_file(pdbpath)
         # Calculate several different types of RMSD
