@@ -372,7 +372,7 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
 
         return hits
 
-        def check_paths(self):
+    def check_paths(self):
         required_paths = [
                 self.input_pdb_path]
         '''
