@@ -571,7 +571,11 @@ class WithFragmentLibs(object):
         return os.path.join(self.focus_dir, 'fragments')
 
     def fragments_tag(self, input_path):
-        return '.'.join(os.path.basename(input_path).split('.')[:-1])
+        pathsplit = os.path.basename(input_path).split('.')
+        if input_path.endswith('.pdb.gz'):
+            return '.'.join(pathsplit[:-2])
+        else:
+            return '.'.join(os.path.basename(input_path).split('.')[:-1])
 
     def fragments_missing(self, input_path):
         tag = self.fragments_tag(input_path)

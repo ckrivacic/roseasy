@@ -9,15 +9,6 @@ class FilterContainer(object):
         self.task_id = task_id
         self.pose = pose
         self.filters = self.get_default_filters(score_fragments=score_fragments, test_run=test_run)
-        if 'TMPDIR' in os.environ:
-            os_tmp = os.environ['TMPDIR']
-        elif os.path.exists('/scratch'):
-            os_tmp = os.path.join('/scratch', os.environ['USER'])
-        else:
-            os_tmp = workspace.seqprof_dir
-        self.tempdir = os.path.join(os_tmp, str(self.task_id))
-        if not os.path.exists(self.tempdir):
-            os.makedirs(self.tempdir, exist_ok=True)
 
     def get_default_filters(self, score_fragments=False,
             test_run=False):
@@ -103,7 +94,7 @@ class FilterContainer(object):
               />
             '''.format(largest_loop_start=self.workspace.largest_loop.start,
                     largest_loop_end=self.workspace.largest_loop.end,
-                    seqprof_dir=self.tempdir, task_id=self.task_id,
+                    seqprof_dir=self.workspace.seqprof_dir, task_id=self.task_id,
                     fragment_weights_path=self.workspace.fragment_weights_path,
                     vall_path=self.workspace.rosetta_vall_path(test_run))
                 #placeholder_seqs="/wynton/home/kortemme/krivacic/software/fragments/derived_data/pdb_seqres.txt"
@@ -126,7 +117,7 @@ class FilterContainer(object):
                 import subprocess
                 # Now get rid of the empty .fasta.pssm file it creates
                 # and try again in Python
-                rempath = os.path.join(self.tempdir,
+                rempath = os.path.join(self.workspace.seqprof_dir,
                         '{}.fasta.phipsi'.format(self.task_id))
                 print('REMOVING {}'.format(rempath))
                 os.remove(rempath)
@@ -136,7 +127,7 @@ class FilterContainer(object):
                 print(os.listdir(os.getcwd()))
                 cmd = [
                         '/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh',
-                        os.path.join(self.tempdir, '{}.fasta'.format(self.task_id)),
+                        os.path.join(self.workspace.seqprof_dir, '{}.fasta'.format(self.task_id)),
                         ]
 
                 process = subprocess.run(cmd,
