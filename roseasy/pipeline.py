@@ -231,13 +231,6 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         return Loop(*largest_segment)
 
     @property
-    def ligand_params_paths(self):
-        '''Finds all ligand params files, rather than one per step, 
-        since there it should be minimally impactful to  load extra
-        residue typesets.'''
-        return self.find_all_paths('*.params')
-
-    @property
     def resfile_path(self):
         return self.find_path('resfile')
 
@@ -335,20 +328,6 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
                     os.path.join(self.standard_params_dir, self.focus_name),
                     self.standard_params_dir,
             ]
-
-    def find_all_paths(self, basename):
-        """
-        Looks in a few places for any files with a given name or
-        pattern and returns them as a list.
-        """
-
-        # Look for the file in standard folders
-        hits = []
-        for dir in self.find_path_dirs:
-            paths = glob.glob(os.path.join(dir, basename))
-            hits.extend([os.path.abspath(path) for path in paths])
-
-        return hits
 
     def find_path(self, basename, install_dir=None):
         """
@@ -483,7 +462,7 @@ class BigJobWorkspace(Workspace):
 
     @property
     def input_paths(self):
-        return glob.glob(os.path.join(self.input_dir, '*.pdb.gz'))
+        return glob.glob(os.path.join(self.input_dir, '*.pdb.gz')) + glob.glob(os.path.join(self.input_dir, '*.pdb'))
 
     def input_path(self, job_info):
         raise NotImplementedError
@@ -592,7 +571,11 @@ class WithFragmentLibs(object):
         return os.path.join(self.focus_dir, 'fragments')
 
     def fragments_tag(self, input_path):
-        return os.path.basename(input_path)[:4]
+        pathsplit = os.path.basename(input_path).split('.')
+        if input_path.endswith('.pdb.gz'):
+            return '.'.join(pathsplit[:-2])
+        else:
+            return '.'.join(os.path.basename(input_path).split('.')[:-1])
 
     def fragments_missing(self, input_path):
         tag = self.fragments_tag(input_path)
@@ -709,7 +692,6 @@ class DesignWorkspace(BigJobWorkspace):
     @property
     def script_path(self):
         return os.path.join(self.focus_dir, 'run.py')
-
     def input_path(self, job_info):
         bb_models = job_info['inputs']
         if len(bb_models) > 0:
@@ -737,7 +719,7 @@ class DesignWorkspace(BigJobWorkspace):
             return self.output_dir + '/'
 
     def output_suffix(self, job_info):
-        if len(job_info['inputs']) > 0:
+        if self.step > 1:
             design_id = job_info['task_id'] // len(job_info['inputs'])
         else:
             design_id = job_info['task_id']
@@ -790,11 +772,12 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
     def script_path(self):
         return os.path.join(self.focus_dir, 'run.py')
     def input_path(self, job_info):
-        if self.step > 1:
-            models = job_info['inputs']
-            model = models[job_info['task_id'] % len(models)]
-            return os.path.join(self.input_dir, model)
+        bb_models = job_info['inputs']
+        if len(bb_models) > 0:
+            bb_model = bb_models[job_info['task_id'] % len(bb_models)]
+            return os.path.join(self.input_dir, bb_model)
         else:
+            print('No inputs found; using workspace input pdb as sole input.')
             return self.input_pdb_path
     
     def input_name(self, job_info):
@@ -816,11 +799,14 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
         return os.path.join(self.output_dir, basename)
 
     def output_prefix(self, job_info):
-        input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
-        return os.path.join(self.output_dir, input_model) + '/'
+        if self.step > 1:
+            input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
+            return os.path.join(self.output_dir, input_model) + '/'
+        else:
+            return self.output_dir + '/'
 
     def output_suffix(self, job_info):
-        if len(job_info['inputs']) > 0:
+        if self.step > 1:
             design_id = job_info['task_id'] // len(job_info['inputs'])
         else:
             design_id = job_info['task_id']
