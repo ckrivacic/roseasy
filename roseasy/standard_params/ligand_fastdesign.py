@@ -40,6 +40,10 @@ if __name__=='__main__':
     fd = fastdesign.FastDesign()
     fd.pose = pose
 
+    # Add init arguments
+    fd.add_init_arg('-ex1 -ex2 -use_input_sc -ex1aro')
+    fd.add_init_arg('-total_threads 1')
+
     # Create task factory and read the resfile
     taskfactory = TaskFactory()
     readresfile = ReadResfile(workspace.resfile_path)
@@ -48,15 +52,17 @@ if __name__=='__main__':
 
     # Parse resfile & create movemap
     resfile_parser = input_files.Resfile(input_resfile=workspace.resfile_path)
-    chain = 'A'
-    designable = [int(key) for key in resfile_parser.design[chain]]
-    if chain in resfile_parser.repack:
-        repackable = [int(key) for key in resfile_parser.repack[chain]]
-    else:
-        repackable = []
+
+    designable = []
+    repackable = []
+    for chain in resfile_parser.design:
+        designable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
+            resfile_parser.design[chain]])
+    for chain in resfile_parser.repack:
+        repackable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
+            resfile_parser.repack[chain]])
     fd.setup_default_movemap(bb=designable.extend(repackable),
             chi=designable.extend(repackable))
-
     if test_run:
         fd.rounds = 1
 
