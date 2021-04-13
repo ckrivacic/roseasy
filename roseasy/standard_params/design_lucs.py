@@ -172,7 +172,7 @@ if __name__=='__main__':
     # score_fragments = os.path.exists(workspace.loops_path)
     score_fragments=True
 
-    filters = workspace.get_filters(pdbpath, fd.pose,
+    filters = workspace.get_filters(fd.pose,
             task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
