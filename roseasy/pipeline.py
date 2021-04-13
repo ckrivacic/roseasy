@@ -358,6 +358,7 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         # If we didn't find the file, return the path to where we'd like it to 
         # be installed.
         return os.path.join(install_dir or self.preferred_install_dir, basename)
+
     def find_all_paths(self, basename):
         """
         Looks in a few places for any files with a given name or
