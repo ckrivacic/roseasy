@@ -4,11 +4,13 @@ import os
 
 class FilterContainer(object):
     def __init__(self, workspace, pose, task_id='0000', score_fragments=False,
-            test_run=False, fragment_full_pose=False):
+            test_run=False, fragment_full_chain=None):
         self.workspace = workspace
         self.task_id = task_id
         self.pose = pose
-        self.fragment_full_pose = fragment_full_pose
+        # the optional fragment_full_pose argument should take a chain
+        # integer as the argument
+        self.fragment_full_chain = fragment_full_chain
         self.filters = self.get_default_filters(score_fragments=score_fragments, test_run=test_run)
 
     def get_default_filters(self, score_fragments=False,
@@ -75,9 +77,10 @@ class FilterContainer(object):
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
         if score_fragments:
-            if self.fragment_full_pose:
-                start = 1
-                stop = self.pose.size() - 10
+            if self.fragment_full_chain:
+                start = self.pose.chain_begin(self.fragment_full_chain)
+                stop = self.pose.chain_end(self.fragment_full_chain) - 9
+
             else:
                 start = workspace.largest_loop.start
                 stop = workspace.largest_loop.end
