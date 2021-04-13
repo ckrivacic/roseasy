@@ -23,12 +23,9 @@ if __name__=='__main__':
     start_time = time.time()
     workspace, job_info = big_jobs.initiate()
     test_run = job_info.get('test_run', False)
-    init()
 
     # Figure out input pdb and create a pose
     pdbpath = workspace.input_path(job_info)
-    pose = pose_from_file(pdbpath)
-
     temp_outdir = os.path.join(
             workspace.focus_dir, 'cm_outputs'
             )
@@ -40,14 +37,17 @@ if __name__=='__main__':
     init_args = []
     init_args.append('-ex1 -ex2 -use_input_sc -ex1aro -extrachi_cutoff 0')
     init_args.append('-s {}'.format(pdbpath))
+    print('PARAM PATHS:')
+    print(workspace.ligand_params_paths)
     for path in workspace.ligand_params_paths:
         init_args.append('-extra_res_fa {}'.format(path))
+        print('Appended extra res')
     if len(workspace.ligand_params_paths) > 0:
         init_args.append('-coupled_moves:ligand_mode true')
     init_args.append('-coupled_moves:output_prefix {}'.format(
         os.path.basename(pdbpath).split('.')[0] +
         workspace.output_suffix(job_info)))
-    # init_args.append('-out:pdb_gz')
+
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlpahBall', 'DAlphaBall.gcc')
@@ -56,6 +56,7 @@ if __name__=='__main__':
     init_args.append('-resfile {}'.format(workspace.resfile_path))
 
     init(' '.join(init_args))
+    pose = pose_from_file(pdbpath)
 
     # Create task factory and read the resfile
     # taskfactory = TaskFactory()
