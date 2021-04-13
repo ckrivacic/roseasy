@@ -231,6 +231,13 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         return Loop(*largest_segment)
 
     @property
+    def ligand_params_paths(self):
+         '''Finds all ligand params files, rather than one per step,
+         since there it should be minimally impactful to  load extra
+         residue typesets.'''
+         return self.find_all_paths('*.params')
+
+    @property
     def resfile_path(self):
         return self.find_path('resfile')
 
@@ -351,8 +358,21 @@ Expected to find a file matching '{0}'.  Did you forget to compile rosetta?
         # If we didn't find the file, return the path to where we'd like it to 
         # be installed.
         return os.path.join(install_dir or self.preferred_install_dir, basename)
+    def find_all_paths(self, basename):
+        """
+        Looks in a few places for any files with a given name or
+        pattern and returns them as a list.
+        """
 
-    def check_paths(self):
+        # Look for the file in standard folders
+        hits = []
+        for dir in self.find_path_dirs:
+            paths = glob.glob(os.path.join(dir, basename))
+            hits.extend([os.path.abspath(path) for path in paths])
+
+        return hits
+
+        def check_paths(self):
         required_paths = [
                 self.input_pdb_path]
         '''
