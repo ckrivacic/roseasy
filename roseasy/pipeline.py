@@ -810,25 +810,20 @@ class ValidationWorkspace(BigJobWorkspace, WithFragmentLibs):
 
     @property
     def output_subdirs(self):
-        if self.step > 1:
-            return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
-        else:
-            return [self.output_dir]
+        return sorted(glob.glob(os.path.join(self.output_dir, '*/')))
 
     def output_subdir(self, input_name):
         basename = os.path.basename(input_name[:-len('.pdb.gz')])
         return os.path.join(self.output_dir, basename)
 
     def output_prefix(self, job_info):
-        if self.step > 1:
-            input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
-            return os.path.join(self.output_dir, input_model) + '/'
-        else:
-            return self.output_dir + '/'
+        input_model = self.input_basename(job_info)[:-len('.pdb.gz')]
+        return os.path.join(self.output_dir, input_model) + '/'
 
     def output_suffix(self, job_info):
-        if self.step > 1:
-            design_id = job_info['task_id'] // len(job_info['inputs'])
+        bb_models = job_info['inputs']
+        if len(bb_models) > 1:
+            design_id = job_info['task_id'] // len(bb_models)
         else:
             design_id = job_info['task_id']
         return '_{0:03}'.format(design_id)
