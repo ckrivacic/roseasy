@@ -35,7 +35,6 @@ import sys
 import glob
 import subprocess
 from klab import scripting, cluster
-import docopt
 from roseasy import pipeline, big_jobs
 import time
 
@@ -43,8 +42,6 @@ def get_workspace(root_dir, step):
     return pipeline.ValidationWorkspace(root_dir, step)
 
 def main():
-    args = docopt.docopt(__doc__)
-    print(args)
     cluster.require_qsub()
 
     start_time = time.time()
@@ -57,26 +54,35 @@ def main():
     test_run = job_info.get('test_run', False)
 
     # append location of Rosetta binaries to path
-    sys.path.append('/wynton/home/kortemme/krivacic/source/bin')
+    abinitio = '/wynton/home/kortemme/krivacic/rosetta/source/bin/AbinitioRelax.linuxgccrelease'
 
     # find necessary files
+    print('fdir :', workspace.fragments_dir)
+    print('pdb :', pdbpath)
+    print(os.path.join(workspace.fragments_dir, 
+                       workspace.fragments_tag(pdbpath.lower())+'?', 
+                       '*3mers.gz'))
     tmers = glob.glob(
         os.path.join(workspace.fragments_dir, 
-                     workspace.fragments_tag(pdbpath)+'?', 
-                     '*3mers.gz'))
+                     workspace.fragments_tag(pdbpath.lower())+'?', 
+                     '*3mers.gz'))[0]
     nmers = glob.glob(
         os.path.join(workspace.fragments_dir, 
-                     workspace.fragments_tag(pdbpath)+'?', 
-                     '*9mers.gz'))
+                     workspace.fragments_tag(pdbpath.lower())+'?', 
+                     '*9mers.gz'))[0]
     ss2 = glob.glob(
         os.path.join(workspace.fragments_dir, 
-                     workspace.fragments_tag(pdbpath)+'?', 
-                     '*psipred_ss2'))
+                     workspace.fragments_tag(pdbpath.lower())+'?', 
+                     '*psipred_ss2'))[0]
+    fasta = glob.glob(
+        os.path.join(workspace.fragments_dir, 
+                     workspace.fragments_tag(pdbpath.lower())+'?', 
+                     '*fasta'))[0]
 
     # Run the ab initio relaxation script.
 
     relax_abinitio = [
-            'AbinitioRelax.linuxgccrelease',
+            abinitio,
             '-abinitio:relax', 
             '-use_filters', 'true', 
             '-abinitio::increase_cycles', '10', 
@@ -84,23 +90,26 @@ def main():
             '-abinitio::rsd_wt_helix', '0.5', 
             '-abinitio::rsd_wt_loop', '0.5', 
             '-relax::fast', 
-            '-in:file:fasta', workspace.fasta_path, 
+            '-in:file:fasta', fasta, 
             '-in:file:frag3', tmers, 
             '-in:file:frag9', nmers, 
             '-in:file:psipred_ss2', ss2, 
-            '-nstruct', args.nstruct, 
-            '-out:pdb_gz',
-            '-out:prefix', workspace.output_prefix(job_info),
-            '-out:suffix', workspace.output_suffix(job_info),
+            '-nstruct', '1', 
+            # '-out:pdb_gz',
+            '-out:file:silent', workspace.output_prefix(job_info) + 'silent.out',
+            # '-out:prefix', workspace.output_prefix(job_info),
+            # '-out:suffix', workspace.output_suffix(job_info),
+            '-out:no_nstruct_label'
             # '--outdir', workspace.fragments_dir,
             # '--memfree', args['--mem-free']
             ]
+    
+    print('Running ROSETTA command:')
+    print(' '.join(relax_abinitio))
 
-    if args['--dry-run']:
-        print(' '.join(relax_abinitio))
-    else:
-        subprocess.call(relax_abinitio)
+    subprocess.call(relax_abinitio)
 
+    '''
     rosettadir = '/wynton/home/kortemme/krivacic/rosetta'
     init_args = []
     dalphaball_path = os.path.join(rosettadir, 'source',
@@ -131,6 +140,7 @@ def main():
     outfolder = os.path.join(workspace.output_prefix(job_info),
             'filtered')
     pose.dump_pdb(os.path.join(outfolder, outpath))
+    '''
 
 if __name__ == "__main__":
     main()
