@@ -1,5 +1,5 @@
 from roseasy import pipeline
-import sys, os
+import sys, os, glob
 import subprocess
 
 def main():
@@ -9,9 +9,11 @@ def main():
         cmd = [
                 combiner,
                 '-database', '/wynton/home/kortemme/krivacic/rosetta/database',
-                '-in:file:silent', os.path.join(folder, '*.out'),
                 '-out:file:silent', os.path.join(folder, 'silent.out')
                 ]
+
+        for f in glob.glob(folder + '/*.out'):
+                cmd.extend(['-in:file:silent', f,])
 
         print('Running ROSETTA command:')
         print(' '.join(cmd))
