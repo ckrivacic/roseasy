@@ -79,7 +79,7 @@ def main():
                      workspace.fragments_tag(pdbpath.lower())+'?', 
                      '*fasta'))[0]
 
-    # Run the ab initio relaxation script.
+        # Run the ab initio relax script.
 
     relax_abinitio = [
             abinitio,
@@ -94,9 +94,9 @@ def main():
             '-in:file:frag3', tmers, 
             '-in:file:frag9', nmers, 
             '-in:file:psipred_ss2', ss2, 
-            '-nstruct', '1', 
+            '-nstruct', '10', 
             # '-out:pdb_gz',
-            '-out:file:silent', workspace.output_prefix(job_info) + 'silent.out',
+            '-out:file:silent', workspace.output_prefix(job_info) + 'silent_{}.out'.format(workspace.output_suffix(job_info)),
             # '-out:prefix', workspace.output_prefix(job_info),
             # '-out:suffix', workspace.output_suffix(job_info),
             '-out:no_nstruct_label'
@@ -109,38 +109,6 @@ def main():
 
     subprocess.call(relax_abinitio)
 
-    '''
-    rosettadir = '/wynton/home/kortemme/krivacic/rosetta'
-    init_args = []
-    dalphaball_path = os.path.join(rosettadir, 'source',
-            'external', 'DAlpahBall', 'DAlphaBall.gcc')
-    init_args.append('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
-    init_args.extend(workspace.fragments_flags(pdbpath))
-    init(' '.join(init_args))
-
-    pose = pose_from_file(outpath)
-    input_pose = pose_from_file(pdbpath)
-
-    ca_rmsd = CA_rmsd(pose, input_pose)
-    all_atom_rmsd = all_atom_rmsd(pose, input_pose)
-
-    setPoseExtraScore(pose, 'EXTRA_METRIC_CA_RMSD [[-]]', ca_rmsd)
-    setPoseExtraScore(pose, 'EXTRA_METRIC_AllAtom_RMSD [[-]]',
-            all_atom_rmsd)
-
-    filters = workspace.get_filters(pose, task_id=job_info['task_id'],
-            score_fragments=not test_run, test_run=test_run,
-            fragment_full_pose=True)
-    filters.run_filters()
-
-    total_time = time.time() - start_time
-    setPoseExtraScore(pose, 'EXTRA_METRIC_Run time', total_time)
-
-    outname = os.path.basename(outpath)
-    outfolder = os.path.join(workspace.output_prefix(job_info),
-            'filtered')
-    pose.dump_pdb(os.path.join(outfolder, outpath))
-    '''
 
 if __name__ == "__main__":
     main()
