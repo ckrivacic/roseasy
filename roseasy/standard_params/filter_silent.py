@@ -58,7 +58,7 @@ if __name__=='__main__':
     tasknum = int(job_info['task_id'])
     posedict = {}
     for pose in poses:
-        if i%100 == (tasknum - 1)// 18:
+        if i%100 == (tasknum - 1)// len(job_info['inputs']):
             posedict[i] = pose
         i += 1
     sfxn = create_score_function('ref2015')
