@@ -58,7 +58,7 @@ if __name__=='__main__':
     tasknum = int(job_info['task_id'])
     posedict = {}
     for pose in poses:
-        if i%100 == (tasknum - 1)// len(job_info['inputs']):
+        if i%10 == (tasknum - 1)// len(job_info['inputs']):
             posedict[i] = pose
         i += 1
     sfxn = create_score_function('ref2015')
@@ -82,7 +82,7 @@ if __name__=='__main__':
 
         filters = workspace.get_filters(pose,
                 task_id=str(job_info['task_id']) + '_' + str(i), 
-                score_fragments=True,
+                score_fragments=False,
                 test_run=test_run,
                 fragment_full_chain=1)
         filters.run_filters()
@@ -91,4 +91,6 @@ if __name__=='__main__':
         input_name = os.path.basename(pdbpath).split('.')[0]
         out = workspace.output_prefix(job_info) + \
                 input_name + '_{}'.format(i) + '.pdb.gz'
+        print('Dumping PDB to {}'.format(out))
+        os.makedirs(workspace.output_prefix(job_info), exist_ok=True)
         pose.dump_pdb(out)
