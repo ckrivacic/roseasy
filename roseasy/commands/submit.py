@@ -156,7 +156,7 @@ def main():
     if workspace.subdirs:
         for inp in inputs:
             subdir = workspace.output_subdir(inp)
-            scripting.clear_directory(subdir)
+            # scripting.clear_directory(subdir)
 
     # Submit the job
 
