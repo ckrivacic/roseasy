@@ -3,6 +3,25 @@ from roseasy.utils.numeric import *
 from pyrosetta import *
 
 
+def run_command(cmd, environment=None):
+    """
+    From Cody's helix_matcheer/rifdock/run_sge.py
+        Params:
+            cmd - a list
+    """
+    print("Working directory: {}".format(os.getcwd()))
+    print("Command: {}".format(' '.join(cmd)))
+    sys.stdout.flush()
+    if not environment:
+        process = Popen(cmd)
+    else:
+        process = Popen(cmd, env=environment)
+    print("Process ID: {}".format(process.pid))
+    print()
+    sys.stdout.flush()
+    process.wait()
+
+
 def iterable(obj):
     try:
         iter(obj)
