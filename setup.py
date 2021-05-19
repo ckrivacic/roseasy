@@ -65,6 +65,7 @@ setuptools.setup(
             define_command('pick_designs_to_validate'),
             define_command('add_residues'),
             define_command('make_table'),
+            define_command('web_logo'),
             ],
         }
 )
