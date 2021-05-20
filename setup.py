@@ -38,7 +38,6 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
     install_requires=[
-        'klab',
         'docopt',
         ],
     extras_require={
@@ -66,6 +65,7 @@ setuptools.setup(
             define_command('pick_designs_to_validate'),
             define_command('add_residues'),
             define_command('make_table'),
+            define_command('web_logo'),
             ],
         }
 )
