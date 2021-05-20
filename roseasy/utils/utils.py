@@ -1,9 +1,11 @@
 import numpy as np
 from roseasy.utils.numeric import *
 from pyrosetta import *
+import sys
 
 
 def run_command(cmd, environment=None):
+    from subprocess import Popen
     """
     From Cody's helix_matcheer/rifdock/run_sge.py
         Params:
