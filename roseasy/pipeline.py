@@ -1066,6 +1066,7 @@ def fetch_data(directory, remote_url=None, recursive=True, include_logs=False, d
             '--exclude', 'fragments',
             '--exclude', 'core.*',
             '--exclude', 'sequence_profile*',
+            '--exclude', 'python',
     ]
     if not include_logs:
         rsync_command += [
@@ -1117,6 +1118,7 @@ def push_data(directory, remote_url=None, recursive=True, dry_run=False):
             '--exclude', 'rosetta',
             '--exclude', 'rsync_url',
             '--exclude', 'logs',
+            '--exclude', 'python',
             directory + '/', remote_dir,
     ]
 
