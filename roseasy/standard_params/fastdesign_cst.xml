@@ -1,0 +1,47 @@
+<ROSETTASCRIPTS>
+
+  <SCOREFXNS>
+    <ScoreFunction name="scorefxn" weights="ref2015"/>
+    <ScoreFunction name="scorefxn_cst" weights="ref2015">
+      <Reweight scoretype="coordinate_constraint" weight="1.0"/>
+      <Reweight scoretype="atom_pair_constraint" weight="1.0"/>
+      <Reweight scoretype="angle_constraint" weight="1.0"/>
+      <Reweight scoretype="dihedral_constraint" weight="1.0"/>
+      <Reweight scoretype="res_type_constraint" weight="1.0"/>
+    </ScoreFunction>
+  </SCOREFXNS>
+
+  <TASKOPERATIONS>
+    <ReadResfile name="resfile"/>
+    <LayerDesign name="layer" ignore_pikaa_natro="yes"/>
+    <ClashBasedRepackShell name="shell" task_operations="resfile"/>
+    <ExtraRotamersGeneric name="ex" ex1="yes" ex2="yes" extrachi_cutoff="0"/>
+    <LimitAromaChi2 name="aro" include_trp="yes"/>
+    <IncludeCurrent name="curr"/>
+  </TASKOPERATIONS>
+
+  <MOVERS>
+    <!--<FavorNativeResidue name="nativebonus" />-->
+    <!--<ConstraintSetMover name="cst" cst_fa_file="{{ w.restraints_path }}"/>-->
+    <AddConstraints name="add_csts" >
+        <CoordinateConstraintGenerator name="backbone" />
+    </AddConstraints>
+    <RemoveConstraints name="rm_csts" constraint_generators="backbone" />
+    <WriteFiltersToPose name="writer" prefix="EXTRA_SCORE_"/>
+    <FastDesign name="fastdes"
+      task_operations="resfile,layer,shell,ex,aro,curr"
+      scorefxn="scorefxn_cst"/>
+  </MOVERS>
+
+  <PROTOCOLS>
+    <!-- Constraints added using mover because command-line is ignored -->
+    <!--<Add mover_name="nativebonus"/>-->
+    <!--<Add mover_name="cst"/>-->
+    <Add mover_name="add_csts"/>
+    <Add mover_name="fastdes"/>
+    <Add mover_name="rm_csts"/>
+    <Add mover_name="writer"/>
+  </PROTOCOLS>
+
+  <OUTPUT scorefxn="scorefxn"/>
+</ROSETTASCRIPTS>
