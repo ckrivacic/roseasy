@@ -11,7 +11,7 @@ def get_insertion(pdbpath, workspace):
     model_number = os.path.basename(pdbpath).split('.')[0].split('_')[-1]
     insertion_json = os.path.join(
             insertion_path,
-            'insertion_points_{}.json'.format(model_number)
+            'insertion_points_{}.json'.format(int(model_number))
             )
     with open(insertion_json, 'r') as f:
         insertion = json.load(f)
@@ -51,6 +51,7 @@ def relative_resfile(workspace, insertion):
 
 
     return designable, repackable
+<<<<<<< HEAD
 
 
 def relative_resfile_from_reference(workspace, insertion, pose,
@@ -86,3 +87,5 @@ def relative_resfile_from_reference(workspace, insertion, pose,
 
 
     return designable, repackable
+=======
+>>>>>>> master

@@ -1,6 +1,6 @@
 from pyrosetta.rosetta.protocols.rosetta_scripts import XmlObjects
 from pyrosetta.rosetta.core.pose import setPoseExtraScore
-import os
+import os, sys
 
 class FilterContainer(object):
     def __init__(self, workspace, pose, task_id='0000', score_fragments=False,
@@ -178,7 +178,7 @@ class FilterContainer(object):
                 print(os.listdir(os.getcwd()))
                 cmd = [
                         '/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh',
-                        '{}.fasta'.format(self.task_id),
+                        os.path.join(self.workspace.seqprof_dir, '{}.fasta'.format(self.task_id)),
                         ]
 
                 process = subprocess.run(cmd,
