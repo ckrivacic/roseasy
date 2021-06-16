@@ -206,12 +206,12 @@ if __name__=='__main__':
     # But you can uncomment this to compare it to the input to the
     # project
     #input_pose = pose_from_file(workspace.input_pdb_path)
-    ca_rmsd = CA_rmsd(fd.pose, input_pose)
-    all_atom_rmsd = all_atom_rmsd(fd.pose, input_pose)
+    ca_rmsd = CA_rmsd(pose, input_pose)
+    all_atom_rmsd = all_atom_rmsd(pose, input_pose)
     # score_fragments = os.path.exists(workspace.loops_path)
     score_fragments=False
 
-    filters = workspace.get_filters(pdbpath, fd.pose,
+    filters = workspace.get_filters(pose,
             task_id=job_info['task_id'], score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
@@ -219,7 +219,7 @@ if __name__=='__main__':
     input_name = os.path.basename(pdbpath).split(".")[0]
     out = workspace.output_prefix(job_info) + input_name + workspace.output_suffix(job_info) + '.pdb.gz'
 
-    setPoseExtraScore(fd.pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
-    setPoseExtraScore(fd.pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
+    setPoseExtraScore(pose, 'EXTRA_METRIC_CA_RMSD', ca_rmsd)
+    setPoseExtraScore(pose, 'EXTRA_METRIC_AllAtom_RMSD', all_atom_rmsd)
 
     pose.dump_pdb(out)
