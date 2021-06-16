@@ -1,6 +1,7 @@
 *.gz
 *.pyc
 roseasy/tests/test_inputs/fragments/*
+roseasy/movers/__pycache__/*
 roseasy_codykrivacic.egg-info/*
 *.bak
 roseasy_codykrivacic.egg-info/PKG-INFO
