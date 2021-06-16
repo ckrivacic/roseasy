@@ -3,6 +3,7 @@ from klab.rosetta import input_files
 from roseasy.utils import mover_utils
 from pyrosetta import init
 from pyrosetta.rosetta.protocols.rosetta_scripts import XmlObjects
+from pyrosetta.rosetta.protocols import rosetta_scripts
 from pyrosetta.rosetta.core.pose import setPoseExtraScore
 from pyrosetta import pose_from_file
 from pyrosetta.rosetta.core.scoring import CA_rmsd
@@ -23,7 +24,7 @@ if __name__=='__main__':
     start_time = time.time()
     workspace, job_info = big_jobs.initiate()
     test_run = job_info.get('test_run', False)
-    init()
+    init('-out:levels protocols.fixbb.LayerDesignOperation:warning')
 
     # Figure out input pdb and create a pose
     pdbpath = workspace.input_path(job_info)
@@ -32,28 +33,49 @@ if __name__=='__main__':
     # Create FastDesign object
     fd = fastdesign.FastDesign()
     fd.pose = pose
-    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
-     'external', 'DAlpahBall', 'DAlphaBall.gcc')
-    fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     fd.add_init_arg('-ex1 -ex2 -use_input_sc -ex1aro')
     fd.add_init_arg('-total_threads 1')
+    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
+             'external', 'DAlpahBall', 'DAlphaBall.gcc')
+     if os.path.exists(dalphaball_path):
+         fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
 
-    # Create task factory and read the resfile
+    # Create task factory (tells Rosetta which positions to design and
+    # which to move) and read the resfile
     taskfactory = TaskFactory()
     readresfile = ReadResfile(workspace.resfile_path)
     taskfactory.push_back(readresfile)
+
+    ld = rosetta_scripts.XmlObjects.static_get_task_operation(
+        '''<LayerDesign name="layer_all" layer="core_boundary_surface_Nterm_Cterm" use_sidechain_neighbors="True">
+            <Nterm>
+                    <all append="DEGHKNQRST" />
+                    <all exclude="CAFILMPVWY" />
+            </Nterm>
+            <Cterm>
+                    <all append="DEGHKNQRST" />
+                    <all exclude="CAFILMPVWY" />
+            </Cterm>
+    </LayerDesign>''')
+    taskfactory.push_back(ld)
+    favornative = '''
+    <FavorNativeResidue name="favornative" bonus="1.0"/>
+    '''
+    favornative = XmlObjects.static_get_mover(favornative)
+    favornative.apply(fd.pose)
+    packertask = taskfactory.create_task_and_apply_taskoperations(pose)
+
     fd.task_factory = taskfactory
 
     # Parse resfile & create movemap
     resfile_parser = input_files.Resfile(input_resfile=workspace.resfile_path)
-    # chain = 'A'
     designable = []
     repackable = []
     for chain in resfile_parser.design:
-        designable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
+        designable.extend([int(key) for key in
             resfile_parser.design[chain]])
     for chain in resfile_parser.repack:
-        repackable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
+        repackable.extend([int(key) for key in
             resfile_parser.repack[chain]])
     fd.setup_default_movemap(bb=designable.extend(repackable),
             chi=designable.extend(repackable))
@@ -72,9 +94,13 @@ if __name__=='__main__':
     ca_rmsd = CA_rmsd(fd.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(fd.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)
+    sfxn = create_score_function('ref2015')
+    final_score = sfxn(fd.pose)
+
 
     filters = workspace.get_filters(fd.pose,
-            task_id=job_info['task_id'], score_fragments=score_fragments,
+            task_id=job_info['task_id'],
+            score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
 
@@ -85,6 +111,8 @@ if __name__=='__main__':
 
     total_time = time.time() - start_time
     setPoseExtraScore(fd.pose, 'EXTRA_METRIC_Run time', total_time)
+    setPoseExtraScore(fd.pose, 'EXTRA_METRIC_Final_Score_(REU)',
+            final_score)
 
     # Save final pose as a pdb file.
     input_name = os.path.basename(pdbpath).split(".")[0]

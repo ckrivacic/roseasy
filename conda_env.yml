@@ -131,4 +131,3 @@ dependencies:
   - zstd=1.4.8=hf387650_1
   - pip:
     - nonstdlib==1.12.0
-prefix: /Users/codykrivacic/software/anaconda3/envs/roseasy
