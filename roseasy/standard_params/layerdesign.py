@@ -35,6 +35,10 @@ if __name__=='__main__':
     fd.pose = pose
     fd.add_init_arg('-ex1 -ex2 -use_input_sc -ex1aro')
     fd.add_init_arg('-total_threads 1')
+    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
+             'external', 'DAlpahBall', 'DAlphaBall.gcc')
+     if os.path.exists(dalphaball_path):
+         fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
 
     # Create task factory (tells Rosetta which positions to design and
     # which to move) and read the resfile
@@ -54,6 +58,11 @@ if __name__=='__main__':
             </Cterm>
     </LayerDesign>''')
     taskfactory.push_back(ld)
+    favornative = '''
+    <FavorNativeResidue name="favornative" bonus="1.0"/>
+    '''
+    favornative = XmlObjects.static_get_mover(favornative)
+    favornative.apply(fd.pose)
     packertask = taskfactory.create_task_and_apply_taskoperations(pose)
 
     fd.task_factory = taskfactory
@@ -84,9 +93,14 @@ if __name__=='__main__':
     # Calculate several different types of RMSD
     ca_rmsd = CA_rmsd(fd.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(fd.pose, input_pose)
+    score_fragments = os.path.exists(workspace.loops_path)
+    sfxn = create_score_function('ref2015')
+    final_score = sfxn(fd.pose)
+
 
     filters = workspace.get_filters(fd.pose,
-            task_id=job_info['task_id'], score_fragments=False,
+            task_id=job_info['task_id'],
+            score_fragments=score_fragments,
             test_run=test_run)
     filters.run_filters()
 
@@ -97,6 +111,8 @@ if __name__=='__main__':
 
     total_time = time.time() - start_time
     setPoseExtraScore(fd.pose, 'EXTRA_METRIC_Run time', total_time)
+    setPoseExtraScore(fd.pose, 'EXTRA_METRIC_Final_Score_(REU)',
+            final_score)
 
     # Save final pose as a pdb file.
     input_name = os.path.basename(pdbpath).split(".")[0]
