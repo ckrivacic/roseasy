@@ -12,6 +12,7 @@ from roseasy import big_jobs
 from pyrosetta.rosetta.core.pack.task import TaskFactory
 from pyrosetta.rosetta.core.pack.task.operation import ReadResfile
 from pyrosetta import create_score_function
+from pyrosetta.rosetta.core.kinematics import MoveMap
 from roseasy.movers import fastdesign
 #from roseasy.standard_params.filters import FilterContainer
 import time
@@ -32,9 +33,6 @@ if __name__=='__main__':
     # Create FastDesign object
     fd = fastdesign.FastDesign()
     fd.pose = pose
-    dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
-     'external', 'DAlpahBall', 'DAlphaBall.gcc')
-    fd.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     fd.add_init_arg('-ex1 -ex2 -use_input_sc -ex1aro')
     fd.add_init_arg('-total_threads 1')
 
@@ -44,19 +42,20 @@ if __name__=='__main__':
     taskfactory.push_back(readresfile)
     fd.task_factory = taskfactory
 
-    # Parse resfile & create movemap
+    movemap = MoveMap()
+    # Set the movemap to turn off backbone DOF
+    movemap.set_bb(False)
+    movemap.set_chi(True)
+
+    # Parse resfile
     resfile_parser = input_files.Resfile(input_resfile=workspace.resfile_path)
-    # chain = 'A'
-    designable = []
-    repackable = []
-    for chain in resfile_parser.design:
-        designable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
-            resfile_parser.design[chain]])
-    for chain in resfile_parser.repack:
-        repackable.extend([pose.pdb_info().pdb2pose(chain, int(key)) for key in
-            resfile_parser.repack[chain]])
-    fd.setup_default_movemap(bb=designable.extend(repackable),
-            chi=designable.extend(repackable))
+    chain = 'A'
+    designable = [int(key) for key in resfile_parser.design[chain]]
+    if chain in resfile_parser.repack:
+        repackable = [int(key) for key in resfile_parser.repack[chain]]
+    else:
+        repackable = []
+    fd.movemap = movemap
 
     if test_run:
         fd.rounds = 1
@@ -71,10 +70,9 @@ if __name__=='__main__':
     # Calculate several different types of RMSD
     ca_rmsd = CA_rmsd(fd.pose, input_pose)
     all_atom_rmsd = all_atom_rmsd(fd.pose, input_pose)
-    score_fragments = os.path.exists(workspace.loops_path)
 
     filters = workspace.get_filters(fd.pose,
-            task_id=job_info['task_id'], score_fragments=score_fragments,
+            task_id=job_info['task_id'], score_fragments=False,
             test_run=test_run)
     filters.run_filters()
 

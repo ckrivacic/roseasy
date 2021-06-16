@@ -1156,7 +1156,12 @@ class Design (object):
     def __init__(self, directory):
         self.directory = directory
         self.structures, self.metadata = load(directory)
-        self.loops = pipeline.load_loops(directory)
+        print(self.structures)
+        print(self.metadata)
+        try:
+            self.loops = pipeline.load_loops(directory)
+        except:
+            self.loops = None
         self.resfile = pipeline.load_resfile(directory)
         self.representative = self.rep = self.scores.idxmin()
 
@@ -1187,6 +1192,19 @@ class Design (object):
     @property
     def rep_distance(self):
         return self.distances[self.rep]
+
+
+class SimpleDesign (Design):
+    """
+    Represent a single non-validated design, i.e. just one structure.
+    """
+
+    def __init__(self, structure, metadata, directory):
+        self.structures = pd.DataFrame([structure[1]])
+        self.metadata = metadata
+        self.directory = directory
+        self.resfile = pipeline.load_resfile(directory)
+        self.representative = self.rep = self.scores.idxmin()
 
 
 class IOError (IOError):

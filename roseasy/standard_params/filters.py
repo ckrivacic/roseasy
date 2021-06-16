@@ -4,10 +4,13 @@ import os, sys
 
 class FilterContainer(object):
     def __init__(self, workspace, pose, task_id='0000', score_fragments=False,
-            test_run=False):
+            test_run=False, fragment_full_chain=None):
         self.workspace = workspace
         self.task_id = task_id
         self.pose = pose
+        # the optional fragment_full_pose argument should take a chain
+        # integer as the argument
+        self.fragment_full_chain = fragment_full_chain
         self.filters = self.get_default_filters(score_fragments=score_fragments, test_run=test_run)
 
     def get_default_filters(self, score_fragments=False,
@@ -16,15 +19,23 @@ class FilterContainer(object):
         <WriteFiltersToPose name="writer" prefix="EXTRA_SCORE_"/>
         '''
 
+        npsa = '''
+        <BuriedSurfaceArea name="Buried Nonpolar Surface Area [[+]]"
+        select_only_FAMILYVW="true" filter_out_low="false"
+        atom_mode="all_atoms"
+        confidence="1.0"
+        />
+'''
+
         buns_all = '''
         <BuriedUnsatHbonds name="Buried Unsat [[-]]"
-        report_all_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true" dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
+        report_all_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true"  dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
 
         '''
 
         buns_sc = '''
         <BuriedUnsatHbonds name="Buried Unsat Sidechains [[-]]"
-        report_sc_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true" dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
+        report_sc_heavy_atom_unsats="true" scorefxn="ref2015" cutoff="4" residue_surface_cutoff="20.0" ignore_surface_res="true" print_out_info_to_pdb="true"  dalphaball_sasa="1" probe_radius="1.1" confidence="0" />
 
         '''
 
@@ -50,8 +61,8 @@ class FilterContainer(object):
           />
           '''
 
-        #filters = [buns, packstat, prepro, exposed_hydrophobics]
-        filters = [packstat, prepro, exposed_hydrophobics]
+        filters = [npsa, buns_all, packstat, prepro, exposed_hydrophobics]
+        # filters = [packstat, prepro, exposed_hydrophobics]
         if os.path.exists(os.path.join(
             self.workspace.rosetta_dir,
             'source',
@@ -66,6 +77,13 @@ class FilterContainer(object):
         for filt in filters:
             filter_objs.append(XmlObjects.static_get_filter(filt))
         if score_fragments:
+            if self.fragment_full_chain:
+                start = self.pose.chain_begin(self.fragment_full_chain)
+                stop = self.pose.chain_end(self.fragment_full_chain) - 9
+
+            else:
+                start = workspace.largest_loop.start
+                stop = workspace.largest_loop.end
 
             fsf = '''
               <FragmentScoreFilter
@@ -92,13 +110,46 @@ class FilterContainer(object):
                 fragment_size="9"
                 vall_path="{vall_path}"
               />
-            '''.format(largest_loop_start=self.workspace.largest_loop.start,
-                    largest_loop_end=self.workspace.largest_loop.end,
+            '''.format(largest_loop_start=start,
+                    largest_loop_end=stop,
                     seqprof_dir=self.workspace.seqprof_dir, task_id=self.task_id,
                     fragment_weights_path=self.workspace.fragment_weights_path,
                     vall_path=self.workspace.rosetta_vall_path(test_run))
                 #placeholder_seqs="/wynton/home/kortemme/krivacic/software/fragments/derived_data/pdb_seqres.txt"
             filter_objs.append(XmlObjects.static_get_filter(fsf))
+
+            fsf_worst = '''
+              <FragmentScoreFilter
+                name="Worst. 9-Residue Fragment Crmsd[[-]]"
+                scoretype="FragmentCrmsd"
+                sort_by="FragmentCrmsd"
+                threshold="9999" 
+                direction="-"
+                start_res="{largest_loop_start}"
+                end_res="{largest_loop_end}"
+                compute="maximum"
+                outputs_folder="{seqprof_dir}"
+                outputs_name="{task_id}" 
+                csblast="/wynton/home/kortemme/krivacic/software/fragments/csblast-2.2.3_linux64"  
+                blast_pgp="/wynton/home/kortemme/krivacic/software/fragments/blast/blast-2.2.26/bin/blastpgp" 
+                psipred="/wynton/home/kortemme/krivacic/software/fragments/psipred/runpsipred_single" 
+                sparks-x="/wynton/home/kortemme/krivacic/software/fragments/sparks-x" 
+                sparks-x_query="/wynton/home/kortemme/krivacic/software/fragments/sparks-x/bin/buildinp_query.sh" 
+                frags_scoring_config="{fragment_weights_path}"
+                placeholder_seqs="/wynton/home/database/blast/blastdb/pdbaa"
+                print_to_pdb="true"
+                n_frags="200"
+                n_candidates="1000" 
+                fragment_size="9"
+                vall_path="{vall_path}"
+              />
+            '''.format(largest_loop_start=start,
+                    largest_loop_end=stop,
+                    seqprof_dir=self.workspace.seqprof_dir, task_id=self.task_id,
+                    fragment_weights_path=self.workspace.fragment_weights_path,
+                    vall_path=self.workspace.rosetta_vall_path(test_run))
+                #placeholder_seqs="/wynton/home/kortemme/krivacic/software/fragments/derived_data/pdb_seqres.txt"
+            filter_objs.append(XmlObjects.static_get_filter(fsf_worst))
 
         return filter_objs
 
