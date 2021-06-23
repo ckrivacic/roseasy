@@ -638,14 +638,19 @@ class ShowMyDesigns (gtk.Window):
 
         file_menu = gtk.Menu()
 
+        script_dict = {}
+
+        def menu_callback(obj):
+            try_to_run_command([script_dict[obj.get_label()], path,
+                rep_path])
+
         for script in sho_scripts:
             title = os.path.basename(os.path.splitext(script)[0])
             title = title[0].upper() + title[1:]
             title = title.replace('_', ' ')
-
             item = gtk.MenuItem(title)
-            item.connect('activate',
-                    lambda *args: try_to_run_command([script, path, rep_path]))
+            script_dict[item.get_label()] = script
+            item.connect('activate', menu_callback)
             file_menu.append(item)
 
         view_in_pymol = gtk.MenuItem("View model in pymol")
@@ -1572,14 +1577,19 @@ class ShowMyViolins (gtk.Window):
 
         file_menu = gtk.Menu()
 
+        script_dict = {}
+
+        def menu_callback(obj):
+            try_to_run_command([script_dict[obj.get_label()], path,
+                rep_path])
+
         for script in sho_scripts:
             title = os.path.basename(os.path.splitext(script)[0])
             title = title[0].upper() + title[1:]
             title = title.replace('_', ' ')
-
             item = gtk.MenuItem(title)
-            item.connect('activate',
-                    lambda *args: try_to_run_command([script, path, rep_path]))
+            script_dict[item.get_label()] = script
+            item.connect('activate', menu_callback)
             file_menu.append(item)
 
         view_in_pymol = gtk.MenuItem("View model in pymol")
@@ -2418,6 +2428,7 @@ def parse_record_from_pdb(record, pdb_path, lines):
             record['delta_buried_unsats'] = float(line.split()[1])
 
 def try_to_run_command(command):
+    print(command)
     with open(os.devnull, 'w') as devnull:
         try: subprocess.Popen(command, stdout=devnull)
         except OSError as error:

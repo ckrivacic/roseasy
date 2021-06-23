@@ -82,8 +82,8 @@ class FilterContainer(object):
                 stop = self.pose.chain_end(self.fragment_full_chain) - 9
 
             else:
-                start = workspace.largest_loop.start
-                stop = workspace.largest_loop.end
+                start = self.workspace.largest_loop.start
+                stop = self.workspace.largest_loop.end
 
             fsf = '''
               <FragmentScoreFilter
