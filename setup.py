@@ -66,6 +66,7 @@ setuptools.setup(
             define_command('add_residues'),
             define_command('make_table'),
             define_command('web_logo'),
+            define_command('reverse_translate'),
             ],
         }
 )
