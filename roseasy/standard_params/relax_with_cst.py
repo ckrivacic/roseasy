@@ -17,13 +17,14 @@ if __name__=='__main__':
     test_run = job_info.get('test_run', False)
     init('-relax:constrain_relax_to_start_coords -total_threads 1')
     pdbpath = workspace.input_path(job_info)
-    pose = pose_from_file(workspace.input_pdb_path)
+    pose = pose_from_file(pdbpath)
     relax = r.Relax()
 
     dalphaball_path = os.path.join(workspace.rosetta_dir, 'source',
             'external', 'DAlpahBall', 'DAlphaBall.gcc')
     relax.add_init_arg('-holes:dalphaball {} -in:file:s {}'.format(dalphaball_path, pdbpath))
     relax.add_init_arg('-total_threads 1')
+    relax.add_init_arg('-packing:ex1 -packing:ex2 -packing:use_input_sc -relax:constrain_relax_to_start_coords -total_threads 1 -packing:flip_HNQ -packing:no_optH false -relax:ramp_constraints false -relax:coord_constrain_sidechains')
     if test_run:
         relax.rounds = 1
     relax.pose = pose
@@ -35,7 +36,7 @@ if __name__=='__main__':
     relax.mover.constrain_relax_to_start_coords(True)
     relax.apply()
 
-    input_pose = pose_from_file(workspace.input_pdb_path)
+    input_pose = pose_from_file(pdbpath)
     ca_rmsd = CA_rmsd(relax.pose, input_pose)
     score_fragments = os.path.exists(workspace.loops_path)
 
